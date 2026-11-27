@@ -130,6 +130,8 @@ export async function render(root, route) {
   let widget = null;
   let stage = null; // { kind: "answer" | "fix", value }
   let busy = false;
+  let explaining = 0; // while a miss is being explained (its number): a new answer cuts it short, never waits
+  let missNo = 0;
   let fresh = false;
   let texts = {};
   let gateAnswers = [];
@@ -304,6 +306,7 @@ export async function render(root, route) {
   /** A wrong answer: the sentence, the mistake kind, and help after hintAfter misses. */
   async function wrong(given, extra = {}) {
     busy = true;
+    const mine = (explaining = ++missNo);
     const { help } = round.miss();
     if (extra.kind) L.mistake(state.rec, slot.idea, extra.kind); // a kind of mistake the board knew (the Feld's)
     for (const [kind, rule] of Object.entries(def.mistakes ?? {})) {
@@ -316,7 +319,10 @@ export async function render(root, route) {
     widget?.wrong(given);
     sound.wrong();
     await voice.tell(`${oneOf(T.oops)} ${text(stage.kind === "fix" ? "fixMiss" : "miss", { given, ...extra })}`);
+    if (explaining !== mine) return; // the child answered again meanwhile: that answer goes on
     if (help >= 0 && board.isConnected) await hint(help);
+    if (explaining !== mine) return;
+    explaining = 0;
     busy = false;
   }
 
@@ -335,7 +341,11 @@ export async function render(root, route) {
 
   /** An answer: the frame checks it against the recipe's right answer. */
   async function check(given, extra = {}) {
-    if (busy) return false;
+    // A child who answers again while a miss is still being explained is heard, not ignored: many boards lock
+    // themselves on a right answer, so a dropped answer would leave the round stuck.
+    if (busy && !explaining) return false;
+    explaining = 0;
+    busy = false;
     const right = same(given, stage.value);
     const stageName = stage.kind === "fix" ? "fix" : task.answer.mode === "yesNo" ? "judge" : "answer";
     b.onAnswer?.(given, right, stageName);
