@@ -48,7 +48,7 @@ export default {
     pruefen: {
       ask: "Die Eule hat geteilt. Hat jedes Tier gleich viele?",
       lookAgain: "Zähl bei jedem Tier nach!",
-      fix: "Gut aufgepasst! Wer hat zu viele? Tipp darauf.",
+      fix: "Richtig, das stimmt nicht. Wer hat zu viele? Tipp darauf.",
       fixMiss: "Dieses Tier hat nicht zu viele. Such weiter!",
       right: (k) => `Ja! Jedes Tier hat ${k}.`,
       fixed: (k) => `Jetzt ist es gerecht: Jedes Tier hat ${k}.`,

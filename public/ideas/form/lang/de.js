@@ -54,7 +54,7 @@ export default {
       right: (a, fact) => `Ja, das ist ${a}. ${fact}`,
       lookAgain: (fact) => `${fact} Ist das hier so?`,
       isRight: (fact) => `Schau noch einmal. ${fact}`,
-      fix: "Gut aufgepasst! Wie heißt die Form?",
+      fix: "Richtig, das stimmt nicht. Wie heißt die Form?",
       fixMiss: (fact) => `${fact} Passt das?`,
       fixed: (a) => `Jetzt stimmt es: Das ist ${a}.`,
       hint: "Zähl die Ecken. Sind alle Seiten gleich lang?",

@@ -61,7 +61,7 @@ export default {
       question: (pet, where) => `Die Eule sagt: ${big(pet)} ist ${where}. Stimmt das?`,
       right: (pet, where) => `Ja, ${pet} ist ${where}.`,
       lookAgain: "Schau noch einmal genau, wo das Tier ist.",
-      fix: (pet) => `Gut aufgepasst! Wo ist ${pet} wirklich?`,
+      fix: (pet) => `Richtig, das stimmt nicht. Wo ist ${pet} wirklich?`,
       fixMiss: (pet, where) => `Ist ${pet} wirklich ${where}?`,
       fixed: (pet, where) => `Jetzt stimmt es: ${big(pet)} ist ${where}.`,
       hint: "Schau auf das leuchtende Tier und dann auf den Tisch.",

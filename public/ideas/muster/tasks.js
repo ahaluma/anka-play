@@ -6,29 +6,41 @@
 // The forest on the map. One function per perspective makes one task as plain data: no DOM, no texts.
 //
 //   task({ p, range }, r) → one task. p = perspective id. range says how long the piece is:
-//     5  → two things, turn by turn        🍄🌰 🍄🌰
-//     10 → three things in a piece         🍄🌰🌰  ·  🍄🍄🌰  ·  🍄🌰🍂
-//     20 → four things in a piece          🍄🍄🌰🌰 · 🍄🌰🍄🍂 · 🍄🌰🌰🍂 · 🍄🍄🌰🍂 · 🍄🌰🍂🐌
+//     5  → two things, turn by turn        🍄🌲 🍄🌲
+//     10 → three things in a piece         🍄🌲🌲  ·  🍄🍄🌲  ·  🍄🌲🌼
+//     20 → two by two, or three            🍄🍄🌲🌲 · 🍄🌲🌼
 //
 //   A piece ("unit") is written as letters, "ABB". `icons` gives every letter its picture.
 //
 //   sehen     { unit, icons, shown, answer, choices }   the row stops: what comes next?
 //   machen    { unit, icons, shown, fill, kinds }       lay the next `fill` things yourself
-//   forschen  { unit, icons, shown, choices, answer }   which piece comes again and again? (pieces as letters)
-//   anwenden  { unit, icons, shown, rows, answer }      which other row goes the same way?
-//                                                       rows: [{ unit, icons }], answer = index
+//   forschen  { unit, icons, shown, choices, answer }   clap and stamp: the row is a rhythm (icons are moves:
+//                                                       👏 🦶 🦵). It plays, then: what comes next?
+//   anwenden  { unit, icons, shown, gap, choices, answer }   a necklace with a gap in the middle: which bead?
+//
+//   think-lab asked "which piece comes again and again?" and "which other row goes the same way?". Both ask the
+//   child to think about the pattern instead of going on with it: school work, too hard for 3 to 6 (decided
+//   with the parents, 2026-11-27). Clapping and the necklace keep the concept and show it in other ways.
 //   pruefen   { unit, icons, shown, wrongAt, wrong }    the owl laid a row. wrongAt = place of the one
 //                                                       wrong thing (or -1), wrong = its letter
 //   key – short text that tells tasks apart, for "not the same task again".
 //
 // This is the idea of the old game "Muster-Kette", in the frame of the new world.
 
+// Preschool patterns only. think-lab also had ABAC, ABBC, AABC and ABCD at the top level: four things in a piece are
+// school work, so they are out. A row never has more than three different things.
 export const UNITS = {
   5: ["AB"],
   10: ["ABB", "AAB", "ABC"],
-  20: ["AABB", "ABAC", "ABBC", "AABC", "ABCD"],
+  20: ["AABB", "ABC"],
 };
-export const FOREST = ["🍄", "🌰", "🍂", "🐌", "🐞", "🌲", "🐿️", "🐦"]; // old, well-known emoji: old phones show them too
+// Each thing its own colour and shape, so no two can be mixed up on a small phone (think-lab's leaf, chestnut and
+// snail were all brown). Old, well-known emoji: old phones show them too.
+export const FOREST = ["🍄", "🌲", "🌼", "🦋", "🦊", "🦔"];
+/** Clap, stamp, pat the knees: a pattern to hear and to do with the body. */
+export const MOVES = ["👏", "🦶", "🦵"];
+/** Beads of a necklace: one colour each. */
+export const BEADS = ["🔴", "🔵", "🟡", "🟢"];
 export const MAX_SHOWN = 10; // more things get too small in one row on a small phone
 
 const letters = (unit) => [...new Set(unit)];
@@ -73,38 +85,23 @@ const makers = {
     const fill = Math.min(unit.length + 1, MAX_SHOWN - shown);
     return { unit, icons, shown, fill, kinds: r.shuffle(letters(unit)), key: unit };
   },
+  // Clap and stamp: the row is a rhythm the child hears and sees, one beat after the other. What comes next?
   forschen(range, r) {
-    const { unit, icons } = pattern(range, r);
-    const shown = Math.min(MAX_SHOWN, unit.length * 3);
-    // Wrong pieces: too short or too long. Never the same piece started at another place ("BBA" for "ABB"):
-    // that piece comes again and again as well.
-    const wrong = new Set([unit.slice(0, -1), unit + unit[0], unit[0] + unit, unit + unit.at(-1)]);
-    const others = r.shuffle([...wrong].filter((w) => w.length >= 1 && !sameWay(w, unit))).slice(0, 2);
-    const choices = r.shuffle([unit, ...others]);
-    return { unit, icons, shown, choices, answer: choices.indexOf(unit), key: unit };
+    const unit = r.pick(UNITS[range] || UNITS[5]);
+    const moves = r.shuffle(MOVES.slice(0, Math.max(2, letters(unit).length)));
+    const icons = Object.fromEntries(letters(unit).map((l, i) => [l, moves[i]]));
+    const shown = shownFor(unit, r, 0);
+    return { unit, icons, shown, answer: at(unit, shown), choices: r.shuffle(letters(unit)), key: `${unit}:${moves.join("")}` };
   },
+  // The necklace: one bead in the middle is missing. Which one belongs in the gap? (Never in the first piece:
+  // the first piece shows how the row goes; and never the last bead: the beads after the gap help too.)
   anwenden(range, r) {
-    const { unit, icons } = pattern(range, r);
-    const shown = Math.min(MAX_SHOWN, unit.length * 2 + (unit.length < 4 ? unit.length : 0));
-    // Other pictures for the other rows: the same way to go on, but with other things.
-    const rest = r.shuffle(FOREST.filter((f) => !Object.values(icons).includes(f)));
-    const other = Object.fromEntries(["A", "B", "C", "D"].map((l, i) => [l, rest[i]]));
-    // Wrong rows go another way, also when started at another place. First choice: rows with the same
-    // number of different things, so only the order tells them apart.
-    const n = letters(unit).length;
-    const all = [...UNITS[5], ...UNITS[10], ...UNITS[20]].filter((u) => !sameWay(u, unit));
-    const sorted = [...r.shuffle(all.filter((u) => letters(u).length === n)), ...r.shuffle(all.filter((u) => letters(u).length !== n))];
-    const picked = [];
-    for (const u of sorted) if (picked.length < (range <= 5 ? 1 : 2) && !picked.some((p) => sameWay(p, u))) picked.push(u);
-    const rows = r.shuffle([{ unit, right: true }, ...picked.map((u) => ({ unit: u, right: false }))]);
-    return {
-      unit,
-      icons,
-      shown,
-      rows: rows.map((row) => ({ unit: row.unit, icons: other })),
-      answer: rows.findIndex((row) => row.right),
-      key: `${unit}:${picked.join()}`,
-    };
+    const unit = r.pick(UNITS[range] || UNITS[5]);
+    const beads = r.shuffle(BEADS);
+    const icons = Object.fromEntries(letters(unit).map((l, i) => [l, beads[i]]));
+    const shown = Math.min(MAX_SHOWN, unit.length * 3);
+    const gap = r.int(unit.length, shown - 2);
+    return { unit, icons, shown, gap, answer: at(unit, gap), choices: r.shuffle(letters(unit)), key: `${unit}:${gap}` };
   },
   pruefen(range, r) {
     const { unit, icons } = pattern(range, r);
@@ -137,21 +134,13 @@ export function check(t, level) {
   }
   if (t.p === "machen" && (t.fill < 2 || t.kinds.length < 2)) problems.push("nothing to lay");
   if (t.p === "forschen") {
-    if (t.choices[t.answer] !== t.unit) problems.push("bad answer");
-    if (t.choices.length < 2) problems.push("nothing to choose");
-    if (new Set(t.choices).size !== t.choices.length) problems.push("the same piece twice");
-    t.choices.forEach((c, i) => i !== t.answer && sameWay(c, t.unit) && problems.push(`${c} is right as well`));
+    if (t.answer !== at(t.unit, t.shown) || !t.choices.includes(t.answer)) problems.push("bad answer");
+    if (Object.values(t.icons).some((x) => !MOVES.includes(x))) problems.push("not a move");
   }
   if (t.p === "anwenden") {
-    if (t.rows.length < 2 || t.rows[t.answer]?.unit !== t.unit) problems.push("bad answer");
-    t.rows.forEach((row, i) => {
-      if (i !== t.answer && sameWay(row.unit, t.unit)) problems.push(`row ${row.unit} is right as well`);
-      for (const l of letters(row.unit)) {
-        if (!row.icons[l]) problems.push(`row without a picture for ${l}`);
-        if (Object.values(t.icons).includes(row.icons[l])) problems.push("a row uses the pictures of the model");
-      }
-    });
-    if (new Set(t.rows.map((row) => row.unit)).size !== t.rows.length) problems.push("the same row twice");
+    if (t.gap < t.unit.length || t.gap >= t.shown - 1) problems.push("gap at a bad place");
+    if (t.answer !== at(t.unit, t.gap) || !t.choices.includes(t.answer)) problems.push("bad answer");
+    if (Object.values(t.icons).some((x) => !BEADS.includes(x))) problems.push("not a bead");
   }
   if (t.p === "pruefen" && t.wrongAt >= 0) {
     if (t.wrongAt < t.unit.length || t.wrongAt >= t.shown) problems.push("wrong thing at a bad place");

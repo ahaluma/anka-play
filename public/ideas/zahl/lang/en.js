@@ -5,8 +5,8 @@ export default {
     intro: {
       sehen: "Look closely! How many flowers are there?",
       machen: "Pick flowers into the basket.",
-      forschen: "The frog hops over the stones.",
-      anwenden: "More or fewer? One more, one less.",
+      forschen: "Which number comes next?",
+      anwenden: "Where are more? What comes, what goes away?",
       pruefen: "The owl counts. Is that right?",
     },
 
@@ -79,7 +79,7 @@ export default {
     pruefen: {
       ask: (v, h) => `The owl says: ${v.said === 1 ? "that is " + h.thing(v.thing).one : "these are " + h.w(v.said) + " " + h.thing(v.thing).many}. Is that right?`,
       miss: "Count again!",
-      fix: "Well spotted! How many are there?",
+      fix: "Right, that is not true. How many are there?",
       fixMiss: "Not yet. Count again!",
       right: (v, h) => (v.n === 1 ? "Yes! There is one." : `Yes! There are ${h.w(v.n)}.`),
       fixed: (v, h) => (v.n === 1 ? "Now it is right: there is one." : `Now it is right: there are ${h.w(v.n)}.`),

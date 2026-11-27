@@ -9,7 +9,7 @@ export default {
       machen: "Fill the nut box right up!",
       forschen: "One more here, one fewer there. What is missing?",
       anwenden: "Which number fills it up?",
-      pruefen: "The owl is looking for friends. Is that right?",
+      pruefen: "The owl says two numbers. Do they fill it up?",
     },
     friends: (a, b, whole) => `${big(a)} and ${b} make ${whole}.`,
     sehen: {
@@ -49,7 +49,7 @@ export default {
     pruefen: {
       question: (a, b, whole) => `The owl says: ${a} and ${b} make ${whole}. Is that right?`,
       look: "Look whether a place is still free or one is left over.",
-      fix: (a, whole) => `Well spotted! Which number turns ${a} into ${whole}?`,
+      fix: (a, whole) => `Right, that is not true. Which number turns ${a} into ${whole}?`,
       fixMiss: (whole) => `Not yet. Together it should be ${whole}.`,
       hint: (whole) => `All ${whole} places should be full, none left over.`,
     },

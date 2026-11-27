@@ -41,7 +41,7 @@ export default {
     },
     sehen: {
       hint: "Compare the tops: which one reaches furthest?",
-      hintLine: "Move them to one line in your head. Now you see which one really reaches further.",
+      hintLine: "Look: now they all start at one line. Which one reaches furthest?",
     },
     machen: {
       ask: (smallest) => `Put them in order of size! Tap ${smallest} first, then always the next one.`,
@@ -74,7 +74,7 @@ export default {
       lookAgain: "Compare the snakes again closely.",
       lookStart: "Look where the snakes start, too! They do not all start at the same place.",
       isRight: "Look again: no snake is longer than this one.",
-      fix: "Well spotted! Which snake is really the longest? Tap it.",
+      fix: "Right, that is not true. Which snake is really the longest? Tap it.",
       fixMiss: "That one is not the longest. Look where it starts and where it ends.",
       fixed: "Now it is right: this snake is the longest.",
       hint: "Look, now they all start at one line.",

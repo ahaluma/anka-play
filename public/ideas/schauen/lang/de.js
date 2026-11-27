@@ -45,7 +45,7 @@ export default {
       right: "Ja, die Bilder sind wirklich gleich.",
       lookAgain: "Vergleich noch einmal Platz für Platz.",
       isRight: "Schau noch einmal: An jedem Platz ist das Gleiche.",
-      fix: "Gut aufgepasst! Tipp im rechten Bild auf das, was anders ist.",
+      fix: "Richtig, das stimmt nicht. Tipp im rechten Bild auf das, was anders ist.",
       fixMiss: "Das ist in beiden Bildern gleich.",
       fixed: "Genau, das ist anders.",
       hint: "Vergleich Platz für Platz, Reihe für Reihe.",

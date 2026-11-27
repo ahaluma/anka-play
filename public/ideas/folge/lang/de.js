@@ -71,7 +71,7 @@ export default {
       right: "Ja, die Reihenfolge stimmt.",
       lookAgain: "Erzähl die Geschichte Bild für Bild. Passt alles?",
       isRight: "Erzähl sie noch einmal: Jedes Bild steht am richtigen Platz.",
-      fix: "Gut aufgepasst! Leg die Geschichte richtig.",
+      fix: "Richtig, das stimmt nicht. Leg die Geschichte richtig.",
       fixMiss: "Das kommt noch nicht. Wie geht die Geschichte?",
       fixed: "Jetzt stimmt es.",
       hint: "Was muss zuerst passieren? Was kommt am Ende?",

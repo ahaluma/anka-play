@@ -71,7 +71,7 @@ export default {
       right: "Yes, the order is right.",
       lookAgain: "Tell the story picture by picture. Does it all fit?",
       isRight: "Tell it again: every picture is in the right place.",
-      fix: "Well spotted! Lay the story out right.",
+      fix: "Right, that is not true. Lay the story out right.",
       fixMiss: "That does not come yet. How does the story go?",
       fixed: "Now it is right.",
       hint: "What has to happen first? What comes at the end?",
