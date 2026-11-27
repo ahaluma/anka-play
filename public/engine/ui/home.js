@@ -11,6 +11,7 @@ import { href, go } from "../router.js";
 import { el, button, link } from "./parts.js";
 import { sound } from "./sound.js";
 import { voice } from "./voice.js";
+import { kidForm } from "./kidform.js";
 
 /** A map can be entered when one of its stations has something to play. */
 const mapReady = (id) => STATIONS.some((s) => s.map === id && s.ideas.every((i) => READY.includes(i)));
@@ -37,7 +38,14 @@ export function render(root) {
   who.append(form);
 
   const doors = el("section", "doors");
-  root.append(top, who, doors, el("p", "foot", T.home.privacy));
+  const foot = el("p", "foot", T.home.privacy + " ");
+  foot.append(link("", "/datenschutz/", T.home.privacyLink));
+  // The way to the parents' page: at the bottom, away from the big buttons a child taps.
+  const parents = link("btn parents-btn", href.parents(), `👪 ${T.home.parents}`);
+  parents.setAttribute("aria-label", T.home.parentsLabel);
+  const bottom = el("div", "home-foot");
+  bottom.append(parents, foot);
+  root.append(top, who, doors, bottom);
 
   function drawKids() {
     kids.replaceChildren();
@@ -66,52 +74,14 @@ export function render(root) {
 
   function openForm() {
     sound.tap();
-    form.replaceChildren();
-    const name = el("input", "field-input");
-    name.name = "name";
-    name.maxLength = 20;
-    name.autocomplete = "off";
-    name.placeholder = T.home.name;
-    const ageRow = el("div", "age-row");
-    ageRow.setAttribute("role", "radiogroup");
-    ageRow.setAttribute("aria-label", T.home.age);
-    let age = 5;
-    for (let a = profiles.MIN_AGE; a <= profiles.MAX_AGE; a++) {
-      const b = button("chip" + (a === age ? " on" : ""), T.home.years(num(a)), num(a));
-      b.addEventListener("click", () => {
-        age = a;
-        for (const c of ageRow.children) c.classList.toggle("on", c === b);
-      });
-      ageRow.append(b);
-    }
-    const animals = el("div", "animal-row");
-    animals.setAttribute("aria-label", T.home.animal);
-    let animal = profiles.ANIMALS[0];
-    for (const a of profiles.ANIMALS) {
-      const b = button("chip animal" + (a === animal ? " on" : ""), a, a);
-      b.addEventListener("click", () => {
-        animal = a;
-        for (const c of animals.children) c.classList.toggle("on", c === b);
-      });
-      animals.append(b);
-    }
-    const save = button("btn ok", T.home.save, T.home.save);
-    save.type = "submit";
-    const cancel = button("btn", T.home.cancel, T.home.cancel);
-    cancel.addEventListener("click", () => (form.hidden = true));
-    const row = el("div", "form-row");
-    row.append(cancel, save);
-    form.append(name, el("label", "", T.home.age), ageRow, el("label", "", T.home.animal), animals, row);
-    form.onsubmit = (e) => {
-      e.preventDefault();
-      profiles.add({ name: name.value, age, animal });
-      form.hidden = true;
-      load();
-      drawKids();
-      drawDoors();
-    };
-    form.hidden = false;
-    name.focus();
+    kidForm(form, {
+      onSave: (kid) => {
+        profiles.add(kid);
+        load();
+        drawKids();
+        drawDoors();
+      },
+    });
   }
 
   function drawDoors() {

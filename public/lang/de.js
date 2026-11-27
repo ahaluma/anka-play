@@ -33,6 +33,9 @@ export default {
     whereTo: "Wohin geht es heute?",
     soon: "Bald",
     privacy: "Alles bleibt auf diesem Gerät. Keine Werbung, kein Tracking.",
+    privacyLink: "Datenschutz",
+    parents: "Eltern",
+    parentsLabel: "Für Eltern: Fortschritt, Einstellungen, Sichern",
   },
 
   maps: {

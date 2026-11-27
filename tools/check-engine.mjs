@@ -13,6 +13,8 @@ import * as box from "../public/engine/box.js";
 import { taskOf } from "../public/engine/recipe.js";
 import { allowed } from "../public/ideas/platz/idea.js";
 import { READY } from "../public/ideas/index.js";
+import { report } from "../public/engine/report.js";
+import * as backup from "../public/engine/backup.js";
 
 const problems = [];
 const expect = (ok, what) => ok || problems.push(what);
@@ -217,6 +219,45 @@ function play(rec, def, p, right, { age = 4, size = 5 } = {}) {
   check(berg.askFeel && !policyFor("fluss", defs.reihe).askFeel, "only the Berg asks how it was");
   const g = policyFor("berg", defs.gipfel);
   check(g.slots.filter((k) => k === "backpack").length === 4 && !g.surprise, "the summit: four camp tasks and one of its own");
+}
+
+// ---------- The parents' report: the same shape on every map; a pure game is never an achievement
+{
+  const rec = L.blank();
+  for (let i = 0; i < 2; i++) play(rec, zahl, "sehen", 5, { age: 4 });
+  L.slot(rec, "memory").rounds = 3;
+  const f = L.facts(rec, { age: 4, defs });
+  const R = report(rec, { defs, age: 4, facts: f });
+  const tal = R.maps.find((m) => m.id === "tal");
+  const wiese = tal.stations.find((s) => s.id === "wiese");
+  const stump = tal.stations.find((s) => s.id === "baumstumpf");
+  check(R.maps.map((m) => m.id).join() === "tal,fluss,feld,berg", "the report has every map");
+  check(wiese.played && wiese.ideas[0].perspectives.length === zahl.perspectives.length, "a station lists its own perspectives");
+  check(wiese.ideas[0].perspectives.find((p) => p.id === "sehen").star, "the star of a played perspective shows");
+  check(stump.game && !stump.mastered && stump.ideas[0].perspectives.every((p) => !p.star), "number memory is a game: no stars, not 'mastered'");
+  check(tal.learn === tal.stations.length - 1, "games are left out of what can be mastered on a map");
+  check(wiese.leadsTo.includes("steg"), "counting leads on to the number line (shown to parents)");
+  check(R.days.length === 14 && R.days.at(-1).right === 10, "the last 14 days end today with today's answers");
+  const shown = R.maps.find((m) => m.id === "berg").stations.find((s) => s.id === "zaun");
+  check(!shown.open, "for a 4-year-old the Berg is not open");
+  rec.parent.berg = true;
+  const f2 = L.facts(rec, { age: 4, defs });
+  check(report(rec, { defs, age: 4, facts: f2 }).maps.find((m) => m.id === "berg").stations.find((s) => s.id === "zaun").open, "the parents' switch opens the Berg");
+}
+
+// ---------- The backup: AnkaPlay's own file back again; think-lab's file is not taken
+{
+  const data = { "anka:profiles": JSON.stringify({ v: 1, kids: [] }), "anka:learner:k1": JSON.stringify(L.blank("k1")) };
+  const file = JSON.parse(JSON.stringify(backup.pack(data, "2026-11-27")));
+  check(backup.unpack(file).data?.["anka:learner:k1"] === data["anka:learner:k1"], "a backup file loads back as it was saved");
+  check(backup.unpack({ app: "AnkaPlay", v: 1, saved: "2026-11-26", data: { "thinklab:profiles": "{}" } }).error === "thinklab", "a think-lab backup is recognised and not taken");
+  check(backup.unpack({ ...file, data: { ...file.data, "other:key": "1" } }).error === "bad", "a file with foreign keys does not fit");
+  check(backup.unpack({ ...file, data: { "anka:x": "{not json" } }).error === "bad", "a file with broken entries does not fit");
+  check(backup.unpack(null).error === "bad" && backup.unpack({ ...file, data: {} }).error === "bad", "an empty file does not fit");
+  const mem = new Map([["anka:lang", '"ne"'], ["anka:old", "1"], ["other", "x"]]);
+  const storage = { get length() { return mem.size; }, key: (i) => [...mem.keys()][i], getItem: (k) => mem.get(k) ?? null, setItem: (k, v) => mem.set(k, v), removeItem: (k) => mem.delete(k) };
+  backup.write(data, storage);
+  check(!mem.has("anka:old") && mem.get("other") === "x" && mem.get("anka:lang") === '"ne"' && mem.has("anka:learner:k1"), "loading replaces AnkaPlay's entries, keeps the language and leaves others alone");
 }
 
 console.log(`${checks} checks.`);

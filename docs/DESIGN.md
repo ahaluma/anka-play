@@ -378,7 +378,7 @@ public/
 │   └── lang/de.js, en.js, ne.js
 ├── art/<map>/                   ← scene.svg, landmarks, one background per station
 ├── lang/de.js, en.js, ne.js     ← shared words, map and station names, perspective names per map
-├── eltern/, datenschutz/
+├── eltern/, datenschutz/         ← the parents' page (#/eltern) and the privacy policy
 └── sw.js, manifest.webmanifest, icons
 tools/check-graph.mjs, check-ideas.mjs
 ```
@@ -426,7 +426,8 @@ in Nepal.
    picture when a camp comes out of the fog. The summit (gipfel) is one perspective, transfer: four tasks from
    the camps at level 4 (one where the owl is checked) and one family that needs two tools, each after picking a
    tool from the backpack (`boards/berg/summit.js`).
-6. Parents' page, backup, privacy page, service worker, Cloudflare.
+6. Parents' page, backup, privacy page, service worker, Cloudflare. **Done:** `#/eltern` with the report of
+   every map (`engine/report.js`), the Berg switch, the backup (`engine/backup.js`), `/datenschutz/`, `sw.js`.
 
 ## 12. Decisions
 

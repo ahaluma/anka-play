@@ -11,7 +11,10 @@ gravel bank, clock and charts at the sunny rock. The Feld (the field edge, schoo
 divide at the apple tree, the berries, the hen yard and the nut tree, money at the farm stand, and stories at
 the clearing, with the learning box and the bridges of think-lab's market. The Berg (the mountain, 9 to 12): the
 twelve camps of think-lab's Denk-Berg from the fence at the foot to the number wall, and the summit with its
-competition rounds; camps come out of the fog as the ones below are mastered. The design is in [docs/DESIGN.md](docs/DESIGN.md); section 11 is the
+competition rounds; camps come out of the fog as the ones below are mastered. For parents (the „Eltern“ button at the
+bottom of Home): the children, each child's progress map by map and station by station, reading aloud, the switch
+that opens the Berg before 9, a backup to a file and back, and the privacy policy at `/datenschutz/`. After the first
+visit everything works without internet. The design is in [docs/DESIGN.md](docs/DESIGN.md); section 11 is the
 order of work.
 
 ## Try it
@@ -42,14 +45,31 @@ node tools/serve.mjs        # then open http://localhost:8080 (Node 22 or newer,
   operations and the clearing share think-lab's market code in `boards/rechnung/`. `ideas/index.js` lists the ideas that are written.
 - `public/lang/`: shared words: numbers, praise, buttons, names of maps, stations and things.
 - `public/art/<map>/`: the map's scene and the stations' backgrounds.
+- `public/eltern/`: the parents' page (`#/eltern`), drawn from `engine/report.js`; the backup is `engine/backup.js`
+  (only AnkaPlay's own `anka:` entries; a think-lab backup is recognised and refused).
+- `public/datenschutz/`: the privacy policy (German binding, English, Nepali). **Before going public**, put the
+  operator's name, postal address and e-mail in `public/datenschutz/contact.js`.
+- `public/sw.js`: keeps a copy of every file on the phone (network first, so updates show at once). Its file list
+  and version are written by `node tools/check-offline.mjs --write`. `manifest.webmanifest` and the icons make it
+  installable on the home screen.
 
 ## Checks
 
 ```sh
 node tools/check-graph.mjs    # the universe: references, reachability by age, ways back, layout vs nearness
 node tools/check-ideas.mjs    # every idea: 1000 tasks per rung, perspective and kind of task
-node tools/check-engine.mjs   # the learning rules: stars, up and down, rounds, first-visit questions
+node tools/check-engine.mjs   # the learning rules, the parents' report, the backup
+node tools/check-offline.mjs  # sw.js lists every file (after changing any file: --write)
 ```
+
+## Online with Cloudflare
+
+`wrangler.jsonc` tells Cloudflare to serve `public/` as it is: no build, no code on the server, no logs.
+`public/_headers` sets the security rules (only this site's own files may load) and keeps `sw.js` fresh.
+Once, in the Cloudflare dashboard: **Workers & Pages → Create → Import a repository → anka-play**, build command
+empty, deploy command `npx wrangler deploy`; under **Settings → Build** turn on builds for other branches (a preview
+link for every pull request); for an own address, **Settings → Domains & Routes → Add custom domain**. Leave Web
+Analytics off.
 
 ## To add a station
 

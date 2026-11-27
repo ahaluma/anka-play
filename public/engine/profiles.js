@@ -88,3 +88,13 @@ export function readAloud(kid) {
   const a = age(kid);
   return a === null || a < READ_ALOUD_UNTIL;
 }
+
+/** The parents' choice for reading aloud: true, false, or null (by age again). */
+export function setReadAloud(id, value) {
+  const p = read();
+  const kid = p.kids.find((k) => k.id === id);
+  if (!kid) return;
+  if (typeof value === "boolean") kid.readAloud = value;
+  else delete kid.readAloud;
+  write(p);
+}
