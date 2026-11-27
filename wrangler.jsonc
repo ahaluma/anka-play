@@ -1,0 +1,12 @@
+// Cloudflare Worker that only serves the static files in public/. No worker script, no build step.
+// Docs: https://developers.cloudflare.com/workers/static-assets/
+{
+  "name": "anka-play",
+  "compatibility_date": "2026-11-01",
+  "assets": {
+    "directory": "./public",
+    "not_found_handling": "single-page-application"
+  },
+  "previews": {},
+  "observability": { "enabled": false }
+}
