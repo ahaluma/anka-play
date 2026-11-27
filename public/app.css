@@ -458,12 +458,12 @@ button.pic { padding: 2px; border: 0; background: none; font-family: inherit; li
 /* ---------- Board "vergleich" */
 .cmp-scene { display: flex; gap: 10px; padding: 10px; }
 .side {
-  position: relative; flex: 1; min-height: 150px; display: grid; place-items: center; padding: 10px 4px;
+  position: relative; flex: 1; min-width: 0; min-height: 150px; display: grid; place-items: center; padding: 10px 4px;
   border: 3px solid var(--ink); border-radius: 18px; background: rgba(255, 255, 255, 0.6); font-family: inherit;
 }
 button.side { cursor: pointer; }
 .side .pics { gap: 2px; }
-.side .pic { font-size: clamp(20px, 6vw, 28px); }
+.side .pic { font-size: clamp(16px, 5.2vw, 28px); } /* five in a row fit half a phone */
 .side .pics.many .pic { font-size: clamp(16px, 4.8vw, 21px); }
 .side.right { background: #c9efb4; }
 .side .count { position: absolute; top: -12px; left: 50%; min-width: 34px; margin-left: -17px; border: 3px solid var(--ink); border-radius: 10px; background: var(--sun); font-size: 20px; text-align: center; }
@@ -502,7 +502,8 @@ button.stone.loose.used { visibility: hidden; }
 .star-cell b { font-size: 24px; color: var(--muted); }
 .star-cell.on b { color: inherit; }
 .star-cell.new b { animation: pop 0.6s ease-out 0.4s both, pulse 1.4s ease-in-out 1s infinite; }
-.next { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
+.next { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+.next .btn { padding-left: 16px; padding-right: 16px; } /* "Nochmal" and "Etwas anderes" side by side on a phone */
 .follow { min-width: min(100%, 300px); font-size: 22px; }
 .follow span:first-child { font-size: 34px; }
 .feel { display: flex; gap: 10px; }
@@ -515,8 +516,13 @@ button.stone.loose.used { visibility: hidden; }
 .spot-flower { position: absolute; font-size: 15px; line-height: 1; transform: translate(-50%, -50%); }
 .spot-flower.bloom { animation: bloom 1.6s ease-out 0.4s both; }
 @keyframes bloom { 0% { transform: translate(-50%, -50%) scale(0); } 60% { transform: translate(-50%, -50%) scale(1.8); } 100% { transform: translate(-50%, -50%) scale(1); } }
-.flower-bed { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 8px 12px; }
+.flower-bed { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 4px 10px; padding: 6px 12px; }
 .flower-bed small { font-weight: 800; }
-.bed-flowers { display: flex; flex-wrap: wrap; justify-content: center; gap: 2px; font-size: 26px; line-height: 1.2; }
+.bed-flowers { display: flex; flex-wrap: wrap; justify-content: center; gap: 2px; font-size: 24px; line-height: 1.1; }
 .bed-flowers .new { animation: bloom-in 1.2s ease-out 0.6s both; }
 @keyframes bloom-in { 0% { transform: scale(0); } 60% { transform: scale(1.6); } 100% { transform: scale(1); } }
+
+/* ---------- The thinking cards collected so far, under the map (as think-lab) */
+.think-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin: 10px 0 0; padding: 0; list-style: none; }
+.think-row li { font-size: 28px; filter: grayscale(1); opacity: 0.3; }
+.think-row li.got { filter: none; opacity: 1; }

@@ -95,7 +95,7 @@ function play(rec, def, p, right, { age = 4, size = 5 } = {}) {
 {
   const rec = L.blank();
   const r = random(1);
-  check(roundSize(tal, 4) === 3 && roundSize(tal, 5) === 5 && roundSize(tal, null) === 5, "rounds have 3 tasks under 5, else 5");
+  check(roundSize(tal, 4) === 3 && roundSize(tal, 6) === 3 && roundSize(tal, 7) === 5 && roundSize(tal, null) === 5, "rounds have 3 tasks up to 6 (as think-lab), else 5");
   let slots = plan({ def: zahl, p: "sehen", rung: "5", pol: tal, size: 5, played: () => false, r });
   check(slots.length === 5 && slots.every((s) => s.kind === "cur"), "a first round has no surprise");
   slots = plan({ def: zahl, p: "sehen", rung: "5", pol: tal, size: 5, played: (p) => p === "machen", r });

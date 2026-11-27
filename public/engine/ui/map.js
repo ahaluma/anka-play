@@ -20,6 +20,7 @@ import * as L from "../learner.js";
 import { href, go, redirect } from "../router.js";
 import { el, button, wait } from "./parts.js";
 import { topbar } from "./topbar.js";
+import { CARDS } from "../../content/perspectives.js";
 import { BED, FLOWERS, flowersAt } from "./flowers.js";
 import { voice } from "./voice.js";
 import { sound, celebrate } from "./sound.js";
@@ -45,7 +46,7 @@ export async function render(root, route) {
   const scene = el("div", `map-scene map-${m.id}`);
   scene.style.backgroundImage = `url("art/${m.id}/scene.svg")`;
   wrap.append(scene);
-  root.append(wrap);
+  root.append(wrap, thinkRow());
 
   // The paths between drawn stations, as a dashed trail.
   const shown = new Set(here.filter((s) => visible(s.id, f) && can.has(s.id)).map((s) => s.id));
@@ -207,6 +208,20 @@ export async function render(root, route) {
     return;
   }
   voice.tell(V.mapText.whereTo);
+}
+
+/** The thinking cards the child has collected (one per round), in a row under the map, as think-lab had them:
+ *  the ones not yet found are grey. */
+function thinkRow() {
+  const row = el("ul", "think-row");
+  row.setAttribute("aria-label", T.mapText.cards);
+  for (const [id, icon] of Object.entries(CARDS)) {
+    const li = el("li", state.rec.cards?.[id] ? "got" : "", icon);
+    li.setAttribute("aria-label", T.cards[id]?.name ?? id);
+    li.title = T.cards[id]?.name ?? id;
+    row.append(li);
+  }
+  return row;
 }
 
 /** A station that came out of the fog for the first time (once per child): the surprise, and a picture to save

@@ -92,6 +92,7 @@ export default {
   },
 
   mapText: {
+    cards: "Your thinking tricks",
     whereTo: "Where would you like to go?",
     asleep: "Everything is still asleep here. Soon there will be something to play.",
     locked: "This way is still closed.",
@@ -126,7 +127,7 @@ export default {
   round: {
     backpack: (station) => `Backpack! A task from “${station}”.`,
     surprise: "Surprise! Now something different.",
-    review: (station) => `Do you remember? A task from ${station}.`,
+    review: (station) => `Do you remember? A task from “${station}”.`,
     bridge: (why) => `Let's practise something for a moment. ${why}`,
     stepOn: (name) => `You are good at this! On we go: ${name}.`,
     starsOnTop: "The stars come when everything is mixed. You are on your way there.",

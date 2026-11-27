@@ -96,6 +96,7 @@ export default {
 
   // The map
   mapText: {
+    cards: "Deine Denk-Tricks",
     whereTo: "Wohin möchtest du?",
     asleep: "Hier schläft noch alles. Bald gibt es hier etwas zu spielen.",
     locked: "Dieser Weg ist noch zu.",
@@ -132,7 +133,7 @@ export default {
   round: {
     backpack: (station) => `Rucksack! Eine Aufgabe aus „${station}“.`,
     surprise: "Überraschung! Jetzt kommt etwas anderes.",
-    review: (station) => `Weißt du noch? Eine Aufgabe von ${station}.`,
+    review: (station) => `Weißt du noch? Eine Aufgabe aus „${station}“.`,
     bridge: (why) => `Wir üben kurz etwas. ${why}`,
     stepOn: (name) => `Das kannst du gut! Weiter geht's: ${name}.`,
     starsOnTop: "Die Sterne gibt es, wenn alles gemischt kommt. Du bist auf dem Weg dorthin.",

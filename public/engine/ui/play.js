@@ -301,13 +301,14 @@ export async function render(root, route) {
     icon,
     label: (k) => say(texts.labels?.[k]) || T.labels[k] || k,
     text: (k, extra) => text(k, extra),
-    ask: (k, extra) => voice.ask(text(k, extra)),
+    // A board's late sentence (a story still running when the round moved on) must not land on another screen.
+    ask: (k, extra) => (board.hidden ? Promise.resolve() : voice.ask(text(k, extra))),
     tell: (k, extra) => voice.tell(text(k, extra)),
     give: (given, node, extra) => check(given, extra),
     // a wrong step of a board's own answer; on the first-visit questions there is only one try
     miss: (extra) => (isGate ? gateAnswer(false) : wrong(extra?.given, extra)),
     solved: (extra) => check(stage.value, extra),
-    say: (sentence, asking, show = true) => (asking ? voice.ask(sentence, show) : voice.tell(sentence, show)),
+    say: (sentence, asking, show = true) => (board.hidden ? Promise.resolve() : asking ? voice.ask(sentence, show) : voice.tell(sentence, show)),
     words: {}, // the texts of the idea of this task (set before each board is drawn)
     fresh: () => fresh && (slot?.kind === "cur" || slot?.kind === "easier"),
     tap: () => sound.tap(),

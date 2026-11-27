@@ -28,7 +28,7 @@ const base = {
 
 export const POLICIES = {
   // Preschool: groups of the ladder are number ranges (5, 10) or levels (1, 2, 3).
-  tal: { ...base, roundSize: 5, young: { under: 5, roundSize: 3 } },
+  tal: { ...base, roundSize: 5, young: { under: 7, roundSize: 3 } }, // as think-lab: children up to 6 play rounds of 3
 
   // School, numbers / space / time.
   fluss: { ...base, help: ["hint", "picture"] },

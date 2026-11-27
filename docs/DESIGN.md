@@ -285,7 +285,7 @@ Generalisation stops in three places, on purpose:
 
 ### 7.1 A round
 
-A round is 5 tasks of one station in one perspective (3 for children under 5 in the Tal). Its slots come
+A round is 5 tasks of one station in one perspective (3 for children up to 6 in the Tal, as think-lab). Its slots come
 from the policy: `cur` (the child's rung), `easier` (after 3 wrong in a row), `review` (a near mastered
 station), `inverse` and `bridge` (Feld), `backpack` (Berg), `surprise` (another perspective
 already played, not counted; only at stations with two or more perspectives). The help ladder comes from the policy: hint after 2 misses, then picture,
