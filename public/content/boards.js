@@ -16,6 +16,7 @@ export const ANSWERS = {
   order: { takes: "a list" }, // put pictures in order
   place: { takes: "a position" }, // tap the place on a line, a grid or a table
   yesNo: { takes: "true or false" }, // checking the owl
+  own: { takes: "whatever its board asks" }, // a bespoke board checks the answer itself (engine/ui/ported.js)
 };
 
 /** The boards. `show` lists the fields a recipe fills; everything else is drawing. */

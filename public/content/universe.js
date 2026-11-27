@@ -103,53 +103,53 @@ export const MAPS = [
   },
 ];
 
-/** One idea per station. `idea` names the folder ideas/<idea>/ with its ladder, tasks and boards.
- *  The ids of think-lab's ideas are kept, so their content can be ported one to one. */
+/** The stations. `ideas` names the folders ideas/<idea>/ with their ladders, recipes and texts; `icon` is the
+ *  station's sign on the map. The ids of think-lab's ideas are kept, so their content can be ported one to one. */
 export const STATIONS = [
   // Tal (preschool, 3 to 6): concepts with things and pictures, numbers up to 10, no signs.
-  { id: "wiese", map: "tal", ideas: ["zahl"], landmark: "bach", pos: { x: 200, y: 430 } }, // a number says how many; more, fewer, the same
-  { id: "bau", map: "tal", ideas: ["teile"], landmark: "grosser-baum", pos: { x: 320, y: 320 } }, // numbers are made of numbers
-  { id: "baumstumpf", map: "tal", ideas: ["memory"], game: true, landmark: "bach", pos: { x: 90, y: 330 } }, // number memory: a pure game
-  { id: "teich", map: "tal", ideas: ["zehn"], landmark: "teich", pos: { x: 460, y: 400 } }, // friends of five and ten
-  { id: "obstbaum", map: "tal", ideas: ["gruppen"], pos: { x: 160, y: 230 } }, // groups of the same size, sharing fairly
-  { id: "wald", map: "tal", ideas: ["muster"], pos: { x: 90, y: 90 } }, // a row goes on
-  { id: "himmel", map: "tal", ideas: ["folge"], landmark: "wolke", pos: { x: 260, y: 70 } }, // first and then
-  { id: "nester", map: "tal", ideas: ["sortieren"], pos: { x: 430, y: 100 } }, // what belongs together
-  { id: "pfuetze", map: "tal", ideas: ["schauen"], pos: { x: 580, y: 160 } }, // look closely
-  { id: "huegel", map: "tal", ideas: ["lage"], landmark: "huegel", pos: { x: 760, y: 260 } }, // where is it?
-  { id: "kiesel", map: "tal", ideas: ["form"], pos: { x: 870, y: 400 } }, // circle, triangle, square
-  { id: "ufer", map: "tal", ideas: ["groesse"], pos: { x: 590, y: 470 } }, // longer, higher, heavier
+  { id: "wiese", map: "tal", ideas: ["zahl"], icon: "🌼", landmark: "bach", pos: { x: 200, y: 430 } }, // a number says how many; more, fewer, the same
+  { id: "bau", map: "tal", ideas: ["teile"], icon: "🐇", landmark: "grosser-baum", pos: { x: 320, y: 320 } }, // numbers are made of numbers
+  { id: "baumstumpf", map: "tal", ideas: ["memory"], icon: "🪵", game: true, landmark: "bach", pos: { x: 90, y: 330 } }, // number memory: a pure game
+  { id: "teich", map: "tal", ideas: ["zehn"], icon: "🦆", landmark: "teich", pos: { x: 460, y: 400 } }, // friends of five and ten
+  { id: "obstbaum", map: "tal", ideas: ["gruppen"], icon: "🍎", pos: { x: 160, y: 230 } }, // groups of the same size, sharing fairly
+  { id: "wald", map: "tal", ideas: ["muster"], icon: "🌲", pos: { x: 90, y: 90 } }, // a row goes on
+  { id: "himmel", map: "tal", ideas: ["folge"], icon: "☁️", landmark: "wolke", pos: { x: 260, y: 70 } }, // first and then
+  { id: "nester", map: "tal", ideas: ["sortieren"], icon: "🪺", pos: { x: 430, y: 100 } }, // what belongs together
+  { id: "pfuetze", map: "tal", ideas: ["schauen"], icon: "💧", pos: { x: 580, y: 160 } }, // look closely
+  { id: "huegel", map: "tal", ideas: ["lage"], icon: "⛰️", landmark: "huegel", pos: { x: 760, y: 260 } }, // where is it?
+  { id: "kiesel", map: "tal", ideas: ["form"], icon: "🪨", pos: { x: 870, y: 400 } }, // circle, triangle, square
+  { id: "ufer", map: "tal", ideas: ["groesse"], icon: "📏", pos: { x: 590, y: 470 } }, // longer, higher, heavier
 
   // Fluss (school, 6 to 10): numbers, space and time. What was the station, the flower shop, the workshop
   // and the weather station of the town, now in a river scene.
-  { id: "steg", map: "fluss", ideas: ["reihe"], landmark: "bruecke", pos: { x: 230, y: 380 } }, // the long footbridge is the number line
-  { id: "blumenfeld", map: "fluss", ideas: ["stellen"], pos: { x: 330, y: 160 } }, // tens and ones: bunches and baskets
-  { id: "kiesbank", map: "fluss", ideas: ["formen"], landmark: "kiesbank", pos: { x: 760, y: 430 } }, // shapes, solids, mirror in the water, ruler
-  { id: "sonnenfels", map: "fluss", ideas: ["zeit"], landmark: "grosser-fels", pos: { x: 820, y: 180 } }, // clock, calendar, charts, chance
+  { id: "steg", map: "fluss", ideas: ["reihe"], icon: "🌉", landmark: "bruecke", pos: { x: 230, y: 380 } }, // the long footbridge is the number line
+  { id: "blumenfeld", map: "fluss", ideas: ["stellen"], icon: "💐", pos: { x: 330, y: 160 } }, // tens and ones: bunches and baskets
+  { id: "kiesbank", map: "fluss", ideas: ["formen"], icon: "🔷", landmark: "kiesbank", pos: { x: 760, y: 430 } }, // shapes, solids, mirror in the water, ruler
+  { id: "sonnenfels", map: "fluss", ideas: ["zeit"], icon: "☀️", landmark: "grosser-fels", pos: { x: 820, y: 180 } }, // clock, calendar, charts, chance
 
   // Feld (school, 6 to 10): calculation, what was the market. Natural scene: the edge of a field.
-  { id: "apfelbaum", map: "feld", ideas: ["plus"], landmark: "obstgarten", pos: { x: 200, y: 260 } },
-  { id: "beeren", map: "feld", ideas: ["minus"], landmark: "obstgarten", pos: { x: 330, y: 150 } },
-  { id: "huehner", map: "feld", ideas: ["mal"], landmark: "huehnerhof", pos: { x: 700, y: 170 } }, // eggs in rows
-  { id: "nussbaum", map: "feld", ideas: ["geteilt"], pos: { x: 820, y: 300 } }, // sharing nuts
-  { id: "lichtung", map: "feld", ideas: ["platz"], landmark: "lichtung", pos: { x: 500, y: 330 },
+  { id: "apfelbaum", map: "feld", ideas: ["plus"], icon: "🍏", landmark: "obstgarten", pos: { x: 200, y: 260 } },
+  { id: "beeren", map: "feld", ideas: ["minus"], icon: "🫐", landmark: "obstgarten", pos: { x: 330, y: 150 } },
+  { id: "huehner", map: "feld", ideas: ["mal"], icon: "🐔", landmark: "huehnerhof", pos: { x: 700, y: 170 } }, // eggs in rows
+  { id: "nussbaum", map: "feld", ideas: ["geteilt"], icon: "🌰", pos: { x: 820, y: 300 } }, // sharing nuts
+  { id: "lichtung", map: "feld", ideas: ["platz"], icon: "🏕️", landmark: "lichtung", pos: { x: 500, y: 330 },
     open: { all: [{ flag: { station: "apfelbaum", group: "10" } }, { flag: { station: "beeren", group: "10" } }] } },
-  { id: "hofstand", map: "feld", ideas: ["geld"], landmark: "feldweg", pos: { x: 500, y: 520 } }, // money at a farm stand
+  { id: "hofstand", map: "feld", ideas: ["geld"], icon: "🧺", landmark: "feldweg", pos: { x: 500, y: 520 } }, // money at a farm stand
 
   // Berg (Mathe-Olympiade, 9 to 12): twelve camps in four heights and the summit.
-  { id: "zaun", map: "berg", ideas: ["zaun"], pos: { x: 500, y: 520 } },
-  { id: "haken", map: "berg", ideas: ["haken"], pos: { x: 330, y: 470 } },
-  { id: "ameisen", map: "berg", ideas: ["ameisen"], pos: { x: 680, y: 450 } },
-  { id: "huetten", map: "berg", ideas: ["huetten"], pos: { x: 250, y: 380 } },
-  { id: "vorrat", map: "berg", ideas: ["vorrat"], pos: { x: 380, y: 330 } },
-  { id: "tanz", map: "berg", ideas: ["tanz"], pos: { x: 690, y: 330 } },
-  { id: "fels", map: "berg", ideas: ["fels"], landmark: "wasserfall", pos: { x: 170, y: 270 } },
-  { id: "waage", map: "berg", ideas: ["waage"], pos: { x: 470, y: 260 } },
-  { id: "stall", map: "berg", ideas: ["stall"], pos: { x: 360, y: 190 } },
-  { id: "socken", map: "berg", ideas: ["socken"], pos: { x: 610, y: 190 } },
-  { id: "steine", map: "berg", ideas: ["steine"], pos: { x: 740, y: 200 } },
-  { id: "mauer", map: "berg", ideas: ["mauer"], pos: { x: 470, y: 140 } },
-  { id: "gipfel", map: "berg", ideas: ["gipfel"], landmark: "gipfel", pos: { x: 500, y: 60 } },
+  { id: "zaun", map: "berg", ideas: ["zaun"], icon: "🪵", pos: { x: 500, y: 520 } },
+  { id: "haken", map: "berg", ideas: ["haken"], icon: "✔️", pos: { x: 330, y: 470 } },
+  { id: "ameisen", map: "berg", ideas: ["ameisen"], icon: "🐜", pos: { x: 680, y: 450 } },
+  { id: "huetten", map: "berg", ideas: ["huetten"], icon: "🛖", pos: { x: 250, y: 380 } },
+  { id: "vorrat", map: "berg", ideas: ["vorrat"], icon: "🎒", pos: { x: 380, y: 330 } },
+  { id: "tanz", map: "berg", ideas: ["tanz"], icon: "💃", pos: { x: 690, y: 330 } },
+  { id: "fels", map: "berg", ideas: ["fels"], icon: "🪨", landmark: "wasserfall", pos: { x: 170, y: 270 } },
+  { id: "waage", map: "berg", ideas: ["waage"], icon: "⚖️", pos: { x: 470, y: 260 } },
+  { id: "stall", map: "berg", ideas: ["stall"], icon: "🐄", pos: { x: 360, y: 190 } },
+  { id: "socken", map: "berg", ideas: ["socken"], icon: "🧦", pos: { x: 610, y: 190 } },
+  { id: "steine", map: "berg", ideas: ["steine"], icon: "🗿", pos: { x: 740, y: 200 } },
+  { id: "mauer", map: "berg", ideas: ["mauer"], icon: "🧱", pos: { x: 470, y: 140 } },
+  { id: "gipfel", map: "berg", ideas: ["gipfel"], icon: "🏔️", landmark: "gipfel", pos: { x: 500, y: 60 } },
 ];
 
 // Small helpers so the edge list below stays readable.

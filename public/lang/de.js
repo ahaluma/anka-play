@@ -1,0 +1,168 @@
+// Gemeinsame Wörter, Deutsch: Zahlwörter, Lob, Knöpfe, Namen der Karten, Stationen und Dinge.
+// Die Sätze einer Idee stehen in ideas/<id>/lang/de.js.
+export default {
+  numbers: [
+    "null", "eins", "zwei", "drei", "vier", "fünf", "sechs", "sieben", "acht", "neun", "zehn",
+    "elf", "zwölf", "dreizehn", "vierzehn", "fünfzehn", "sechzehn", "siebzehn", "achtzehn", "neunzehn", "zwanzig",
+  ],
+  praise: ["Super!", "Toll!", "Prima!", "Klasse!", "Richtig!", "Genau!", "Juhu!", "Bravo!", "Spitze!", "Ja!"],
+  oops: ["Hmm.", "Fast!", "Noch nicht.", "Oh!", "Ups!"],
+
+  app: "AnkaPlay",
+
+  // Buttons and labels
+  labels: {
+    home: "Nach Hause", map: "Zur Karte", station: "Zurück", hear: "Vorlesen", hint: "Tipp", play: "Spielen",
+    again: "Nochmal", language: "Sprache", tasks: "Aufgaben", yes: "Stimmt", no: "Stimmt nicht",
+    done: "Fertig", basket: "Korb", field: "Wiese", thing: "Blume", stones: "Steine im Bach",
+    left: "Links", right: "Rechts", same: "Gleich viele", house: "Haus",
+    yourAnswer: "Deine Antwort", erase: "Löschen", check: "Prüfen",
+  },
+
+  // Home: who plays, then the doors to the maps
+  home: {
+    whoPlays: "Wer spielt?",
+    guest: "Gast",
+    add: "Kind dazu",
+    name: "Name",
+    age: "Alter",
+    years: (n) => `${n} Jahre`,
+    animal: "Tier",
+    save: "Los geht's",
+    cancel: "Abbrechen",
+    whereTo: "Wohin geht es heute?",
+    soon: "Bald",
+    privacy: "Alles bleibt auf diesem Gerät. Keine Werbung, kein Tracking.",
+  },
+
+  maps: {
+    tal: { name: "Das Tal", note: "3–6 Jahre: Zahlen, Formen, Muster" },
+    fluss: { name: "Der Fluss", note: "Schule: Zahlen, Raum und Zeit" },
+    feld: { name: "Das Feld", note: "Schule: Rechnen" },
+    berg: { name: "Der Berg", note: "9–12 Jahre: Knobeln" },
+  },
+  landmarks: { bach: "der Bach", "grosser-baum": "der große Baum", teich: "der Teich", huegel: "der Hügel", wolke: "die Wolke" },
+  stations: {
+    wiese: "Die Wiese", bau: "Der Bau", baumstumpf: "Der Baumstumpf", teich: "Der Teich", obstbaum: "Der Obstbaum",
+    wald: "Der Wald", himmel: "Der Himmel", nester: "Die Nester", pfuetze: "Die Pfütze", huegel: "Der Hügel",
+    kiesel: "Die Kiesel", ufer: "Das Ufer",
+  },
+  // Short names of the ideas (the tabs of a station with more than one idea) and what they are about.
+  ideas: {
+    zahl: { name: "Wie viele?", about: "Eine Zahl sagt, wie viele" },
+    teile: { name: "Zahlen zerlegen", about: "Zahlen bestehen aus Zahlen" },
+    zehn: { name: "Zehnerfreunde", about: "Zwei Zahlen machen zusammen voll" },
+    memory: { name: "Zahlen-Memory", about: "Finde die Paare" },
+    gruppen: { name: "Gerecht teilen", about: "Jeder bekommt gleich viele" },
+    muster: { name: "Muster", about: "Eine Reihe geht immer so weiter" },
+    folge: { name: "Zuerst und dann", about: "Bildergeschichten, Erster, Zweiter" },
+    sortieren: { name: "Sortieren", about: "Was gehört zusammen?" },
+    schauen: { name: "Genau hinschauen", about: "Unterschiede, nachmalen, merken" },
+    lage: { name: "Wo ist es?", about: "Auf, unter, neben, vor, hinter" },
+    form: { name: "Formen", about: "Kreis, Dreieck, Quadrat, Rechteck" },
+    groesse: { name: "Größen", about: "Länger, höher, schwerer" },
+  },
+
+  // The map
+  mapText: {
+    whereTo: "Wohin möchtest du?",
+    asleep: "Hier schläft noch alles. Bald gibt es hier etwas zu spielen.",
+    locked: "Dieser Weg ist noch zu.",
+    owl: "Komm, hier geht es weiter!",
+  },
+
+  // A station
+  stationText: {
+    pickWay: "Wie möchtest du spielen?",
+    pickIdea: "Was möchtest du spielen?",
+    star: "Stern",
+    played: "gespielt",
+    level: (g) => `Zahlen bis ${g}`,
+    levelPlain: (g) => `Stufe ${g}`,
+    next: "Die Eule zeigt dir, wo es weitergeht.",
+  },
+
+  perspectives: {
+    standard: { sehen: "Sehen", machen: "Machen", forschen: "Forschen", anwenden: "Anwenden", pruefen: "Prüfen", spielen: "Spielen" },
+    berg: { sehen: "Verstehen", machen: "Ausprobieren", forschen: "Regel finden", anwenden: "Übertragen", pruefen: "Begründen", spielen: "Spielen" },
+  },
+
+  // The round
+  round: {
+    surprise: "Überraschung! Jetzt kommt etwas anderes.",
+    review: (station) => `Weißt du noch? Eine Aufgabe von ${station}.`,
+    easier: "Jetzt kommt eine leichtere.",
+    done: "Geschafft!",
+    cardGot: (name) => `Dein Denk-Trick: ${name}.`,
+    star: "Ein neuer Stern!",
+    starName: "Neuer Stern",
+    mastered: "Alle Sterne hier! Du kannst das richtig gut.",
+    bigger: "Das kannst du gut! Jetzt kommen größere Zahlen.",
+    biggerPlain: "Das kannst du gut! Jetzt wird es etwas schwerer.",
+    smaller: "Jetzt nehmen wir kleinere Zahlen.",
+    smallerPlain: "Jetzt wird es wieder etwas leichter.",
+    follow: (station) => `Komm mit! Die Eule zeigt dir den Weg: ${station}.`,
+    followShort: "Weiter mit der Eule",
+    toStation: "Etwas anderes",
+    feelQuestion: "Wie war das für dich?",
+    feel: { easy: "leicht", ok: "genau richtig", hard: "schwer" },
+  },
+
+  // The first-visit questions of a station (engine/gate.js)
+  gate: {
+    welcome: "Hallo! Zeig mir erst, was du schon kannst. Es ist nicht schlimm, wenn du etwas nicht weißt.",
+    next: "Gut. Weiter geht's.",
+    done: (level) => `Danke! Wir fangen hier an: ${level}.`,
+  },
+
+  cards: {
+    vergleichen: { name: "Genau hinschauen", text: "Du hast genau hingeschaut." },
+    ausprobieren: { name: "Ausprobieren", text: "Du hast es ausprobiert. Es gibt viele Wege." },
+    vorhersagen: { name: "Erst denken", text: "Du hast erst gedacht und dann geschaut." },
+    rueckwaerts: { name: "Was fehlt?", text: "Du hast gefunden, was fehlt." },
+    nachpruefen: { name: "Nachzählen", text: "Du hast selbst nachgezählt." },
+    wiederholen: { name: "Was kommt wieder?", text: "Du hast gefunden, was immer wieder kommt." },
+    teilen: { name: "Gerecht teilen", text: "Du hast so geteilt, dass jeder gleich viele hat." },
+    luecken: { name: "Lücken zählen", text: "Du hast die Lücken gezählt, nicht nur die Dinge." },
+  },
+
+  // Names of the things to count (engine/things.js).
+  things: {
+    apple: { many: "Äpfel", one: "ein Apfel" },
+    fish: { many: "Fische", one: "ein Fisch" },
+    ship: { many: "Schiffe", one: "ein Schiff" },
+    ladybird: { many: "Marienkäfer", one: "ein Marienkäfer" },
+    flower: { many: "Blumen", one: "eine Blume" },
+    duck: { many: "Enten", one: "eine Ente" },
+    star: { many: "Sterne", one: "ein Stern" },
+    balloon: { many: "Luftballons", one: "ein Luftballon" },
+    snail: { many: "Schnecken", one: "eine Schnecke" },
+    strawberry: { many: "Erdbeeren", one: "eine Erdbeere" },
+    elephant: { many: "Elefanten", one: "ein Elefant" },
+    rhino: { many: "Nashörner", one: "ein Nashorn" },
+    unicorn: { many: "Einhörner", one: "ein Einhorn" },
+    giraffe: { many: "Giraffen", one: "eine Giraffe" },
+    lion: { many: "Löwen", one: "ein Löwe" },
+    dinosaur: { many: "Dinosaurier", one: "ein Dinosaurier" },
+    turtle: { many: "Schildkröten", one: "eine Schildkröte" },
+    penguin: { many: "Pinguine", one: "ein Pinguin" },
+    octopus: { many: "Kraken", one: "ein Krake" },
+    butterfly: { many: "Schmetterlinge", one: "ein Schmetterling" },
+    frog: { many: "Frösche", one: "ein Frosch" },
+    owl: { many: "Eulen", one: "eine Eule" },
+    crab: { many: "Krebse", one: "ein Krebs" },
+    car: { many: "Autos", one: "ein Auto" },
+    banana: { many: "Bananen", one: "eine Banane" },
+    carrot: { many: "Möhren", one: "eine Möhre" },
+    kangaroo: { many: "Kängurus", one: "ein Känguru" },
+    whale: { many: "Wale", one: "ein Wal" },
+    crocodile: { many: "Krokodile", one: "ein Krokodil" },
+    ant: { many: "Ameisen", one: "eine Ameise" },
+    rabbit: { many: "Hasen", one: "ein Hase" },
+    fox: { many: "Füchse", one: "ein Fuchs" },
+    shark: { many: "Haie", one: "ein Hai" },
+    panda: { many: "Pandas", one: "ein Panda" },
+    bee: { many: "Bienen", one: "eine Biene" },
+    nut: { many: "Nüsse", one: "eine Nuss" },
+  },
+};

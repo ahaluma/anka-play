@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 800" preserveAspectRatio="xMidYMax slice">
+  <!-- The nests: a bush with two nests in its branches. -->
+  <rect width="400" height="800" fill="#cfeaff"/>
+  <g fill="#fff"><ellipse cx="300" cy="110" rx="60" ry="22"/><ellipse cx="270" cy="94" rx="36" ry="22"/></g>
+  <path d="M0 400 Q140 350 260 390 T400 370 V800 H0Z" fill="#b9e5a0"/>
+  <path d="M0 470 Q200 430 400 470 V800 H0Z" fill="#addc93"/>
+  <ellipse cx="80" cy="420" rx="120" ry="80" fill="#5fae5f"/>
+  <ellipse cx="350" cy="430" rx="100" ry="70" fill="#5fae5f"/>
+  <path d="M40 400 q30 22 60 0Z" fill="#b98a5a"/>
+  <path d="M320 410 q30 22 60 0Z" fill="#b98a5a"/>
+</svg>

@@ -206,8 +206,10 @@ anwenden: {                                   // zahl, use: more, fewer or the s
 }
 ```
 
-The engine (`engine/recipe.js`, about 90 lines) draws, retries until the rules hold, avoids repeats, adds the
-two near wrong options, and hands the board plain data. `$max` comes from the rung's params, so the same
+The engine (`engine/recipe.js`, about 150 lines) draws, retries until the rules hold, avoids repeats, adds the
+two near wrong options, and hands the board plain data. A perspective with several kinds of task (the meadow's
+"use": compare, one more or less, make both the same) lists them as `variants`, each with a `weight` and an
+optional `when` that limits it to some rungs. `$max` comes from the rung's params, so the same
 recipe serves every rung. The mistake of a wrong answer is also an expression (`oneOff` when
 `|given − right| = 1`), so every station, not only the market, knows its typical mistakes. `zahl` is
 written completely this way, and `check-ideas` makes and checks 10,000 of its tasks.
@@ -233,7 +235,11 @@ written completely this way, and `check-ideas` makes and checks 10,000 of its ta
 | `raster` | a grid: ways, boards, colouring | haken, schauen, socken |
 | `text` | a word problem with one picture | platz, the mountain |
 
-Every board takes the same extras: `hide` (cover part of it after a moment), `owl` (the owl claims
+A board is one module, `boards/<name>.js`, with `draw(host, task, ctx)` returning `{ ready, ownAnswer, onAnswer,
+hint }`. The frame (`engine/ui/play.js`) draws the answer buttons for `choose`, `type` and `yesNo` and checks every
+answer against the recipe's right one; a board takes `build`, `order`, `place` and `tapThings` itself. The
+sentences come from the idea's language files under the recipe's `ask` (`ask`, `right`, `miss`, `hint`, and
+what the board needs, like `look` or `start`). Every board takes the same extras: `hide` (cover part of it after a moment), `owl` (the owl claims
 something, the child checks: the whole "check" perspective in one place), `story` (steps shown one after
 the other). Seven answer modes: `choose`, `type`, `tapThings`, `build`, `order`, `place`, `yesNo`.
 
@@ -253,8 +259,12 @@ Generalisation stops in three places, on purpose:
    exactly one solution; counting camps (haken, socken) enumerate. An expression language that can do
    that is a worse programming language. Such an idea keeps a small `ideas/<id>/tasks.js` with
    `task(level, perspective, r)` that returns **the same task shape** as a recipe, so the rest of the
-   engine cannot tell the difference. My estimate: the 11 Tal concept ideas, the 4 Fluss ideas and the 6 Feld
-   ideas fit recipes; about half of the 13 Berg ideas need code.
+   engine cannot tell the difference. My first estimate was that all 11 Tal concept ideas fit recipes. Porting
+   showed otherwise: 7 of them pick from tables with rules (a story whose pictures may not look like another's,
+   a row that must not go the same way as the model, things of one colour that are not in the basket yet).
+   The recipe language has no filter, and adding one would start the worse programming language. So those
+   keep think-lab's tested `tasks.js` with its `check()`, handed to the engine in `idea.js` as
+   `tasks: { make, check }`; `tools/check-ideas.mjs` runs `check()` on 1000 tasks per level.
 2. **Pictures that exist once.** A cube net folding, the sundial. A board is generic when a third idea
    needs it; the first two uses may be a bespoke board in `ideas/<id>/board.js` with the same interface
    (`draw(host, task, ctx)` returning `{ hint, help, way }`).
@@ -379,9 +389,13 @@ in Nepal.
 
 ## 11. After you agree: the order of work
 
-1. Engine core: graph (done here), recipe (done here), learner, policy, round, router, question and voice.
-2. The Tal map with wiese (zahl, already written as data) end to end, on the phone.
-3. The other 10 Tal stations, ported from think-lab's ideas into recipes and boards.
+1. Engine core: graph, recipe, learner, policy, round, router, question and voice. **Done.**
+2. The Tal map with wiese (zahl, already written as data) end to end, on the phone. **Done.**
+3. The other 10 Tal stations, ported from think-lab's ideas into recipes and boards. **Done.** teile, zehn and
+   gruppen are recipes; muster, folge, sortieren, schauen, lage, form and groesse keep think-lab's task code in
+   `ideas/<id>/tasks.js` (they pick from tables with rules, see 6.5). Every Tal board exists once, so each idea
+   has its own `board.js`, think-lab's boards with only their imports changed (`engine/ui/ported.js`), and
+   their sentences as they were. Number memory is the game at the tree stump.
 4. Fluss and Feld; the Feld policy (learning box, bridges).
 5. Berg: recipes where they fit, `tasks.js` for the camps that need a solver.
 6. Parents' page, backup, privacy page, service worker, Cloudflare.
