@@ -83,7 +83,8 @@ export function port(BOARDS) {
       num: ctx.num,
       word: ctx.word,
       thing: (id) => ({ icon: icon(id), ...(ctx.T.things[id] ?? { one: id, many: id }) }),
-      tell: (text) => ctx.say(text, asking),
+      // tell(text, "") as in think-lab: read aloud only, the board shows the words itself (the Berg's question box)
+      tell: (text, shown) => ctx.say(text, asking, shown !== ""),
       tap: ctx.tap,
       ready: ctx.ready,
       fresh: ctx.fresh,

@@ -280,6 +280,7 @@ body.listening .board .answers { pointer-events: none; }
 .spot.asleep .spot-icon { width: 50px; height: 50px; font-size: 26px; background: rgba(251, 252, 254, 0.7); filter: grayscale(0.7); box-shadow: none; }
 .spot.locked .spot-icon { filter: grayscale(1); opacity: 0.6; }
 .spot.next .spot-icon { background: var(--sun); animation: pulse 1.4s ease-in-out infinite; }
+.spot.fog .spot-icon { background: rgba(238, 242, 246, 0.85); border-style: dashed; box-shadow: none; font-size: 26px; }
 
 /* A way to another map (a portal): the stepping stones, the bridge, the mountain path. */
 .portal-sign {

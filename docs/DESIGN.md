@@ -413,7 +413,19 @@ in Nepal.
    the learning box (`engine/box.js`: the most due of 8 tasks comes) and bridges (the same kind of mistake 3
    times in two rounds → the next round starts with three tasks of the rung that trains it). Portals are drawn
    on the maps.
-5. Berg: recipes where they fit, `tasks.js` for the camps that need a solver.
+5. Berg. **Done.** The twelve camps and the summit, ported from think-lab's Denk-Berg. No camp fit recipes: every
+   camp's task is a story whose numbers are searched for (a puzzle with exactly one solution, a fence that comes out
+   even, a mistake the owl would really make), and every camp's `check()` finds the answer again by trying every
+   case. So all of them keep think-lab's task code (6.5), as the Tal, Fluss and Feld ideas that search do; the huts'
+   solver is the clearest case. The parts every camp shares (the question box that stays in sight, the rule
+   table, the owl with its reasons, "and this works too") are `boards/berg/`, with their words in
+   `boards/berg/lang/`. A camp is mastered with its five stars at level 1 or higher, as in think-lab, so the camps
+   above open as they did there; levels 2 to 4 go deeper. The Berg policy runs in the engine: four tasks of the camp and one from the
+   backpack (a mastered camp, the one played longest ago, in a perspective played there), "how was it?" after
+   every round, near camps in the fog drawn as clouds that say what opens them (`glimpse`), and the keepsake
+   picture when a camp comes out of the fog. The summit (gipfel) is one perspective, transfer: four tasks from
+   the camps at level 4 (one where the owl is checked) and one family that needs two tools, each after picking a
+   tool from the backpack (`boards/berg/summit.js`).
 6. Parents' page, backup, privacy page, service worker, Cloudflare.
 
 ## 12. Decisions

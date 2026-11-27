@@ -39,7 +39,7 @@ export default {
     feld: { name: "खेत", note: "विद्यालय: हिसाब" },
     berg: { name: "पहाड", note: "९–१२ वर्ष: पहेली" },
   },
-  landmarks: { bach: "खोल्सो", "grosser-baum": "ठूलो रूख", teich: "पोखरी", huegel: "डाँडो", wolke: "बादल", fluss: "नदी", bruecke: "पुल", weide: "बैंसको रूख", kiesbank: "बगर", "grosser-fels": "ठूलो चट्टान", feldweg: "खेतको बाटो", obstgarten: "फलफूल बगैँचा", huehnerhof: "कुखुराको खोर", lichtung: "खुला चौर" },
+  landmarks: { bach: "खोल्सो", "grosser-baum": "ठूलो रूख", teich: "पोखरी", huegel: "डाँडो", wolke: "बादल", fluss: "नदी", bruecke: "पुल", weide: "बैंसको रूख", kiesbank: "बगर", "grosser-fels": "ठूलो चट्टान", feldweg: "खेतको बाटो", obstgarten: "फलफूल बगैँचा", huehnerhof: "कुखुराको खोर", lichtung: "खुला चौर", fuss: "पहाडको फेद", wasserfall: "झरना", gipfel: "चुचुरो" },
   stations: {
     wiese: "चौर", bau: "दुलो", baumstumpf: "रूखको ठुटो", teich: "पोखरी", obstbaum: "फलको रूख",
     wald: "जङ्गल", himmel: "आकाश", nester: "गुँडहरू", pfuetze: "खाल्डोको पानी", huegel: "डाँडो",
@@ -47,6 +47,8 @@ export default {
     steg: "काठको पुल", blumenfeld: "फूलबारी", kiesbank: "बगर", sonnenfels: "घामे चट्टान",
     apfelbaum: "स्याउको रूख", beeren: "ऐँसेलुका झाडी", huehner: "कुखुराको खोर", nussbaum: "ओखरको रूख", lichtung: "खुला चौर",
     hofstand: "खेतको पसल",
+    zaun: "बार", haken: "सबै क्रमैसँग", huetten: "को कहाँ बस्छ?", vorrat: "उल्टो सोच", ameisen: "नियम खोज", waage: "तराजु", stall: "टाउका र खुट्टा",
+    tanz: "जोडी बनाऊ", fels: "आकार गन", socken: "सबैभन्दा नराम्रो अवस्था", steine: "अन्त्यबाट सोच", mauer: "सङ्ख्याको पर्खाल", gipfel: "चुचुरो",
   },
   ideas: {
     zahl: { name: "कतिवटा?", about: "सङ्ख्याले कतिवटा भनेर बताउँछ" },
@@ -71,6 +73,19 @@ export default {
     mal: { name: "गुणा", about: "बराबर समूह" },
     geteilt: { name: "भाग", about: "बराबर बाँड्ने र प्याक गर्ने" },
     platz: { name: "कथा", about: "सबै मिलेर सानो कथामा" },
+    zaun: { name: "खाली ठाउँ गन", about: "खम्बा र खाली ठाउँ" },
+    haken: { name: "सबै क्रमैसँग", about: "हरेक सम्भावना गन, कुनै दोहोरो होइन" },
+    huetten: { name: "हटाउँदै जाऊ", about: "तर्क पहेली: एउटा नरहुन्जेल हटाऊ" },
+    vorrat: { name: "उल्टो सोच", about: "उल्टो सोच: अन्त्यबाट सुरुसम्म" },
+    ameisen: { name: "नियम खोज", about: "नियम खोज: सबै नलेखी टाढा उफ्रन" },
+    waage: { name: "साटफेर", about: "साटफेर: बराबर गह्रौँ चीज साट्न मिल्छ" },
+    stall: { name: "अनुमान र सुधार", about: "मानेर सुधार: पहिले सबै उस्तै, अनि साट" },
+    tanz: { name: "जोडी बनाउ", about: "जोडी बनाऊ: जोर, बिजोर र शेष" },
+    fels: { name: "क्रमैसँग गन", about: "क्रमैसँग गन र मनमनै घुमाऊ" },
+    socken: { name: "सबैभन्दा नराम्रो अवस्था", about: "सबैभन्दा नराम्रो अवस्था: दुर्भाग्यमा पनि मिल्ने नै पक्का" },
+    steine: { name: "अन्त्यबाट", about: "अन्त्यबाट: उल्लुसँगका खेल" },
+    mauer: { name: "सीमा घटाउ", about: "घेर्दै खोज्ने: संकेत-संकेत गर्दै, एउटै सङ्ख्या बाँकी नरहुन्जेल" },
+    gipfel: { name: "प्रतियोगिता", about: "पूरै पहाडका प्रश्न, घडी र अङ्क बिना" },
   },
 
   mapText: {
@@ -78,6 +93,16 @@ export default {
     asleep: "यहाँ अहिले सबै सुतेका छन्। छिट्टै यहाँ खेल्ने कुरा आउँछ।",
     locked: "यो बाटो अझै बन्द छ।",
     owl: "आऊ, यता!",
+    fog: "कुहिरोमा अझै केही लुकेको छ।",
+    opens: (what) => `${what} बाटो खुल्छ।`,
+    or: " वा ",
+    and: " र ",
+    need: {
+      mastered: (names) => `${names} सकेपछि`,
+      age: (n) => `${n} वर्ष पुगेपछि`,
+      parent: "आमाबुबाले खोलिदिएपछि",
+      flag: (name) => `${name} मा सबै तारा पाएपछि`,
+    },
   },
 
   stationText: {
@@ -96,6 +121,7 @@ export default {
   },
 
   round: {
+    backpack: (station) => `झोला! “${station}” बाट एउटा प्रश्न।`,
     surprise: "अचम्म! अब अर्कै कुरा आउँछ।",
     review: (station) => `सम्झन्छौ? ${station} को एउटा प्रश्न।`,
     bridge: (why) => `एकछिन केही अभ्यास गरौँ। ${why}`,
