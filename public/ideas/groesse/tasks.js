@@ -19,8 +19,10 @@
 //                                                     (order = indexes, smallest first)
 //   forschen  { pair: [heavy, light], tricky, heavy }  the balance: which one is heavier? Think first.
 //                                                     heavy = the index (0 or 1) of the heavy one on screen
-//   anwenden  { item, bear, sizes, answer }           the small bear needs a bed: which one fits?
-//                                                     bear = 0 small, 1 middle, 2 big; sizes of the items
+//   anwenden  { item, bear, sizes, answer }           the baby needs shoes: which ones fit? The family stands
+//                                                     side by side, so small and big are seen, not imagined.
+//                                                     bear = who needs it: 0 the baby, 1 the child, 2 the
+//                                                     mother (the name is think-lab's); sizes of the items
 //   pruefen   { kind, sizes, offsets, said, answer, right }  the owl points at one snake: "this is the
 //                                                     longest". At level 3 she looks only at the right end.
 //   key – short text that tells tasks apart.

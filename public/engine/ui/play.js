@@ -308,7 +308,8 @@ export async function render(root, route) {
     // a wrong step of a board's own answer; on the first-visit questions there is only one try
     miss: (extra) => (isGate ? gateAnswer(false) : wrong(extra?.given, extra)),
     solved: (extra) => check(stage.value, extra),
-    say: (sentence, asking, show = true) => (board.hidden ? Promise.resolve() : asking ? voice.ask(sentence, show) : voice.tell(sentence, show)),
+    // asking "new": a new question in the middle of a task, in the place of the old one
+    say: (sentence, asking, show = true) => (board.hidden ? Promise.resolve() : asking ? voice.ask(sentence, show, asking === "new") : voice.tell(sentence, show)),
     words: {}, // the texts of the idea of this task (set before each board is drawn)
     fresh: () => fresh && (slot?.kind === "cur" || slot?.kind === "easier"),
     tap: () => sound.tap(),

@@ -134,59 +134,71 @@
   line-height: 1;
 }
 
-/* ---------- Forschen: the hollow tree */
-.tree-scene {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-}
-
-.io {
-  width: 29%;
-  min-height: 104px;
+/* ---------- Forschen: shake the apple tree (all apples visible: some fall, the others stay up) */
+.shake-scene {
   display: grid;
-  place-items: center;
-  padding: 4px;
-  border: 3px dashed var(--ink);
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.6);
+  justify-items: center;
+  gap: 0;
+  padding-bottom: 10px;
 }
 
-.io .pics {
-  grid-template-columns: repeat(3, auto);
-}
-
-.io .pic {
-  font-size: 22px;
-}
-
-.tree {
+.shake-scene .tree {
   position: relative;
   line-height: 1;
 }
 
-.tree-top {
-  font-size: clamp(72px, 24vw, 100px);
+.shake-scene .tree-top {
+  font-size: clamp(120px, 40vw, 160px);
 }
 
-.tree-hole {
+.shake-scene .crown {
   position: absolute;
-  left: 50%;
-  bottom: 6%;
-  width: 16%;
-  height: 22%;
-  margin-left: -8%;
-  border-radius: 50%;
-  background: #2b1d12;
+  left: 14%;
+  right: 14%;
+  top: 10%;
+  height: 50%;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: center;
+  justify-content: center;
+  gap: 0 2px;
+}
+
+.shake-scene .apple {
+  font-size: clamp(20px, 6.5vw, 26px);
+  line-height: 1.1;
+}
+
+.shake-scene .apple.pale {
+  opacity: 0.3;
+}
+
+.shake-scene .ground {
+  min-height: 34px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2px;
+  margin-top: 4px;
+}
+
+.shake-scene .ground .apple.falls {
+  animation: drop 0.6s ease-in both;
+}
+
+@keyframes drop {
+  from { transform: translateY(-110px); opacity: 0.2; }
+  to { transform: translateY(0); opacity: 1; }
 }
 
 .tree.working {
-  animation: bounce 0.5s ease-in-out;
+  animation: tree-shake 0.5s ease-in-out;
 }
 
-.flow {
-  font-size: 20px;
+@keyframes tree-shake {
+  0%, 100% { transform: rotate(0); }
+  25% { transform: rotate(-4deg); }
+  75% { transform: rotate(4deg); }
 }
 
 .strip.predict .num-btn {
@@ -388,15 +400,6 @@
 
 .side .pics.many .pic {
   font-size: clamp(16px, 4.8vw, 21px);
-}
-
-.io .pics.many {
-  grid-template-columns: repeat(5, auto);
-  gap: 0 1px;
-}
-
-.io .pics.many .pic {
-  font-size: 15px;
 }
 
 .leaf .pic {
@@ -1392,8 +1395,10 @@
 .gr-on-pan { padding: 0; border: 0; background: none; font-size: calc(58px * var(--k)); line-height: 1; cursor: pointer; }
 .gr-on-pan.right { filter: drop-shadow(0 0 8px var(--ok)); }
 .gr-stand { width: 0; height: 0; border-left: 22px solid transparent; border-right: 22px solid transparent; border-bottom: 40px solid var(--ink); }
-.gr-bears { display: grid; place-items: center; min-height: 150px; }
-.gr-bear { font-size: calc(80px * var(--k)); line-height: 1; }
+.gr-bears { display: grid; place-items: end center; min-height: 150px; }
+.gr-family { display: flex; align-items: flex-end; justify-content: center; gap: 18px; }
+.gr-bear { font-size: calc(80px * var(--k)); line-height: 1; opacity: 0.6; }
+.gr-bear.asks { opacity: 1; filter: drop-shadow(0 0 8px var(--sun)) drop-shadow(0 0 3px var(--sun)); }
 .gr-items { display: flex; justify-content: center; align-items: flex-end; gap: 12px; }
 .gr-item { min-width: 86px; min-height: 96px; padding: 4px; display: grid; place-items: end center; font-size: calc(54px * var(--k)); line-height: 1; }
 .gr-item.right { background: var(--ok); }

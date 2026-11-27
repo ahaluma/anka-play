@@ -2,13 +2,19 @@
 // the board (ideas/groesse/board.js) calls them with number words, as there.
 const big = (text) => text[0].toUpperCase() + text.slice(1); // "drei" -> "Drei"
 
+// The family of "anwenden" (board.js), smallest first: the baby, the child, the mother.
+const WHO = ["das Baby", "das Kind", "die Mama"];
+const WHO_BIG = ["Das Baby", "Das Kind", "Die Mama"];
+const WHO_TO = ["dem Baby", "dem Kind", "der Mama"];
+const ITEMS = { bett: "ein Bett", stuhl: "einen Stuhl", schuessel: "eine Schüssel", pulli: "einen Pulli", schuh: "Schuhe" };
+
 export default {
   groesse: {
     intro: {
       sehen: "Was ist länger, was ist höher? Schau genau.",
       machen: "Leg die Dinge der Größe nach.",
       forschen: "Die Waage: Was ist schwerer? Erst denken!",
-      anwenden: "Was passt den Bären?",
+      anwenden: "Was passt dem Baby, was passt der Mama?",
       pruefen: "Die Eule vergleicht. Stimmt das?",
     },
     kinds: {
@@ -54,13 +60,13 @@ export default {
       hint: "Stell dir vor, du trägst beides. Was ist schwerer zu tragen?",
     },
     anwenden: {
-      bears: ["der kleine Bär", "der mittlere Bär", "der große Bär"],
-      items: { bett: "ein Bett", stuhl: "einen Stuhl", schuessel: "eine Schüssel", pulli: "einen Pulli", schuh: "einen Schuh" },
-      ask: (bear, item) => `${big(bear)} braucht ${item}. Was passt?`,
-      tooBig: "Das ist zu groß.",
-      tooSmall: "Das ist zu klein.",
-      done: (i) => `Das passt genau für ${["den kleinen Bären", "den mittleren Bären", "den großen Bären"][i]}.`,
-      hint: "Kleiner Bär, kleine Sachen. Großer Bär, große Sachen.",
+      people: WHO,
+      items: ITEMS,
+      ask: (who, item) => `${WHO_BIG[who]} braucht ${ITEMS[item]}. Was passt ${WHO_TO[who]}?`,
+      tooBig: (who) => `Das ist zu groß für ${WHO[who]}.`,
+      tooSmall: (who) => `Das ist zu klein für ${WHO[who]}.`,
+      done: (who) => `Das passt genau für ${WHO[who]}.`,
+      hint: "Schau, wer leuchtet. Klein passt zu klein. Groß passt zu groß.",
     },
     pruefen: {
       says: "Die ist am längsten!",

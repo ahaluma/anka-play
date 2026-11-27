@@ -232,39 +232,46 @@ export function machen(host, t, ctx) {
   };
 }
 
-// ---------- Forschen: the hollow tree. x nuts in, total − x nuts out. Try, then predict.
+// ---------- Forschen: shake the apple tree. Some apples fall down, the others stay up. Try, then predict.
+// think-lab had a hollow tree here: nuts in, "total − x" nuts out, and the child had to find out what the tree
+// does. That rule was hidden and too hard for children of 3 to 6. Now nothing is hidden: all apples hang in the
+// tree, the child says how many fall, and sees the others stay up. What there is to find is in plain sight:
+// down and up are always all the apples together.
 
 export function forschen(host, t, ctx) {
   const { T } = ctx;
-  const NUT = "🌰";
-  const tried = []; // inputs the child tested, in order
+  const F = T.forschen;
+  const APPLE = "🍎";
+  const tried = []; // how many fell, in the order the child tried
   let mode = "test"; // "test" | "predict"
-  let ask = 0;
+  let ask = 0; // predict: how many fall
   let locked = false;
-  let sums = false;
 
-  const scene = el("div", "scene card tree-scene");
-  const inBox = el("div", "io");
+  const scene = el("div", "scene card shake-scene");
   const tree = el("div", "tree");
-  tree.append(el("span", "tree-top", "🌳"), el("span", "tree-hole"));
-  const outBox = el("div", "io");
-  scene.append(inBox, el("span", "flow", "➜"), tree, el("span", "flow", "➜"), outBox);
+  const crown = el("div", "crown");
+  tree.append(el("span", "tree-top", "🌳"), crown);
+  const ground = el("div", "ground");
+  scene.append(tree, ground);
   const log = el("div", "ways");
-  log.setAttribute("aria-label", T.forschen.tried);
-  const know = button("btn sun know-btn", T.forschen.know, "💡");
+  log.setAttribute("aria-label", F.tried);
+  const know = button("btn sun know-btn", F.know, "💡");
   know.hidden = true;
 
-  function show(x, y) {
-    inBox.innerHTML = "";
-    outBox.innerHTML = "";
-    inBox.append(x === null ? el("b", "unknown", "?") : group(x, NUT));
-    outBox.append(y === null ? el("b", "unknown", "?") : group(y, NUT));
+  /** All apples in the tree; then `down` of them fall (shown at once when `now`). */
+  function draw(down, { now = false, pale = 0 } = {}) {
+    crown.innerHTML = "";
+    ground.innerHTML = "";
+    for (let i = 0; i < t.total - down; i++) crown.append(el("span", "apple" + (i >= t.total - down - pale ? " pale" : ""), APPLE));
+    for (let i = 0; i < down; i++) {
+      const a = el("span", "apple" + (now ? "" : " falls"), APPLE);
+      a.style.animationDelay = `${i * 90}ms`;
+      ground.append(a);
+    }
   }
 
-  function addPair(x) {
-    const chip = el("span", "chip pop", `${ctx.num(x)} ➜ ${ctx.num(t.total - x)}`);
-    if (sums) chip.append(el("small", "", ` = ${ctx.num(t.total)}`));
-    chip.dataset.x = x;
+  function addPair(down) {
+    const chip = el("span", "chip pop", `${ctx.num(down)} + ${ctx.num(t.total - down)} = ${ctx.num(t.total)}`);
     log.append(chip);
   }
 
@@ -277,8 +284,8 @@ export function forschen(host, t, ctx) {
     ask = pool[Math.floor(pool.length / 2)];
     for (const b of answers.children) b.disabled = false;
     answers.classList.add("predict");
-    show(ask, null);
-    ctx.tell(T.forschen.predict(ctx.word(ask)));
+    draw(0);
+    ctx.tell(F.predict(ask, ctx.word(ask)), undefined, true); // the new question goes to the top
   }
 
   const answers = strip(ctx, 1, t.total - 1, async (n, b) => {
@@ -288,22 +295,26 @@ export function forschen(host, t, ctx) {
       tree.classList.remove("working");
       void tree.offsetWidth;
       tree.classList.add("working");
-      show(n, t.total - n);
+      draw(n);
       if (!tried.includes(n)) {
         tried.push(n);
         addPair(n);
       }
       if (tried.length >= 2) know.hidden = false;
-      ctx.tell(`${T.forschen.out(ctx.word(n), ctx.word(t.total - n))} ${tried.length === 1 ? T.forschen.more : tried.length === 2 ? T.forschen.ready : ""}`.trim());
+      const next = tried.length === 1 ? F.more : tried.length === 2 ? F.ready : "";
+      ctx.tell(`${F.out(n, t.total - n, ctx.word(n), ctx.word(t.total - n))} ${next}`.trim());
       return;
     }
-    // Predict: one committed answer, then the tree shows what really comes out.
-    const out = t.total - ask;
-    show(ask, out);
-    if (n === out) {
+    // Predict: one committed answer, then the apples fall and show how many stay up.
+    const up = t.total - ask;
+    tree.classList.remove("working");
+    void tree.offsetWidth;
+    tree.classList.add("working");
+    draw(ask);
+    if (n === up) {
       locked = true;
       b.classList.add("right");
-      ctx.solved(T.forschen.rule(ctx.word(ask), ctx.word(out), ctx.word(t.total)));
+      ctx.solved(F.rule(ctx.word(ask), ctx.word(up), ctx.word(t.total)));
       return;
     }
     shake(b);
@@ -312,7 +323,7 @@ export function forschen(host, t, ctx) {
       addPair(ask);
     }
     locked = true; // wait for the sentence, then ask about another number
-    await ctx.miss(T.forschen.predictMiss(ctx.word(ask), ctx.word(out)));
+    await ctx.miss(F.predictMiss(up, ctx.word(up)));
     locked = false;
     predict();
   });
@@ -321,17 +332,17 @@ export function forschen(host, t, ctx) {
     if (!locked && mode === "test") predict();
   });
 
-  host.append(scene, log, answers, know);
-  show(null, null);
-  ctx.tell(T.forschen.question);
+  host.append(sign(ctx, t.total), scene, log, answers, know);
+  draw(0);
+  ctx.tell(F.question(ctx.word(t.total)));
 
   return {
     hint() {
-      if (!sums) {
-        sums = true;
-        for (const chip of log.children) chip.append(el("small", "", ` = ${ctx.num(t.total)}`));
+      if (mode === "predict") {
+        draw(0, { pale: ask }); // the apples that will fall look pale: count the others
+        return F.hintPredict;
       }
-      return T.forschen.hint;
+      return F.hint;
     },
   };
 }

@@ -25,7 +25,8 @@
 // This is the idea of the old game "Sortieren", in the frame of the new world. The harder rules
 // (colour first, then kind; hidden rules) are for school children and are not part of it.
 
-/** Things with their kind (k), colour (c) and size of an animal (s). */
+/** Things with their kind (k), colour (c) and size of an animal (s). Only what a child sees for sure: no colour for
+ *  the pear (green or yellow?) and the corn (yellow with green leaves), no size for the crab (there are big ones). */
 export const ITEMS = [
   { i: "🐘", k: "animal", s: "big" }, { i: "🦒", k: "animal", s: "big" }, { i: "🦏", k: "animal", s: "big" },
   { i: "🐄", k: "animal", s: "big" }, { i: "🐎", k: "animal", s: "big" }, { i: "🦛", k: "animal", s: "big" },
@@ -33,16 +34,16 @@ export const ITEMS = [
   { i: "🐜", k: "animal", s: "small" }, { i: "🐞", k: "animal", s: "small", c: "red" }, { i: "🐌", k: "animal", s: "small" },
   { i: "🦋", k: "animal", s: "small" }, { i: "🐸", k: "animal", s: "small", c: "green" }, { i: "🐭", k: "animal", s: "small" },
   { i: "🐝", k: "animal", s: "small", c: "yellow" }, { i: "🐥", k: "animal", s: "small", c: "yellow" },
-  { i: "🐛", k: "animal", s: "small", c: "green" }, { i: "🦀", k: "animal", s: "small", c: "red" },
+  { i: "🐛", k: "animal", s: "small", c: "green" }, { i: "🦀", k: "animal", c: "red" },
   { i: "🐼", k: "animal" }, { i: "🦊", k: "animal" }, { i: "🐰", k: "animal" }, { i: "🐢", k: "animal", c: "green" },
   { i: "🍎", k: "fruit", c: "red" }, { i: "🍓", k: "fruit", c: "red" }, { i: "🍒", k: "fruit", c: "red" },
   { i: "🍌", k: "fruit", c: "yellow" }, { i: "🍋", k: "fruit", c: "yellow" }, { i: "🍏", k: "fruit", c: "green" },
-  { i: "🍐", k: "fruit", c: "green" }, { i: "🍇", k: "fruit" }, { i: "🍊", k: "fruit" }, { i: "🍉", k: "fruit" }, { i: "🍍", k: "fruit" },
+  { i: "🍐", k: "fruit" }, { i: "🍇", k: "fruit" }, { i: "🍊", k: "fruit" }, { i: "🍉", k: "fruit" }, { i: "🍍", k: "fruit" },
   { i: "🚗", k: "vehicle", c: "red" }, { i: "🚒", k: "vehicle", c: "red" }, { i: "🚕", k: "vehicle", c: "yellow" },
   { i: "🚜", k: "vehicle" }, { i: "🚂", k: "vehicle" }, { i: "✈️", k: "vehicle" }, { i: "🚲", k: "vehicle" },
   { i: "🚌", k: "vehicle" }, { i: "🚁", k: "vehicle" }, { i: "🚙", k: "vehicle", c: "blue" },
   { i: "🌹", k: "flower", c: "red" }, { i: "🌻", k: "flower", c: "yellow" }, { i: "🌼", k: "flower", c: "yellow" },
-  { i: "🎈", c: "red" }, { i: "🍅", c: "red" }, { i: "⭐", c: "yellow" }, { i: "🌽", c: "yellow" },
+  { i: "🎈", c: "red" }, { i: "🍅", c: "red" }, { i: "⭐", c: "yellow" }, { i: "🌽" },
   { i: "🥒", c: "green" }, { i: "🥦", c: "green" }, { i: "🍀", c: "green" }, { i: "🌵", c: "green" },
 ];
 
@@ -65,6 +66,31 @@ const RULES_AT = {
 const TWO_AT = { 1: ["tierObst", "tierFahrzeug"], 2: ["tierObst", "tierFahrzeug", "rotGelb", "rotGruen"], 3: ["rotGelb", "rotGruen", "grossKlein", "obstBlume"] };
 
 const levelOf = (range) => (RULES_AT[range] ? range : 1);
+const ATTRS = ["k", "c", "s"];
+
+/** Could a child find another odd one by another rule? (🐞🦀🐘 and 🍎: the apple is the only fruit, but the
+ *  elephant is the only one that is not red.) Then the task has two answers and is not used. */
+export function oddTwice(rule, things, odd) {
+  return ATTRS.filter((a) => a !== RULES[rule].attr).some((a) =>
+    things.some((_, j) => {
+      if (j === odd) return false;
+      const rest = things.filter((_, k) => k !== j).map((t) => ITEMS[t][a]);
+      return rest[0] !== undefined && rest.every((v) => v === rest[0]) && ITEMS[things[j]][a] !== rest[0];
+    }),
+  );
+}
+
+/** Would the new thing fit the other basket by another rule? (Red basket 🍎🍓🍒, yellow basket 🚕🐝⭐, and the
+ *  lemon: yellow, but a fruit like everything in the red basket.) Then the task has two answers. */
+export function fitsTwice(rule, baskets, thing, answer) {
+  const other = baskets[1 - answer];
+  const all = (basket, a, v) => basket.every((t) => ITEMS[t][a] === v);
+  return ATTRS.filter((a) => a !== RULES[rule].attr).some((a) => {
+    const v = ITEMS[other[0]][a];
+    // (both baskets all animals: that tells nothing apart)
+    return v !== undefined && all(other, a, v) && ITEMS[thing][a] === v && !all(baskets[answer], a, v);
+  });
+}
 /** The things (indexes) of one group of a rule. */
 export const groupOf = (rule, g) => ITEMS.map((x, i) => (x[RULES[rule].attr] === RULES[rule].groups[g] ? i : -1)).filter((i) => i >= 0);
 /** The group of a thing under a rule (-1: none). */
@@ -86,18 +112,22 @@ const makers = {
   },
   forschen(L, r) {
     const rule = r.pick(TWO_AT[L]);
-    const [g, o] = r.shuffle([0, 1]);
-    const things = r.shuffle([...r.sample(groupOf(rule, g), 3), r.pick(groupOf(rule, o))]);
-    const odd = things.findIndex((t) => groupFor(rule, t) === o);
-    return { rule, things, odd, key: `${rule}${things[odd]}` };
+    for (;;) {
+      const [g, o] = r.shuffle([0, 1]);
+      const things = r.shuffle([...r.sample(groupOf(rule, g), 3), r.pick(groupOf(rule, o))]);
+      const odd = things.findIndex((t) => groupFor(rule, t) === o);
+      if (!oddTwice(rule, things, odd)) return { rule, things, odd, key: `${rule}${things[odd]}` };
+    }
   },
   anwenden(L, r) {
     const rule = r.pick(TWO_AT[L]);
-    const baskets = [0, 1].map((g) => r.sample(groupOf(rule, g), 3));
-    // (AnkaPlay: from a group with more than the three in its basket: there are only three flowers)
-    const answer = r.pick([0, 1].filter((g) => groupOf(rule, g).length > 3));
-    const thing = r.pick(groupOf(rule, answer).filter((t) => !baskets[answer].includes(t)));
-    return { rule, baskets, thing, answer, key: `${rule}${thing}` };
+    for (;;) {
+      const baskets = [0, 1].map((g) => r.sample(groupOf(rule, g), 3));
+      // (AnkaPlay: from a group with more than the three in its basket: there are only three flowers)
+      const answer = r.pick([0, 1].filter((g) => groupOf(rule, g).length > 3));
+      const thing = r.pick(groupOf(rule, answer).filter((t) => !baskets[answer].includes(t)));
+      if (!fitsTwice(rule, baskets, thing, answer)) return { rule, baskets, thing, answer, key: `${rule}${thing}` };
+    }
   },
   pruefen(L, r) {
     const rule = r.pick(TWO_AT[L]);
@@ -131,9 +161,11 @@ export function check(t, level) {
   if (level.p === "forschen") {
     const gs = t.things.map((x) => groupFor(t.rule, x));
     if (gs.filter((g) => g === gs[t.odd]).length !== 1 || gs.some((g) => g < 0)) problems.push("odd");
+    if (oddTwice(t.rule, t.things, t.odd)) problems.push("another thing is odd by another rule");
   }
   if (level.p === "anwenden") {
     if (groupFor(t.rule, t.thing) !== t.answer || t.baskets.flat().includes(t.thing)) problems.push("answer");
+    if (fitsTwice(t.rule, t.baskets, t.thing, t.answer)) problems.push("fits the other basket by another rule");
     if (t.baskets.some((b, g) => b.some((x) => groupFor(t.rule, x) !== g))) problems.push("baskets");
   }
   if (level.p === "pruefen") {

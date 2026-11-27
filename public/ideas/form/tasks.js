@@ -46,8 +46,11 @@ export const THINGS = {
   kreis: ["uhr", "keks", "donut", "muenze"],
   dreieck: ["pizza", "kaese", "sandwich", "segel"],
   quadrat: ["fenster", "waffel", "wuerfel"],
-  rechteck: ["tuer", "buch", "brief", "handy"],
+  rechteck: ["tuer", "brief", "handy"],
 };
+// The pictures are emoji, drawn a little differently on every phone: the window, the waffle and the die can look
+// a little longer than wide, and the book almost square. So the book is out, and a square thing never offers the
+// rectangle as a choice: the child would have to guess what the phone's artist meant.
 
 const levelOf = (range) => (KINDS[range] ? range : 1);
 const MIXUP = { kreis: ["dreieck", "quadrat"], dreieck: ["quadrat", "kreis"], quadrat: ["rechteck", "dreieck"], rechteck: ["quadrat", "dreieck"] };
@@ -92,7 +95,8 @@ const makers = {
   anwenden(L, r) {
     const kind = r.pick(KINDS[L]);
     const thing = r.pick(THINGS[kind]);
-    return { thing, kind, choices: r.shuffle(KINDS[L === 1 ? 1 : 2].slice()), key: thing };
+    const choices = KINDS[L === 1 ? 1 : 2].filter((k) => !(kind === "quadrat" && k === "rechteck"));
+    return { thing, kind, choices: r.shuffle(choices), key: thing };
   },
   pruefen(L, r) {
     const kind = r.pick(KINDS[L]);

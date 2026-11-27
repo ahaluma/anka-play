@@ -1,13 +1,17 @@
 // Sätze/sentences of the idea "groesse", Nepali. Ported from think-lab (welt/lang/ne.js) as they were:
 // the board (ideas/groesse/board.js) calls them with number words, as there.
 
+// The family of "anwenden" (board.js), smallest first: the baby, the child, the mother.
+const WHO = ["बेबी", "बच्चा", "आमा"];
+const ITEMS = { bett: "ओछ्यान", stuhl: "कुर्सी", schuessel: "कचौरा", pulli: "स्वेटर", schuh: "जुत्ता" };
+
 export default {
   groesse: {
     intro: {
       sehen: "कुन लामो, कुन अग्लो? राम्ररी हेर।",
       machen: "चीजहरूलाई सानोदेखि ठूलोसम्म मिलाऊ।",
       forschen: "तराजु: कुन गह्रौं छ? पहिले सोच!",
-      anwenden: "भालुहरूलाई के मिल्छ?",
+      anwenden: "बेबीलाई के मिल्छ, आमालाई के मिल्छ?",
       pruefen: "उल्लुले तुलना गर्छ। के त्यो ठिक हो?",
     },
     kinds: {
@@ -53,13 +57,13 @@ export default {
       hint: "दुवै बोकेको कल्पना गर। कुन बोक्न गाह्रो हुन्छ?",
     },
     anwenden: {
-      bears: ["सानो भालु", "माझिलो भालु", "ठूलो भालु"],
-      items: { bett: "ओछ्यान", stuhl: "कुर्सी", schuessel: "कचौरा", pulli: "स्वेटर", schuh: "जुत्ता" },
-      ask: (bear, item) => `${bear}लाई ${item} चाहिन्छ। कुन मिल्छ?`,
-      tooBig: "त्यो धेरै ठूलो भयो।",
-      tooSmall: "त्यो धेरै सानो भयो।",
-      done: (i) => `यो ${["सानो भालु", "माझिलो भालु", "ठूलो भालु"][i]}लाई ठ्याक्कै मिल्छ।`,
-      hint: "सानो भालु, साना चीज। ठूलो भालु, ठूला चीज।",
+      people: WHO,
+      items: ITEMS,
+      ask: (who, item) => `${WHO[who]}लाई ${ITEMS[item]} चाहिन्छ। ${WHO[who]}लाई कुन मिल्छ?`,
+      tooBig: (who) => `यो ${WHO[who]}लाई धेरै ठूलो भयो।`,
+      tooSmall: (who) => `यो ${WHO[who]}लाई धेरै सानो भयो।`,
+      done: (who) => `यो ${WHO[who]}लाई ठ्याक्कै मिल्छ।`,
+      hint: "कसलाई उज्यालो छ, हेर। सानोलाई सानो। ठूलोलाई ठूलो।",
     },
     pruefen: {
       says: "यो सबैभन्दा लामो!",
