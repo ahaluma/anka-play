@@ -31,6 +31,7 @@ async function show() {
   root.replaceChildren();
   document.body.dataset.screen = route.screen;
   document.body.style.backgroundImage = "";
+  document.body.classList.remove("in-round");
   window.scrollTo(0, 0);
   cleanup = (await mod.render(root, route)) ?? null;
 }

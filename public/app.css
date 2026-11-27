@@ -232,7 +232,7 @@ body.listening .board .answers { pointer-events: none; }
 .trails { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
 .trails path { fill: none; stroke: #f4ead0; stroke-width: 9; stroke-linecap: round; stroke-dasharray: 2 16; }
 
-.spot {
+.map-scene .spot {
   position: absolute;
   z-index: 2;
   display: flex;
@@ -256,7 +256,7 @@ body.listening .board .answers { pointer-events: none; }
   line-height: 1;
   position: relative;
 }
-.spot:active .spot-icon { transform: translateY(3px); box-shadow: 0 1px 0 var(--ink); }
+.map-scene .spot:active .spot-icon { transform: translateY(3px); box-shadow: 0 1px 0 var(--ink); }
 .spot-name {
   margin-top: 4px;
   padding: 1px 8px;
@@ -277,10 +277,10 @@ body.listening .board .answers { pointer-events: none; }
   font-weight: 800;
   line-height: 1.4;
 }
-.spot.asleep .spot-icon { width: 50px; height: 50px; font-size: 26px; background: rgba(251, 252, 254, 0.7); filter: grayscale(0.7); box-shadow: none; }
-.spot.locked .spot-icon { filter: grayscale(1); opacity: 0.6; }
-.spot.next .spot-icon { background: var(--sun); animation: pulse 1.4s ease-in-out infinite; }
-.spot.fog .spot-icon { background: rgba(238, 242, 246, 0.85); border-style: dashed; box-shadow: none; font-size: 26px; }
+.map-scene .spot.asleep .spot-icon { width: 50px; height: 50px; font-size: 26px; background: rgba(251, 252, 254, 0.7); filter: grayscale(0.7); box-shadow: none; }
+.map-scene .spot.locked .spot-icon { filter: grayscale(1); opacity: 0.6; }
+.map-scene .spot.next .spot-icon { background: var(--sun); animation: pulse 1.4s ease-in-out infinite; }
+.map-scene .spot.fog .spot-icon { background: rgba(238, 242, 246, 0.85); border-style: dashed; box-shadow: none; font-size: 26px; }
 
 /* A way to another map (a portal): the stepping stones, the bridge, the mountain path. */
 .portal-sign {
@@ -320,6 +320,8 @@ body.listening .board .answers { pointer-events: none; }
 
 /* ====================== A station ====================== */
 body[data-screen="station"], body[data-screen="play"], body[data-screen="gate"] { background-color: var(--grass); }
+/* A task on screen: a plain background, no station picture behind the task's own pictures (engine/ui/play.js). */
+body.in-round { background-image: none !important; background-color: var(--paper); }
 .station { display: flex; flex-direction: column; gap: 12px; padding: 14px; background: rgba(251, 252, 254, 0.94); }
 .station-head { display: flex; align-items: center; gap: 12px; }
 .station-icon { font-size: 48px; line-height: 1; }
@@ -396,7 +398,7 @@ button.pic { padding: 2px; border: 0; background: none; font-family: inherit; li
 .check-btn { width: 120px; font-size: 34px; }
 .unknown { font-size: 40px; font-weight: 900; color: var(--muted); }
 
-.numpad-box { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.numpad-box { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 10px; }
 .numpad-display { min-width: 4.2em; min-height: 1.3em; padding: 4px 16px; border: 4px solid var(--ink); border-radius: 14px; background: #fff; font-size: 44px; font-weight: 900; line-height: 1.2; text-align: center; }
 .numpad-display:not(.typed) { color: rgba(27, 33, 64, 0.35); }
 .numpad-display.right { background: var(--ok); color: #fff; }

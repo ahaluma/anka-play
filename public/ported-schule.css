@@ -252,7 +252,8 @@
 
 /* ---------- Idea "Reihe" (the station): the track is the number line. */
 .track-scene {
-  padding: 46px 22px 34px;
+  /* wide enough at the sides for the end label ("1000", "१०००") to stay whole */
+  padding: 46px 34px 34px;
   background: #eef3f8;
 }
 

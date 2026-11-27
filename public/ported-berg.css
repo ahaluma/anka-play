@@ -137,6 +137,11 @@
    The question box sits at the top and stays there when the page scrolls; the caption above it
    only carries what is new (a miss, a hint, praise). Picture, number pad, owl and the other ways
    are pushed down to the bottom of the screen. */
+body:has(.berg-board:not([hidden])) .caption {
+  min-height: 2.5em;
+  font-size: clamp(16px, 4.4vw, 18px);
+}
+
 .berg-board {
   gap: 10px;
 }
