@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 800" preserveAspectRatio="xMidYMax slice">
+  <!-- The hen yard: a fence, the coop, eggs in a row. -->
+  <rect width="400" height="800" fill="#cfeaff"/>
+  <path d="M0 430 Q140 390 260 420 T400 410 V800 H0Z" fill="#b9e5a0"/>
+  <path d="M0 480 H400 M0 510 H400" stroke="#c48a4e" stroke-width="7"/>
+  <path d="M20 465 V530 M90 465 V530 M160 465 V530 M230 465 V530 M300 465 V530 M370 465 V530" stroke="#8a5a33" stroke-width="7" stroke-linecap="round"/>
+  <path d="M250 360 L310 310 L370 360 V440 H250Z" fill="#e06b4a" stroke="#1b2140" stroke-width="4" stroke-linejoin="round"/>
+  <g fill="#fff8e6" stroke="#1b2140" stroke-width="2"><ellipse cx="60" cy="700" rx="10" ry="13"/><ellipse cx="90" cy="700" rx="10" ry="13"/><ellipse cx="120" cy="700" rx="10" ry="13"/></g>
+</svg>

@@ -18,6 +18,7 @@
 //            Nearness also guides the child's journey (`guide` of a map): see engine/graph.js, next() and glimpse().
 //   game     a station that is a pure game (one perspective, "spielen"): always open, mastered from the start,
 //            no stars to earn. It never blocks anything that depends on it.
+//   pos      (portals) where the way to the other map is drawn on this map: the stepping stones, the bridge
 //   gate     questions a portal asks on the child's FIRST visit to its target. It always lets the child
 //            pass; the answers only choose the rung the child starts on.
 //
@@ -222,27 +223,27 @@ export const EDGES = [
   // ---- Portals between maps -------------------------------------------------------------------
   // Tal -> Fluss: across the stream. School age, or the core number stations of the Tal mastered.
   {
-    from: "wiese", to: "steg", kind: "portal", nearness: 0.7, icon: "stepping-stones",
+    from: "wiese", to: "steg", kind: "portal", nearness: 0.7, icon: "stepping-stones", pos: { x: 300, y: 545 },
     requires: { any: [{ age: 6 }, mastered("wiese", "teich")] },
     gate: { perspective: "sehen", levels: ["20", "100", "1000"] }, // where does it stand on the bridge?
   },
-  { from: "steg", to: "wiese", kind: "portal", nearness: 0.7, icon: "stepping-stones", requires: null },
+  { from: "steg", to: "wiese", kind: "portal", nearness: 0.7, icon: "stepping-stones", pos: { x: 90, y: 300 }, requires: null },
 
   // Fluss <-> Feld: the bridge and the field path. The same band, always open both ways.
   {
-    from: "steg", to: "apfelbaum", kind: "portal", nearness: 0.6, icon: "bridge", requires: null,
+    from: "steg", to: "apfelbaum", kind: "portal", nearness: 0.6, icon: "bridge", pos: { x: 120, y: 540 }, requires: null,
     gate: { perspective: "anwenden", levels: ["10/luecke", "20/uebergang", "100/zehner"] }, // 3 + 6, 8 + 5, 23 + 40
   },
-  { from: "apfelbaum", to: "steg", kind: "portal", nearness: 0.6, icon: "bridge", requires: null },
+  { from: "apfelbaum", to: "steg", kind: "portal", nearness: 0.6, icon: "bridge", pos: { x: 80, y: 420 }, requires: null },
 
   // Fluss -> Berg: the path up from the big rock. Three ways (decided): from 9, by the parents' switch, or by
   // playing through the school basics before it (number line, place value, plus, minus: about grade 3).
   {
-    from: "sonnenfels", to: "zaun", kind: "portal", nearness: 0.3, icon: "mountain-path",
+    from: "sonnenfels", to: "zaun", kind: "portal", nearness: 0.3, icon: "mountain-path", pos: { x: 940, y: 70 },
     requires: { any: [{ age: 9 }, { parent: "berg" }, BERG_BASICS] },
     gate: { perspective: "sehen", levels: ["1", "2", "3"] },
   },
-  { from: "zaun", to: "sonnenfels", kind: "portal", nearness: 0.3, icon: "mountain-path", requires: null },
+  { from: "zaun", to: "sonnenfels", kind: "portal", nearness: 0.3, icon: "mountain-path", pos: { x: 880, y: 560 }, requires: null },
 
   // ---- Relations across maps: related ideas, never walked --------------------------------------
   // Only between stations of the same band are they used for suggestions and review tasks.

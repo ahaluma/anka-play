@@ -21,8 +21,9 @@ import * as L from "../learner.js";
 import * as gate from "../gate.js";
 import * as profiles from "../profiles.js";
 import { taskOf, value } from "../recipe.js";
+import * as box from "../box.js";
 import { random, pick } from "../random.js";
-import { policyFor, roundSize, afterRound, afterFeel } from "../policy.js";
+import { policyFor, roundSize, afterRound, afterFeel, isTop } from "../policy.js";
 import { plan, Round } from "../round.js";
 import { THING_IDS, icon } from "../things.js";
 import { href, go } from "../router.js";
@@ -131,6 +132,8 @@ export async function render(root, route) {
   let texts = {};
   let gateAnswers = [];
   let level = null;
+  let bridgeKind = null;
+  let shownAt = 0; // when the task was ready: the time to the answer (learning box)
 
   // extra.say: a sentence a board made itself (boards ported from think-lab, engine/ui/ported.js)
   const text = (key, extra = {}) => (typeof extra.say === "string" ? extra.say : say(texts[key], { ...task.vars, ...extra }));
@@ -138,7 +141,7 @@ export async function render(root, route) {
   function drawSteps() {
     steps.replaceChildren(
       ...round.slots.map((x, i) => {
-        const mark = { surprise: "🎁", review: "🔁" }[x.kind] ?? "";
+        const mark = { surprise: "🎁", review: x.counted ? "🎒" : "🔁", inverse: "🔁", bridge: "🌉" }[x.kind] ?? "";
         return el("li", (mark ? "gift " : "") + (i < round.at ? "done" : i === round.at ? "now" : ""), mark);
       }),
     );
@@ -159,9 +162,12 @@ export async function render(root, route) {
 
   function startRound() {
     level = L.level(state.rec, def, kidAge);
+    // Feld: a kind of mistake that came often brings a bridge (the rung that trains it) at the start of the round
+    bridgeKind = isGate ? null : L.oftenWrong(state.rec, ideaId, pol.bridgeAfter);
+    const bridge = bridgeKind ? L.bridgeRung(def, level, bridgeKind) : null;
     const slots = isGate
       ? questions.map((q) => ({ kind: "gate", idea: ideaId, p: q.p, rung: q.rung, counted: false }))
-      : plan({ def, p, rung: level, pol, size: Math.min(roundSize(pol, kidAge), def.roundTasks?.[p] ?? Infinity), played: (x) => L.played(state.rec, ideaId, x), review: pickReview(), r });
+      : plan({ def, p, rung: level, pol, size: Math.min(roundSize(pol, kidAge), def.roundTasks?.[p] ?? Infinity), played: (x) => L.played(state.rec, ideaId, x), review: pol.review?.from === "below" ? null : pickReview(), below: L.belowTop(def, level), bridge, r });
     const below = def.ladder[L.rungIndex(def, level) - 1]?.id ?? null;
     round = new Round(slots, pol, isGate ? null : below);
     fresh = !L.played(state.rec, ideaId, p);
@@ -191,12 +197,20 @@ export async function render(root, route) {
     const sdef = await loadIdea(slot.idea);
     const stexts = slot.idea === ideaId ? words : await loadTexts(slot.idea);
     if (slot.kind === "surprise") await voice.tell(T.round.surprise);
-    if (slot.kind === "review") await voice.tell(T.round.review(T.stations[slot.station] ?? slot.station));
+    if (slot.kind === "review" && slot.station) await voice.tell(T.round.review(T.stations[slot.station] ?? slot.station));
+    if (slot.kind === "bridge" && round.at === 0) await voice.tell(T.round.bridge(say(stexts[sdef.words ?? slot.idea]?.kinds?.[bridgeKind]) || ""));
     if (slot.kind === "easier") await voice.tell(T.round.easier);
     if (!board.isConnected) return;
     const key = `${slot.idea}/${slot.p}`;
     const recent = (recentKeys[key] ??= []);
-    task = taskOf(sdef, slot.p, L.rung(sdef, slot.rung).params, { r, things: THING_IDS, recent });
+    // the rung's params; what the idea reads from the child's facts (the clearing: which operations it may use);
+    // on an inverse slot the task before, to turn round
+    const params = { ...L.rung(sdef, slot.rung).params, ...(sdef.context?.(facts()) ?? {}) };
+    if (slot.kind === "inverse" && task?.vars && task.vars.p === slot.p) params.inverseOf = task.vars;
+    const lb = pol.learningBox && sdef.tasks && slot.kind !== "inverse" ? sdef.policy?.learningBox ?? pol.learningBox : null;
+    task = lb
+      ? box.choose(state.rec, Array.from({ length: lb.among ?? 8 }, () => taskOf(sdef, slot.p, params, { r, things: THING_IDS, recent })), lb, r)
+      : taskOf(sdef, slot.p, params, { r, things: THING_IDS, recent });
     recent.unshift(task.key);
     recent.length = Math.min(recent.length, RECENT);
     texts = lookup(stexts, task.ask);
@@ -211,10 +225,12 @@ export async function render(root, route) {
     b = mod.draw(board, task, ctx) ?? {};
     if (!b.ownAnswer && FRAME_MODES.includes(task.answer.mode)) widget = frameAnswers(task.answer);
     restNudge();
+    shownAt = Date.now();
     if (b.ready) {
       widget?.wait(true);
       await b.ready;
       widget?.wait(false);
+      shownAt = Date.now();
     }
   }
 
@@ -238,19 +254,23 @@ export async function render(root, route) {
     ask: (k, extra) => voice.ask(text(k, extra)),
     tell: (k, extra) => voice.tell(text(k, extra)),
     give: (given, node, extra) => check(given, extra),
-    miss: (extra) => wrong(extra?.given, extra),
+    // a wrong step of a board's own answer; on the first-visit questions there is only one try
+    miss: (extra) => (isGate ? gateAnswer(false) : wrong(extra?.given, extra)),
     solved: (extra) => check(stage.value, extra),
     say: (sentence, asking) => (asking ? voice.ask(sentence) : voice.tell(sentence)),
     words: {}, // the texts of the idea of this task (set before each board is drawn)
     fresh: () => fresh && (slot?.kind === "cur" || slot?.kind === "easier"),
     tap: () => sound.tap(),
     ready: () => restNudge(),
+    slot: () => slot, // the slot being played ({ kind: "cur" | "bridge" | … })
+    weak: () => (state.rec.ideas[slot?.idea]?.weakInRow ?? 0) > 0, // the last round was weak
   };
 
   /** A wrong answer: the sentence, the mistake kind, and help after hintAfter misses. */
   async function wrong(given, extra = {}) {
     busy = true;
     const { help } = round.miss();
+    if (extra.kind) L.mistake(state.rec, slot.idea, extra.kind); // a kind of mistake the board knew (the Feld's)
     for (const [kind, rule] of Object.entries(def.mistakes ?? {})) {
       try {
         if (value(rule.when, { given, right: stage.value, type: typeof given })) L.mistake(state.rec, slot.idea, kind);
@@ -268,7 +288,8 @@ export async function render(root, route) {
   async function hint(step) {
     const kind = pol.help[step] ?? "hint";
     const extra = b.hint?.(step, kind) ?? {};
-    await voice.tell(text(texts[kind] ? kind : "hint", extra));
+    const sentence = text(texts[kind] ? kind : "hint", extra);
+    if (sentence) await voice.tell(sentence);
   }
 
   hintBtn.addEventListener("click", () => {
@@ -302,6 +323,8 @@ export async function render(root, route) {
     widget?.lock(true);
     const { first } = round.solve();
     L.task(state.rec, slot.idea, slot.p, slot.rung, first, { counted: slot.counted });
+    const lb = pol.learningBox && (state.defs[slot.idea]?.policy?.learningBox ?? pol.learningBox);
+    if (lb && task.vars.card) box.record(state.rec, task.vars.card, { first, ms: Date.now() - shownAt, fact: task.vars.fact !== false }, lb);
     save();
     sound.right();
     await Promise.all([voice.tell(`${oneOf(T.praise)} ${text(stage.kind === "fix" ? "fixed" : "right", { given, ...extra })}`), wait(900)]);
@@ -413,8 +436,11 @@ export async function render(root, route) {
     if (res.newStar) await voice.tell(T.round.star);
     if (nowMastered) await voice.tell(T.round.mastered);
     const newG = L.groupOf(def, res.level);
-    if (res.moved > 0) await voice.tell(numeric(newG) ? T.round.bigger : T.round.biggerPlain);
-    if (res.moved < 0) await voice.tell(numeric(newG) ? T.round.smaller : T.round.smallerPlain);
+    const sameGroup = newG === g; // the Feld moves by sub-steps inside a range
+    const stepName = def.rungName?.(L.rung(def, res.level), words);
+    if (res.moved > 0) await voice.tell(sameGroup ? T.round.stepOn(stepName ?? "") : numeric(newG) ? T.round.bigger : T.round.biggerPlain);
+    if (res.moved < 0) await voice.tell(numeric(newG) && !sameGroup ? T.round.smaller : T.round.smallerPlain);
+    if (!res.moved && !res.star && pol.star.atTop && !isTop(def, level)) await voice.tell(T.round.starsOnTop);
     if (pol.askFeel) await voice.tell(T.round.feelQuestion);
     else if (nextId && m.guide === "tour") voice.tell(T.round.follow(T.stations[nextId] ?? nextId));
   }

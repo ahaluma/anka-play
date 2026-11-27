@@ -1,0 +1,73 @@
+// Sentences of the idea "geld", Deutsch. Ported from think-lab (welt/lang/de.js) as they were:
+// the board (ideas/geld/board.js) calls them with number words, as there.
+const big = (text) => text[0].toUpperCase() + text.slice(1); // "drei" -> "Drei"
+
+export default {
+  geld: {
+    intro: {
+      sehen: "Wie viel Geld liegt da?",
+      machen: "Bezahl genau.",
+      forschen: "Bezahl auf zwei verschiedene Arten.",
+      anwenden: "Einkaufen: zusammen, zurück, reicht es?",
+      pruefen: "Die Eule zählt das Geld. Stimmt das?",
+    },
+    sehen: {
+      ask: "Wie viel Geld liegt auf dem Tisch?",
+      miss: "Zähl vom größten Schein aus weiter.",
+      pieces: "Das sind die Stücke. Aber ein 2-€-Stück ist 2 € wert!",
+      done: (e) => `Das sind ${e}.`,
+      hint: "Fang beim größten an und zähl weiter, Stück für Stück.",
+    },
+    machen: {
+      question: (e) => `Das kostet ${e}. Leg genau so viel hin!`,
+      check: "Bezahlen",
+      tooMuch: (s, p) => `Das sind ${s}. Es kostet nur ${p}.`,
+      tooLittle: (s, p) => `Das sind erst ${s}. Es kostet ${p}.`,
+      done: (p) => `Das sind ${p}. Bezahlt!`,
+      doneFew: (p) => `Das sind ${p}, mit so wenig Stücken wie möglich.`,
+      hint: "Jetzt siehst du, wie viel schon da liegt. Nimm zuerst große Stücke.",
+    },
+    forschen: {
+      question: (e) => `Es kostet ${e}. Bezahl es auf zwei verschiedene Arten!`,
+      check: "Bezahlen",
+      tooMuch: "Das ist zu viel.",
+      tooLittle: "Das ist noch zu wenig.",
+      same: "So hast du schon bezahlt. Probier eine andere Art!",
+      again: "Richtig! Und jetzt mit anderen Münzen oder Scheinen.",
+      done: (e) => `Zwei Arten für ${e}. Es gibt oft viele Wege!`,
+      hint: "Fang mit einem großen Stück an und füll mit kleinen auf.",
+      hintAgain: "Tausch ein Stück gegen kleinere: Ein 2-€-Stück sind zwei 1-€-Stücke.",
+    },
+    anwenden: {
+      things: { bread: "das Brot", cheese: "der Käse", honey: "der Honig", melon: "die Melone", pumpkin: "der Kürbis", cake: "der Kuchen", ball: "der Ball", book: "das Buch" },
+      yes: "Ja, reicht",
+      no: "Nein, zu wenig",
+      enoughAsk: (thing) => `${big(thing)}: Reicht das Geld?`,
+      enoughMiss: "Zähl dein Geld und vergleich mit dem Preis.",
+      enoughYes: (have, price) => `Du hast ${have}, es kostet ${price}. Das reicht!`,
+      enoughNo: (have, price) => `Du hast ${have}, es kostet ${price}. Das reicht nicht.`,
+      enoughHint: "Zähl zuerst dein Geld. Ist es mindestens so viel wie der Preis?",
+      paidWith: "Bezahlt mit",
+      totalAsk: (a, b) => `${big(a)} und ${b}: Wie viel kostet beides zusammen?`,
+      totalMiss: "Zähl beide Preise zusammen.",
+      totalDone: (e) => `Zusammen ${e}.`,
+      totalHint: "Erst der eine Preis, dann zähl den anderen dazu.",
+      changeAsk: (thing, price, paid) => `${big(thing)} kostet ${price}. Du zahlst mit ${paid}. Wie viel bekommst du zurück?`,
+      changePlus: "Du bekommst Geld zurück, nicht mehr. Wie viel fehlt vom Preis bis zum Schein?",
+      changeMiss: "Zähl vom Preis hoch bis zum Schein.",
+      changeDone: (e) => `Du bekommst ${e} zurück.`,
+      changeHint: "Wie an der Kasse: vom Preis hochzählen bis zum Schein.",
+    },
+    pruefen: {
+      question: (e) => `Die Eule sagt: Das sind ${e}. Stimmt das?`,
+      lookAgain: "Zähl selbst nach, Stück für Stück.",
+      fix: "Gut aufgepasst! Wie viel ist es wirklich?",
+      fixPieces: "Gut aufgepasst! Die Eule hat nur die Stücke gezählt. Wie viel Geld ist es?",
+      fixMiss: "Zähl vom größten Stück aus weiter.",
+      right: (e) => `Ja, das sind ${e}.`,
+      fixed: (e) => `Jetzt stimmt es: ${e}.`,
+      hint: "Die Eule hat ein Stück vergessen oder doppelt gezählt.",
+      hintPieces: "Jedes Stück hat seinen Wert. Ein 5-€-Schein ist 5 €, nicht 1.",
+    },
+  },
+};

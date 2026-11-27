@@ -40,8 +40,9 @@ for (const name of folders) {
     if (!recipe && !IDEA.tasks) { problems.push(`${name}: no recipe for ${p.id}`); continue; }
     if (!recipe) {
       // task code (docs/DESIGN.md 6.5): 1000 tasks per rung, each checked by the idea's own check()
-      const words = `${name}.${p.id}`.split(".").reduce((o, k) => o?.[k], de);
-      if (!words) problems.push(`${name}/${p.id}: no German sentences for ${name}.${p.id}`);
+      // its sentences: under the idea and perspective, or a shared section the idea names (IDEA.words)
+      const words = IDEA.words ? de[IDEA.words] : `${name}.${p.id}`.split(".").reduce((o, k) => o?.[k], de);
+      if (!words) problems.push(`${name}/${p.id}: no German sentences for ${IDEA.words ?? `${name}.${p.id}`}`);
       if (!IDEA.board) problems.push(`${name}: task code needs its own board (IDEA.board)`);
       for (const rung of IDEA.ladder) {
         const r = random(7);
@@ -49,7 +50,13 @@ for (const name of folders) {
           try {
             const t = taskOf(IDEA, p.id, rung.params, { r, things: THING_IDS });
             made++;
-            const bad = IDEA.tasks.check?.(t.vars, { p: p.id, ...rung.params }) ?? [];
+            let bad = IDEA.tasks.check?.(t.vars, { p: p.id, ...rung.params }) ?? [];
+            // the Feld's inverse slot: the same numbers the other way round must be a fine task too
+            if (!bad.length && IDEA.inverseIn?.includes(p.id)) {
+              const u = taskOf(IDEA, p.id, { ...rung.params, inverseOf: t.vars }, { r, things: THING_IDS });
+              made++;
+              bad = (IDEA.tasks.check?.(u.vars, { p: p.id, ...rung.params }) ?? []).map((x) => `inverse: ${x}`);
+            }
             if (bad.length) {
               problems.push(`${name}/${p.id}@${rung.id}: ${bad.join(", ")} in ${JSON.stringify(t.vars)}`);
               break;

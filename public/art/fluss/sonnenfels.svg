@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 800" preserveAspectRatio="xMidYMax slice">
+  <!-- The sunny rock: the sun high up, a big warm rock, its shadow on the grass like the hand of a clock. -->
+  <rect width="400" height="800" fill="#cfeaff"/>
+  <circle cx="320" cy="110" r="44" fill="#ffc83a" stroke="#1b2140" stroke-width="4"/>
+  <path d="M0 420 Q140 380 260 410 T400 400 V800 H0Z" fill="#b9e5a0"/>
+  <path d="M40 520 Q70 400 170 390 Q260 395 280 520Z" fill="#b8bec8" stroke="#1b2140" stroke-width="4" stroke-linejoin="round"/>
+  <path d="M160 520 L40 620" stroke="#8fb684" stroke-width="22" stroke-linecap="round"/>
+</svg>

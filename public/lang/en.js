@@ -39,11 +39,14 @@ export default {
     feld: { name: "The field", note: "School: calculating" },
     berg: { name: "The mountain", note: "Ages 9–12: puzzles" },
   },
-  landmarks: { bach: "the stream", "grosser-baum": "the big tree", teich: "the pond", huegel: "the hill", wolke: "the cloud" },
+  landmarks: { bach: "the stream", "grosser-baum": "the big tree", teich: "the pond", huegel: "the hill", wolke: "the cloud", fluss: "the river", bruecke: "the bridge", weide: "the willow", kiesbank: "the gravel bank", "grosser-fels": "the big rock", feldweg: "the field path", obstgarten: "the orchard", huehnerhof: "the hen yard", lichtung: "the clearing" },
   stations: {
     wiese: "The meadow", bau: "The burrow", baumstumpf: "The tree stump", teich: "The pond", obstbaum: "The fruit tree",
     wald: "The forest", himmel: "The sky", nester: "The nests", pfuetze: "The puddle", huegel: "The hill",
     kiesel: "The pebbles", ufer: "The bank",
+    steg: "The footbridge", blumenfeld: "The flower field", kiesbank: "The gravel bank", sonnenfels: "The sunny rock",
+    apfelbaum: "The apple tree", beeren: "The berries", huehner: "The hen yard", nussbaum: "The nut tree", lichtung: "The clearing",
+    hofstand: "The farm stand",
   },
   ideas: {
     zahl: { name: "How many?", about: "A number says how many" },
@@ -58,6 +61,16 @@ export default {
     lage: { name: "Where is it?", about: "On, under, next to, in front, behind" },
     form: { name: "Shapes", about: "Circle, triangle, square, rectangle" },
     groesse: { name: "Sizes", about: "Longer, higher, heavier" },
+    reihe: { name: "Number line", about: "Every number has its place" },
+    stellen: { name: "Tens and ones", about: "Ten ones make a ten" },
+    formen: { name: "Shapes and solids", about: "Shapes, mirroring, measuring" },
+    zeit: { name: "Clock and calendar", about: "Clock, calendar, charts, chance" },
+    geld: { name: "Money", about: "Count, pay, give change" },
+    plus: { name: "Plus", about: "Adding up" },
+    minus: { name: "Minus", about: "Taking away and the difference" },
+    mal: { name: "Times", about: "Equal groups" },
+    geteilt: { name: "Divided by", about: "Sharing fairly and packing" },
+    platz: { name: "Stories", about: "Everything together in little stories" },
   },
 
   mapText: {
@@ -85,6 +98,9 @@ export default {
   round: {
     surprise: "Surprise! Now something different.",
     review: (station) => `Do you remember? A task from ${station}.`,
+    bridge: (why) => `Let's practise something for a moment. ${why}`,
+    stepOn: (name) => `You are good at this! On we go: ${name}.`,
+    starsOnTop: "The stars come when everything is mixed. You are on your way there.",
     easier: "Here comes an easier one.",
     done: "You did it!",
     cardGot: (name) => `Your thinking trick: ${name}.`,

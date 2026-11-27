@@ -18,9 +18,13 @@
 //   ctx.miss(s), ctx.solved(s), ctx.tap(), ctx.ready(), ctx.fresh(), ctx.num(n), ctx.word(n)
 
 import { el, button, group, shake, wait } from "./parts.js";
+import { numpad as pad } from "./numpad.js";
 import { icon } from "../things.js";
 
 export { el, button, group, shake, wait };
+
+/** think-lab's number pad: numpad(container, T, { digits, onCheck, display }), its labels from the shared texts. */
+export const numpad = (container, T, opts) => pad(container, { ...opts, labels: T.labels ?? T });
 
 /** A sign that shows the whole: the number and that many dots in rows of five. */
 export function sign(ctx, n) {

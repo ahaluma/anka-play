@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 800" preserveAspectRatio="xMidYMax slice">
+  <!-- The footbridge from the side: the river below, the long row of planks, a post at every few planks. -->
+  <rect width="400" height="800" fill="#cfeaff"/>
+  <path d="M0 420 Q140 380 260 410 T400 400 V800 H0Z" fill="#b9e5a0"/>
+  <rect x="0" y="560" width="400" height="240" fill="#8fd3ff"/>
+  <path d="M40 640 q14 -8 28 0 M200 700 q14 -8 28 0 M320 620 q14 -8 28 0" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round"/>
+  <rect x="-10" y="540" width="420" height="16" fill="#c08a52"/>
+  <path d="M30 556 V640 M130 556 V640 M230 556 V640 M330 556 V640" stroke="#7a4f2c" stroke-width="10"/>
+  <path d="M20 540 V500 M120 540 V500 M220 540 V500 M320 540 V500 M-10 506 H410" stroke="#7a4f2c" stroke-width="6" stroke-linecap="round"/>
+</svg>

@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 600" preserveAspectRatio="none">
+  <!-- The Feld: the edge of a field. The orchard top left, the hen yard top right, a clearing in the middle,
+       a field of wheat, the field path along the bottom with the farm stand. Calm colours, big simple shapes.
+       The stations are drawn over it by engine/ui/map.js. -->
+  <rect width="1000" height="600" fill="#cfeaff"/>
+  <path d="M0 140 Q250 90 500 130 T1000 115 V600 H0Z" fill="#a6d98f"/>
+  <!-- the field of wheat behind -->
+  <path d="M380 150 Q500 130 640 150 L660 250 Q510 235 360 250Z" fill="#f3d77a" stroke="#1b2140" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M400 175 H640 M395 200 H648 M390 225 H652" stroke="#e2bd52" stroke-width="5"/>
+  <!-- the grass -->
+  <path d="M0 240 Q300 220 500 250 T1000 240 V600 H0Z" fill="#b9e5a0"/>
+  <!-- the sun -->
+  <circle cx="930" cy="55" r="36" fill="#ffc83a" stroke="#1b2140" stroke-width="5"/>
+  <!-- the orchard: two apple trees and the berry bushes -->
+  <g stroke="#1b2140" stroke-width="5">
+    <rect x="186" y="230" width="26" height="70" rx="6" fill="#8a5a33"/>
+    <circle cx="200" cy="200" r="58" fill="#57b86a"/>
+    <rect x="86" y="190" width="22" height="60" rx="6" fill="#8a5a33"/>
+    <circle cx="97" cy="165" r="46" fill="#4ea862"/>
+    <ellipse cx="330" cy="200" rx="56" ry="34" fill="#3f9b57"/>
+  </g>
+  <g fill="#ff5a36" stroke="#1b2140" stroke-width="2"><circle cx="180" cy="185" r="8"/><circle cx="222" cy="210" r="8"/><circle cx="200" cy="165" r="8"/><circle cx="90" cy="160" r="7"/></g>
+  <g fill="#3a5bd6"><circle cx="310" cy="195" r="6"/><circle cx="335" cy="208" r="6"/><circle cx="352" cy="190" r="6"/><circle cx="322" cy="215" r="5"/></g>
+  <!-- the hen yard: a fence and the coop -->
+  <path d="M640 230 H900 M640 255 H900" stroke="#c48a4e" stroke-width="6"/>
+  <path d="M650 215 V270 M700 215 V270 M750 215 V270 M800 215 V270 M850 215 V270 M895 215 V270" stroke="#8a5a33" stroke-width="6" stroke-linecap="round"/>
+  <path d="M720 160 L770 115 L820 160 V215 H720Z" fill="#e06b4a" stroke="#1b2140" stroke-width="5" stroke-linejoin="round"/>
+  <rect x="756" y="175" width="28" height="40" rx="12" fill="#3b2a1d"/>
+  <!-- the nut tree on the right -->
+  <g stroke="#1b2140" stroke-width="5">
+    <rect x="890" y="300" width="28" height="80" rx="6" fill="#8a5a33"/>
+    <circle cx="904" cy="270" r="62" fill="#5f9e52"/>
+  </g>
+  <!-- the clearing in the middle -->
+  <ellipse cx="500" cy="340" rx="140" ry="54" fill="#d4efb9" stroke="#1b2140" stroke-width="4" stroke-dasharray="2 14" stroke-linecap="round"/>
+  <!-- the field path along the bottom -->
+  <path d="M-20 560 C200 520 380 590 520 555 S820 520 1020 560 V600 H-20Z" fill="#e8d3a8" stroke="#1b2140" stroke-width="5" stroke-linejoin="round"/>
+  <!-- grass strokes and flowers -->
+  <path d="M120 440 l6 -16 l6 16 M700 430 l6 -16 l6 16 M300 480 l6 -16 l6 16" fill="none" stroke="#5f9e52" stroke-width="4" stroke-linecap="round"/>
+  <g stroke="#1b2140" stroke-width="3"><circle cx="260" cy="400" r="7" fill="#fff"/><circle cx="760" cy="470" r="7" fill="#ffc83a"/><circle cx="640" cy="420" r="7" fill="#e8488a"/></g>
+</svg>

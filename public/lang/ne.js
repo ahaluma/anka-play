@@ -39,11 +39,14 @@ export default {
     feld: { name: "खेत", note: "विद्यालय: हिसाब" },
     berg: { name: "पहाड", note: "९–१२ वर्ष: पहेली" },
   },
-  landmarks: { bach: "खोल्सो", "grosser-baum": "ठूलो रूख", teich: "पोखरी", huegel: "डाँडो", wolke: "बादल" },
+  landmarks: { bach: "खोल्सो", "grosser-baum": "ठूलो रूख", teich: "पोखरी", huegel: "डाँडो", wolke: "बादल", fluss: "नदी", bruecke: "पुल", weide: "बैंसको रूख", kiesbank: "बगर", "grosser-fels": "ठूलो चट्टान", feldweg: "खेतको बाटो", obstgarten: "फलफूल बगैँचा", huehnerhof: "कुखुराको खोर", lichtung: "खुला चौर" },
   stations: {
     wiese: "चौर", bau: "दुलो", baumstumpf: "रूखको ठुटो", teich: "पोखरी", obstbaum: "फलको रूख",
     wald: "जङ्गल", himmel: "आकाश", nester: "गुँडहरू", pfuetze: "खाल्डोको पानी", huegel: "डाँडो",
     kiesel: "ढुङ्गाका गिट्टी", ufer: "किनार",
+    steg: "काठको पुल", blumenfeld: "फूलबारी", kiesbank: "बगर", sonnenfels: "घामे चट्टान",
+    apfelbaum: "स्याउको रूख", beeren: "ऐँसेलुका झाडी", huehner: "कुखुराको खोर", nussbaum: "ओखरको रूख", lichtung: "खुला चौर",
+    hofstand: "खेतको पसल",
   },
   ideas: {
     zahl: { name: "कतिवटा?", about: "सङ्ख्याले कतिवटा भनेर बताउँछ" },
@@ -58,6 +61,16 @@ export default {
     lage: { name: "कहाँ छ?", about: "माथि, तल, छेउमा, अगाडि, पछाडि" },
     form: { name: "आकार", about: "गोलो, त्रिभुज, वर्ग, आयत" },
     groesse: { name: "नाप", about: "लामो, अग्लो, गह्रौँ" },
+    reihe: { name: "सङ्ख्या रेखा", about: "हरेक सङ्ख्याको आफ्नो ठाउँ" },
+    stellen: { name: "दश र एक", about: "दशवटा एकले एउटा दश बन्छ" },
+    formen: { name: "आकार र ठोस", about: "आकार, ऐना, नाप" },
+    zeit: { name: "घडी र पात्रो", about: "घडी, पात्रो, चार्ट, सम्भावना" },
+    geld: { name: "पैसा", about: "गन्ने, तिर्ने, फिर्ता दिने" },
+    plus: { name: "जोड", about: "जोड्ने" },
+    minus: { name: "घटाउ", about: "घटाउने र फरक" },
+    mal: { name: "गुणा", about: "बराबर समूह" },
+    geteilt: { name: "भाग", about: "बराबर बाँड्ने र प्याक गर्ने" },
+    platz: { name: "कथा", about: "सबै मिलेर सानो कथामा" },
   },
 
   mapText: {
@@ -85,6 +98,9 @@ export default {
   round: {
     surprise: "अचम्म! अब अर्कै कुरा आउँछ।",
     review: (station) => `सम्झन्छौ? ${station} को एउटा प्रश्न।`,
+    bridge: (why) => `एकछिन केही अभ्यास गरौँ। ${why}`,
+    stepOn: (name) => `तिमीलाई यो राम्रो आउँछ! अब अगाडि: ${name}।`,
+    starsOnTop: "सबै मिसाएर आएपछि तारा पाइन्छ। तिमी त्यतै जाँदैछौ।",
     easier: "अब अलि सजिलो आउँछ।",
     done: "सकियो!",
     cardGot: (name) => `तिम्रो सोच्ने तरिका: ${name}।`,

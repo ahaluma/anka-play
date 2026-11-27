@@ -147,9 +147,10 @@ export function make(recipe, params, { r = Math.random, things = ["ladybird"], r
   throw new Error(`recipe ${rec.ask}: no task keeps its rules at ${JSON.stringify(params)}`);
 }
 
-/** The `r` a think-lab task generator expects: r.int, r.pick, r.shuffle, r.sample, r.chance. */
-function rng(r) {
+/** The `r` a think-lab task generator expects: r.random, r.int, r.pick, r.shuffle, r.sample, r.chance. */
+export function rng(r) {
   return {
+    random: r,
     int: (lo, hi) => lo + Math.floor(r() * (hi - lo + 1)),
     pick: (list) => list[Math.floor(r() * list.length)],
     shuffle: (list) => shuffled(list, r),

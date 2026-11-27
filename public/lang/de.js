@@ -41,11 +41,14 @@ export default {
     feld: { name: "Das Feld", note: "Schule: Rechnen" },
     berg: { name: "Der Berg", note: "9–12 Jahre: Knobeln" },
   },
-  landmarks: { bach: "der Bach", "grosser-baum": "der große Baum", teich: "der Teich", huegel: "der Hügel", wolke: "die Wolke" },
+  landmarks: { bach: "der Bach", "grosser-baum": "der große Baum", teich: "der Teich", huegel: "der Hügel", wolke: "die Wolke", fluss: "der Fluss", bruecke: "die Brücke", weide: "die Weide", kiesbank: "die Kiesbank", "grosser-fels": "der große Fels", feldweg: "der Feldweg", obstgarten: "der Obstgarten", huehnerhof: "der Hühnerhof", lichtung: "die Lichtung" },
   stations: {
     wiese: "Die Wiese", bau: "Der Bau", baumstumpf: "Der Baumstumpf", teich: "Der Teich", obstbaum: "Der Obstbaum",
     wald: "Der Wald", himmel: "Der Himmel", nester: "Die Nester", pfuetze: "Die Pfütze", huegel: "Der Hügel",
     kiesel: "Die Kiesel", ufer: "Das Ufer",
+    steg: "Der Steg", blumenfeld: "Das Blumenfeld", kiesbank: "Die Kiesbank", sonnenfels: "Der Sonnenfels",
+    apfelbaum: "Der Apfelbaum", beeren: "Die Beeren", huehner: "Der Hühnerhof", nussbaum: "Der Nussbaum", lichtung: "Die Lichtung",
+    hofstand: "Der Hofstand",
   },
   // Short names of the ideas (the tabs of a station with more than one idea) and what they are about.
   ideas: {
@@ -61,6 +64,16 @@ export default {
     lage: { name: "Wo ist es?", about: "Auf, unter, neben, vor, hinter" },
     form: { name: "Formen", about: "Kreis, Dreieck, Quadrat, Rechteck" },
     groesse: { name: "Größen", about: "Länger, höher, schwerer" },
+    reihe: { name: "Zahlenstrahl", about: "Jede Zahl hat ihren Platz" },
+    stellen: { name: "Zehner und Einer", about: "Zehn Einer sind ein Zehner" },
+    formen: { name: "Formen und Körper", about: "Formen, spiegeln, messen" },
+    zeit: { name: "Uhr und Kalender", about: "Uhr, Kalender, Diagramme, Zufall" },
+    geld: { name: "Geld", about: "Zählen, bezahlen, zurückgeben" },
+    plus: { name: "Plus", about: "Zusammenzählen" },
+    minus: { name: "Minus", about: "Wegnehmen und Unterschied" },
+    mal: { name: "Mal", about: "Gleiche Gruppen" },
+    geteilt: { name: "Geteilt", about: "Gerecht verteilen und packen" },
+    platz: { name: "Geschichten", about: "Alles zusammen in kleinen Geschichten" },
   },
 
   // The map
@@ -91,6 +104,9 @@ export default {
   round: {
     surprise: "Überraschung! Jetzt kommt etwas anderes.",
     review: (station) => `Weißt du noch? Eine Aufgabe von ${station}.`,
+    bridge: (why) => `Wir üben kurz etwas. ${why}`,
+    stepOn: (name) => `Das kannst du gut! Weiter geht's: ${name}.`,
+    starsOnTop: "Die Sterne gibt es, wenn alles gemischt kommt. Du bist auf dem Weg dorthin.",
     easier: "Jetzt kommt eine leichtere.",
     done: "Geschafft!",
     cardGot: (name) => `Dein Denk-Trick: ${name}.`,

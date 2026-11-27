@@ -6,7 +6,10 @@
 //         in the group of the rung it was played at. At once, no waiting days. A star stays.
 //   up    move "group" (Tal, Fluss, Berg): when 60 % of the idea's perspectives have their star in the current
 //         group (3 of 5, 3 of 4, 2 of 3, 2 of 2, 1 of 1), the child goes on to the next group.
-//         move "rung" (Feld): a good round moves one rung up.
+//         move "rung" (Feld): a good round moves one rung (a sub-step) up. From the top rung of a group (Feld:
+//         "gemischt") it goes on to the next group only with 60 % of the stars, as everywhere.
+//   star  with star.atTop (Feld) a star is given only on the top rung of its group: the stars of the market
+//         were won on "gemischt", where every sub-step comes mixed.
 //   down  2 weak rounds in a row (2 of 5 or fewer) -> one group (Feld: one rung) down, and the age no longer
 //         moves the child up by itself (lowered).
 
@@ -42,7 +45,8 @@ export function afterRound(rec, def, pol, { p, rung, first, tasks, age = null, d
   const c = (s.cells[L.cellKey(p, rung)] ??= { n: 0, first: 0, recent: [], last: day });
   c.share = share;
   const had = L.starred(rec, def, p, group);
-  if (share >= pol.star.share - 1e-9 && !c.star) c.star = day;
+  const atTop = isTop(def, rung);
+  if (share >= pol.star.share - 1e-9 && !c.star && (!pol.star.atTop || atTop)) c.star = day;
   const star = L.starred(rec, def, p, group);
 
   const now = L.level(rec, def, age);
@@ -59,7 +63,7 @@ export function afterRound(rec, def, pol, { p, rung, first, tasks, age = null, d
       moved = -1;
       s.lowered = true;
     }
-  } else if (pol.up.when === "goodRound" ? share >= pol.good - 1e-9 : enoughStars(rec, def, L.groupOf(def, now))) {
+  } else if (pol.up.when === "goodRound" ? share >= pol.good - 1e-9 && (!isTop(def, now) || enoughStars(rec, def, L.groupOf(def, now))) : enoughStars(rec, def, L.groupOf(def, now))) {
     const higher = step(def, now, +1, pol);
     if (higher) {
       next = higher;
@@ -70,6 +74,12 @@ export function afterRound(rec, def, pol, { p, rung, first, tasks, age = null, d
   s.level = next;
   return { share, star, newStar: star && !had, moved, level: next };
 }
+
+/** Is this the last rung of its group? */
+export const isTop = (def, rung) => {
+  const g = L.groupOf(def, rung);
+  return def.ladder.filter((r) => r.group === g).at(-1)?.id === rung;
+};
 
 /** 60 % of the idea's perspectives starred in this group. */
 export function enoughStars(rec, def, group) {
