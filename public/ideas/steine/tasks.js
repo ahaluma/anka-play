@@ -24,7 +24,7 @@ function takeTask(r, level, story = r.pick(["steine", "hoelzer", "kekse"])) {
   const k = level === 1 ? 2 : r.int(3, 5);
   // never a trap at the start; drawn again (not n + 1, that would make the answer 1 too often)
   let n;
-  do n = r.int(level === 1 ? 4 : 10, level === 1 ? 10 : level === 2 ? 30 : 60);
+  do n = r.int(level === 1 ? 4 : 10, level === 1 ? 8 : level === 2 ? 30 : 60); // level 1: every stone in the picture
   while (n % (k + 1) === 0);
   const first = n % (k + 1);
   return { story, a: { n, k, k1: k + 1, first, trap: n - first }, pic: [{ icon: { steine: "🪨", hoelzer: "🥢", kekse: "🍪" }[story], n }], answer: first, tool: "falle", key: `${story}${n}${k}` };

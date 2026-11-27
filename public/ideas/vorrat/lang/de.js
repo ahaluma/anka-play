@@ -14,12 +14,16 @@ const VSTEP = {
   halfminus: (k) => `Dann gebe ich die Hälfte ab und noch ${k}.`,
   part: (k) => `Dann ist ${{ 3: "ein Drittel", 4: "ein Viertel", 5: "ein Fünftel" }[k]} weg.`,
 };
-const vSteps = (ops) => ops.map((o) => VSTEP[o.type](o.k)).join(" ");
+// Mehrere Schritte: der erste mit „Zuerst“ statt „Dann“, damit die Reihenfolge klar ist.
+const vSteps = (ops) => ops.map((o, i) => VSTEP[o.type](o.k).replace(/^Dann /, i === 0 && ops.length > 1 ? "Zuerst " : "Dann ")).join(" ");
 const VSHORT = {
   plus: (k) => `+ ${k}`, minus: (k) => `− ${k}`, double: () => "· 2", half: () => ": 2", triple: () => "· 3", third: () => ": 3",
   halfminus: (k) => `: 2, dann − ${k}`, part: (k, rest) => `: ${k}, dann · ${rest}`,
 };
 const VPART = { 2: "die Hälfte", 4: "ein Viertel", 8: "ein Achtel", 16: "ein Sechzehntel" };
+
+// Eins oder viele: „1 Karte“, „2 Karten“ (n kommt als Ziffern der Sprache).
+const pl = (n, one, many) => `${n} ${n === "1" ? one : many}`;
 
 export default {
   ...B,
@@ -36,13 +40,13 @@ export default {
     smaller: "Okay, einen Schritt zurück. Passt ja zum Lager.",
     grew: "Logbuch: Alles zurückgespult. Der Anfang ist gefunden.",
     stories: {
-      murmeln: (a) => [`Ich habe einen Beutel Murmeln. ${vSteps(a.ops)} Jetzt habe ich ${a.end} Murmeln.`, "Wie viele Murmeln hatte ich am Anfang?"],
-      karten: (a) => [`Tauschtag in der Pause, mit meinen Sammelkarten. ${vSteps(a.ops)} Am Ende habe ich ${a.end} Karten.`, "Wie viele Karten hatte ich vor der Pause?"],
-      geld: (a) => [`Mein Sparschwein, eine Woche lang. ${vSteps(a.ops)} Jetzt sind ${a.end} Euro drin.`, "Wie viele Euro waren am Anfang drin?"],
-      kekse: (a) => [`Oma hat Kekse gebacken, die Dose steht bei mir. ${vSteps(a.ops)} Jetzt sind noch ${a.end} Kekse drin.`, "Wie viele Kekse waren am Anfang drin?"],
-      vorrat: (a) => [`Ich bin ein Eichhörnchen, mein Wintervorrat liegt in der Höhle. ${vSteps(a.ops)} Im Frühling sind noch ${a.end} Nüsse übrig.`, "Wie viele Nüsse waren im Herbst in der Höhle?"],
+      murmeln: (a) => [`Ich habe einen Beutel Murmeln. ${vSteps(a.ops)} Jetzt habe ich ${pl(a.end, "Murmel", "Murmeln")}.`, "Wie viele Murmeln hatte ich am Anfang?"],
+      karten: (a) => [`Tauschtag in der Pause, mit meinen Sammelkarten. ${vSteps(a.ops)} Am Ende habe ich ${pl(a.end, "Karte", "Karten")}.`, "Wie viele Karten hatte ich vor dem Tauschen?"],
+      geld: (a) => [`Mein Sparschwein, eine Woche lang. ${vSteps(a.ops)} Jetzt ${a.end === "1" ? "ist" : "sind"} ${a.end} Euro drin.`, "Wie viele Euro waren am Anfang drin?"],
+      kekse: (a) => [`Oma hat Kekse gebacken, die Dose steht bei mir. ${vSteps(a.ops)} Jetzt ${a.end === "1" ? "ist" : "sind"} noch ${pl(a.end, "Keks", "Kekse")} drin.`, "Wie viele Kekse waren am Anfang drin?"],
+      vorrat: (a) => [`Ich bin ein Eichhörnchen, mein Wintervorrat liegt in der Höhle. ${vSteps(a.ops)} Im Frühling ${a.end === "1" ? "ist" : "sind"} noch ${pl(a.end, "Nuss", "Nüsse")} übrig.`, "Wie viele Nüsse waren im Herbst in der Höhle?"],
       aufzug: (a) => [`Ich steige im Hochhaus in den Aufzug. ${a.ops.map((o) => (o.type === "plus" ? `Er fährt ${o.k} Stockwerke hoch.` : `Er fährt ${o.k} Stockwerke runter.`)).join(" ")} Jetzt hält er ${a.end === "0" ? "im Erdgeschoss" : `im ${a.end}. Stock`}.`, "In welchem Stock bin ich eingestiegen?"],
-      teilen: (a) => [`Ich teile meine Murmeln. ${a.ops.map((o, i) => `${["Anna", "Ben", "Clara"][i]} bekommt die Hälfte ${i ? "vom Rest" : "meiner Murmeln"} und noch ${o.k}.`).join(" ")} Mir bleiben ${a.end}.`, "Wie viele Murmeln hatte ich am Anfang?"],
+      teilen: (a) => [`Ich teile meine Murmeln. ${a.ops.map((o, i) => `${["Anna", "Ben", "Clara"][i]} bekommt die Hälfte ${i ? "vom Rest" : "meiner Murmeln"} und noch ${o.k}.`).join(" ")} Mir ${a.end === "1" ? "bleibt" : "bleiben"} ${a.end}.`, "Wie viele Murmeln hatte ich am Anfang?"],
       teich: (a) => [`Die Seerosen auf dem Teich verdoppeln sich jeden Tag. Am Tag ${a.d} ist der Teich ganz bedeckt.`, `An welchem Tag war ${VPART[a.frac]} des Teiches bedeckt?`],
       schimmel: (a) => [`Der Schimmel auf meinem vergessenen Pausenbrot verdoppelt sich jeden Tag. Am Tag ${a.d} ist das ganze Brot grün.`, `An welchem Tag war ${VPART[a.frac]} grün?`],
       geruecht: (a) => [`Ein Gerücht in der Schule: jeden Tag wissen es doppelt so viele. Am Tag ${a.d} weiß es die ganze Schule.`, `An welchem Tag wusste es ${VPART[a.frac]} der Schule?`],
@@ -57,15 +61,15 @@ export default {
     },
     rules: {
       rueck: "Vom Ende her: jeden Schritt umkehren, den letzten zuerst. Aus + wird −, aus · wird :.",
-      halb: "„Die Hälfte und noch k“ rückwärts: erst die k zurücklegen, dann verdoppeln.",
+      halb: "„Die Hälfte und noch 2“ rückwärts: erst die 2 zurücklegen, dann verdoppeln.",
       teich: "Verdoppelt es sich jeden Tag, war es einen Tag vorher halb so viel.",
-      zaun: "Treppen zählen wie Lücken: von Stock 2 bis Stock 5 sind es 3 Treppen. Werkzeug aus Lager 1.",
+      zaun: "Treppen sind wie Lücken: von Stock 2 bis Stock 5 sind es 3 Treppen. Werkzeug aus Lager 1.",
     },
     hints: {
       rueck: "Fang beim Ende an. Was war direkt vor dem letzten Schritt?",
       halb: "Rückwärts: Was war da, bevor die letzten weggegeben wurden? Leg sie zurück, dann verdopple.",
       teich: "Am Tag vorher war es halb so viel. Und am Tag davor?",
-      zaun: "Wie viele Treppen sind die Stufen? Und wie viele Stockwerke ist das?",
+      zaun: "Wie viele Treppen sind das? Teil die Stufen durch die Stufen einer Treppe.",
     },
     miss: {
       rueck: "Nicht ganz. Mach jeden Schritt rückgängig, den letzten zuerst.",

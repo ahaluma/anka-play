@@ -29,7 +29,7 @@ export default {
       sockenjede: (a) => [`In der Kiste liegen ${sList(a.colors, "Socken")}. Es ist stockdunkel.`, "Wie viele musst du mindestens ziehen, damit sicher von jeder Farbe eine dabei ist?"],
       bonbonsjede: (a) => [`In der Tüte sind ${sList(a.colors, "Bonbons")}. Du greifst blind hinein.`, "Wie viele musst du mindestens nehmen, damit sicher von jeder Farbe eins dabei ist?"],
       zweirot: (a) => [`In der Kiste liegen ${sList(a.colors, "Socken")}. Es ist stockdunkel.`, `Wie viele musst du mindestens ziehen, damit sicher ${a.k} ${SCOL[a.want]} dabei sind?`],
-      klasse: (a) => [`In einer Schule sind ${a.n} Kinder in der Theater-AG.`, "Wie viele haben mindestens im selben Monat Geburtstag? So viele sind es ganz sicher."],
+      klasse: (a) => [`In der Theater-AG sind ${a.n} Kinder. Wir verteilen ihre Geburtstage so gleichmäßig wie möglich auf die 12 Monate.`, "Wie viele Geburtstage hat dann der vollste Monat? So viele sind es ganz sicher."],
       monate: (a) => [`Wir wollen ganz sicher ${a.k} Kinder finden, die im selben Monat Geburtstag haben.`, "Wie viele Kinder braucht man dafür mindestens?"],
       punkte: (a) => [`Ein Quadrat ist in ${a.s} mal ${a.s} kleine Quadrate geteilt. Du malst Punkte hinein.`, "Wie viele Punkte musst du malen, damit sicher zwei im selben kleinen Quadrat liegen?"],
       reste: (a) => [`Du schreibst Zahlen auf Karten und teilst jede durch ${a.m}.`, `Wie viele Karten brauchst du, damit sicher ${a.k} denselben Rest haben?`],
@@ -38,10 +38,10 @@ export default {
     },
     units: { socken: "Socken", bonbons: "Bonbons", murmeln: "Murmeln", sockenjede: "Socken", bonbonsjede: "Bonbons", zweirot: "Socken", klasse: "Kinder", monate: "Kinder", punkte: "Punkte", reste: "Karten", farben: "Socken", gleich: "Socken" },
     rules: {
-      schlimm: "Der schlimmste Fall: von jeder Farbe so viele wie möglich, ohne zu gewinnen. Dann noch eine, und es klappt sicher.",
+      schlimm: "Der schlimmste Fall: von jeder Farbe so viele, wie gerade noch nicht reichen. Dann noch eine, und es klappt sicher.",
       jede: "Im schlimmsten Fall kommen zuerst alle, die nicht helfen. Dann erst die, die du brauchst.",
-      schubfach: "Mehr Dinge als Fächer: In ein Fach kommen mindestens zwei. Gleichmäßig verteilen, dann aufrunden.",
-      rest: "Jede Zahl kommt in das Fach ihres Rests. Teilen durch m gibt m Fächer. Werkzeug aus Lager 8.",
+      schubfach: "Mehr Dinge als Fächer: In ein Fach kommen mindestens zwei. So gleichmäßig wie möglich verteilen, dann aufrunden.",
+      rest: "Jede Zahl kommt in das Fach ihres Rests. Beim Teilen durch 5 gibt es 5 Reste, also 5 Fächer. Werkzeug aus Lager 8.",
     },
     hints: {
       schlimm: "Stell dir das größte Pech vor: Wie viele kannst du ziehen, ohne dass es klappt?",
@@ -50,7 +50,7 @@ export default {
       rest: "Wie viele verschiedene Reste gibt es beim Teilen durch diese Zahl?",
     },
     miss: {
-      schlimm: "Nicht ganz. Rechne mit Pech: von jeder Farbe so viele wie möglich, dann eine mehr.",
+      schlimm: "Nicht ganz. Rechne mit Pech: von jeder Farbe so viele, wie gerade noch nicht reichen. Dann eine mehr.",
       jede: "Nicht ganz. Erst kommen alle, die nicht helfen. Wie viele sind das?",
       schubfach: "Nicht ganz. Gleichmäßig auf die Fächer verteilen, dann aufrunden.",
       rest: "Nicht ganz. Jeder Rest ist ein Fach.",

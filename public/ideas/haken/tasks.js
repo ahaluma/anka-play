@@ -75,11 +75,13 @@ const groupsOf = (r, names, sizes) => names.map((name, i) => ({ icons: r.sample(
 
 /** Two choices (level 1) or three (level 2). */
 function product(r, level, big = false) {
-  const story = level === 1 ? r.pick(["eis", "outfit", "brot", "schulweg", "menue"]) : r.pick(["eis3", "outfit3", "menue3"]);
-  const lo = big ? 5 : 2;
-  const hi = big ? 9 : level === 1 ? 5 : 3;
+  // Level 1 starts with 2 × 2 and always shows the things in the picture; "big" is the question after the
+  // rule table (Regel finden), where the numbers grow so that the rule is worth having.
+  const story = level === 1 ? r.pick(big ? ["eis", "outfit", "brot", "schulweg", "menue"] : ["eis", "outfit", "brot", "menue"]) : r.pick(["eis3", "outfit3", "menue3"]);
+  const lo = big ? 4 : 2;
+  const hi = big ? 7 : 3;
   const x = r.int(lo, hi);
-  const y = r.int(big ? 4 : 2, big ? 8 : level === 1 ? 4 : 3);
+  const y = r.int(big ? 3 : 2, big ? 6 : 3);
   const z = level === 1 ? 1 : r.int(2, big ? 5 : 3);
   const names = { eis: ["flavours", "cones"], outfit: ["tops", "bottoms"], brot: ["bread", "topping"], menue: ["soup", "main"], eis3: ["flavours", "cones", "sauce"], outfit3: ["tops", "bottoms", "hats"], menue3: ["soup", "main", "dessert"] }[story];
   const sizes = [x, y, z];
@@ -165,7 +167,7 @@ function sumTask(r) {
 /** The story tasks of a level (Verstehen and Übertragen). kombi: tasks from the backpack's tools too. */
 function storyTask(r, level, kombi) {
   if (kombi && r.chance(0.3)) return fenceKombi(r, level);
-  if (level === 1) return product(r, 1, r.chance(0.3));
+  if (level === 1) return product(r, 1);
   if (level === 2) return r.chance(0.5) ? product(r, 2) : digits(r, 2);
   if (level === 3) return r.pick([() => tournament(r, 3, r.chance(0.5)), () => grid(r, 3), () => seats(r, 3), () => digits(r, 3)])();
   return r.pick([() => grid(r, 4), () => seats(r, 4), () => sumTask(r), () => tournament(r, 4, true), () => digits(r, 4)])();

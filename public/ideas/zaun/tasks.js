@@ -19,7 +19,7 @@
 // (植树问题). The forschen board changes only one thing at a time (teaching by variation).
 //
 // Four levels (the "ranges" of the idea, 1 … 4), up to the hardest this family gets for 12-year-olds:
-//   1  long fences: count posts and boards, up to 20 boards (longer fences are drawn with "…")
+//   1  short fences: count posts and boards, from 2 posts and 1 board up to 7 posts
 //   2  with metres: a fence of 36 m, a post every 4 m; trees on a path; a bell; a tower with platforms
 //   3  backwards and with time: posts → length, sawing takes minutes, bigger numbers
 //   4  masters: a field with four sides and corners, time backwards (minutes → pieces), part of a tower
@@ -104,13 +104,14 @@ function timeTask(story, r, level) {
 function countTask(story, r, level) {
   if (story === "trip") {
     const from = r.int(1, 20);
-    const to = from + r.int(3, level === 1 ? 6 : 10);
+    const to = from + (level === 1 ? r.int(1, 4) : r.int(3, 10));
     const ask = r.pick(["nights", "days"]);
     const t = { story, from, to, ask };
     return { ...t, answer: countFor(t), key: `trip${from}${to}${ask}` };
   }
-  const from = level === 1 ? r.int(3, 30) : level < 4 ? r.int(12, 90) : r.int(60, 400);
-  const to = from + (level === 1 ? r.int(4, 15) : level < 4 ? r.int(15, 60) : r.int(80, 300));
+  // Level 1 starts where the idea starts: from page 5 to page 7 is already three pages, not two.
+  const from = level === 1 ? r.int(2, 9) : level < 4 ? r.int(12, 90) : r.int(60, 400);
+  const to = from + (level === 1 ? r.int(1, 4) : level < 4 ? r.int(15, 60) : r.int(80, 300));
   return { story, from, to, answer: to - from + 1, key: `pages${from}${to}` };
 }
 
@@ -148,13 +149,14 @@ function rectTask(r) {
 const makers = {
   sehen(level, r) {
     const kind = level === 3 ? "trees" : level === 4 ? r.pick(["line", "trees"]) : "line";
-    const posts = level === 1 ? r.int(8, 16) : level === 2 ? r.int(15, 40) : level === 3 ? r.int(12, 40) : r.int(50, 150);
+    // Level 1: small enough to count each gap in the picture (2 posts, 1 board is where the idea starts).
+    const posts = level === 1 ? r.int(2, 7) : level === 2 ? r.int(15, 40) : level === 3 ? r.int(12, 40) : r.int(50, 150);
     const look = lookFor(kind, r);
     return { kind, look, posts, answer: kind === "line" ? posts - 1 : posts + 1, key: `${look}${kind}${posts}` };
   },
   machen(level, r) {
     if (level === 1) {
-      const boards = r.int(5, 9);
+      const boards = r.int(2, 5);
       return { mode: "boards", boards, slots: boards + 3, key: `b${boards}` };
     }
     // Spots along a path, one every `step` metres. Plant every `every` metres.
@@ -170,9 +172,10 @@ const makers = {
   },
   forschen(level, r) {
     if (level === 1) {
+      // Level 1: a real fence (the plainest picture), short enough to see every board.
       const kind = r.pick(["line", "trees", "ring"]);
-      const boards = r.int(6, 20);
-      const look = lookFor(kind, r);
+      const boards = r.int(kind === "line" ? 2 : 3, 6); // trees: at least 2 posts, ring: at least 3
+      const look = "zaun";
       return { kind, look, boards, ask: "posts", answer: postsFor(kind, boards), key: `${look}${kind}${boards}` };
     }
     if (level === 2) {
@@ -194,7 +197,7 @@ const makers = {
     if (level === 1) {
       const story = r.pick(["saw", "beads", "necklace", "choc", "train", "pages", "trip"]);
       if (story === "pages" || story === "trip") return countTask(story, r, level);
-      const n = story === "saw" || story === "choc" ? r.int(5, 12) : r.int(6, 18);
+      const n = r.int(story === "necklace" ? 3 : 2, 7);
       return { story, n, answer: gapsFor(story, n), key: `${story}${n}` };
     }
     if (level === 4) return r.pick([sawBack, towerPart, (q) => timeTask(q.pick(["bell", "run", "floors"]), q, 3), (q) => countTask("pages", q, 4)])(r);

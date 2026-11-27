@@ -25,6 +25,7 @@ export const IDEA = {
   ],
   start: { byAge: { 3: "offen-3", 4: "offen-5", 5: "verdeckt-5", 6: "verdeckt-7", 7: "verdeckt-10", 8: "verdeckt-15" } },
   perspectives: ["spielen"],
+  silent: true, // nothing is read aloud: a turned card, a pair and a miss each make a short sound (engine/ui/play.js)
   roundTasks: { spielen: 3 }, // three boards are a game (think-lab: three stars)
 
   recipes: {

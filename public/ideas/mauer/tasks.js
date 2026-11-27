@@ -30,7 +30,7 @@ export function build(bottom) {
 /** a wall of 3 or 4: the bottom is given, what is on top? */
 function topTask(r, level) {
   const len = level === 1 ? 3 : 4;
-  const bottom = Array.from({ length: len }, () => r.int(1, level === 1 ? 12 : 25));
+  const bottom = Array.from({ length: len }, () => r.int(1, level === 1 ? 9 : 25));
   const rows = build(bottom);
   const story = r.pick(["mauer", "turm"]);
   return { story, a: { bottom, top: rows[0][0], len, middle: rows.at(-2) }, pic: { wall: rows.map((row, i) => (i === rows.length - 1 ? row : row.map(() => null)).map((x, j) => (i === 0 ? "?" : x))) }, answer: rows[0][0], tool: "mauer", key: `t${bottom.join(",")}` };
@@ -38,7 +38,8 @@ function topTask(r, level) {
 
 /** a wall of 3 with the middle bottom brick missing: the top and the corners are known */
 function gapTask(r, level) {
-  const [x, b, z] = [r.int(1, 20), r.int(1, level === 2 ? 20 : 40), r.int(1, 20)];
+  // Level 1 (the rule table): small corners, and a middle past the table's 1, 2, 3, 4.
+  const [x, b, z] = level === 1 ? [r.int(1, 9), r.int(5, 10), r.int(1, 9)] : [r.int(1, 20), r.int(1, level === 2 ? 20 : 40), r.int(1, 20)];
   const rows = build([x, b, z]);
   const T = rows[0][0];
   return { story: "luecke", a: { x, z, T, rest: T - x - z, b }, pic: { wall: [[T], [null, null], [x, "?", z]] }, answer: b, tool: "luecke", key: `g${x}${b}${z}` };

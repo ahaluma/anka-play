@@ -4,9 +4,10 @@
 // Face down: a wrong pair is part of the game, the cards are only read out and turn back.
 //
 // Task (recipe in idea.js): numbers, things (one per number), order (where each card lies), open.
-// Texts: ask, card (v.kind, v.n, v.thing), match (v.n), miss, right, hint.
+// Texts: ask, miss, right, hint. They are shown, never read aloud (the idea is silent): a turned card, a pair and a miss each make a short sound.
 
 import { el, button, shake, wait } from "../../engine/ui/parts.js";
+import { sound } from "../../engine/ui/sound.js";
 
 export function draw(host, t, ctx) {
   const { numbers, things, order, open } = t.vars;
@@ -17,7 +18,6 @@ export function draw(host, t, ctx) {
   let locked = false;
 
   const turn = (c, up) => c.el.classList.toggle("down", !up);
-  const say = (c) => ctx.tell("card", { kind: c.kind, n: c.n, thing: c.thing });
 
   for (const at of order) {
     const c = cards[at];
@@ -47,8 +47,7 @@ export function draw(host, t, ctx) {
       picked = c;
       turn(c, true);
       c.el.classList.add("picked");
-      ctx.tap();
-      say(c);
+      ctx.tap(); // a short sound, no voice: the card shows what it is
       return;
     }
     const first = picked;
@@ -59,8 +58,7 @@ export function draw(host, t, ctx) {
       for (const x of [first, c]) x.el.classList.add("found", "bounce");
       found++;
       if (found < numbers.length) {
-        ctx.tap();
-        ctx.tell("match", { n: c.n });
+        sound.right();
         return;
       }
       locked = true;
@@ -71,7 +69,7 @@ export function draw(host, t, ctx) {
     locked = true;
     for (const x of [first, c]) shake(x.el);
     if (open) await ctx.miss({ given: c.n });
-    else await say(c);
+    else ctx.tap();
     await wait(open ? 300 : 1400); // face down: time to look at both cards
     if (!grid.isConnected) return;
     if (!open) for (const x of [first, c]) turn(x, false);

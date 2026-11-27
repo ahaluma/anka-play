@@ -36,10 +36,10 @@ export default {
     },
     units: { stall: "Ziegen", fahrrad: "Dreiräder", tische: "Tische", boote: "Boote", spinnen: "Spinnen", muenzen: "Stück", quiz: "richtig", drei: "Hühner", gewicht: "Ziegen" },
     rules: {
-      annehmen: "Annehmen: alle sind von der kleinen Sorte. Was fehlt, geteilt durch den Unterschied, ergibt die große Sorte.",
+      annehmen: "Nimm an, alle sind von der kleinen Sorte. Was dann fehlt, teilst du durch das, was ein Tausch mehr bringt.",
       drei: "Hühner und Enten haben gleich viele Beine: erst wie eine Sorte zählen, dann die Enten abziehen.",
       quiz: "Annehmen: alles richtig. Jede falsche Antwort kostet 5 + 2 = 7 Punkte.",
-      waage: "Dasselbe mit Gewichten: alle leicht annehmen, der Rest geteilt durch den Unterschied. Werkzeug aus Lager 6.",
+      waage: "Dasselbe mit Gewichten: erst alle leicht annehmen. Was fehlt, durch den Unterschied teilen. Werkzeug aus Lager 6.",
     },
     hints: {
       annehmen: "Stell dir vor, alle sind von der kleinen Sorte. Wie viel fehlt dann noch? Wie viel bringt ein Tausch?",
@@ -48,16 +48,16 @@ export default {
       waage: "Stell dir vor, alle sind Hühner. Wie viele kg fehlen? Wie viel schwerer ist eine Ziege?",
     },
     miss: {
-      annehmen: "Nicht ganz. Erst alle klein annehmen, dann den Rest durch den Unterschied teilen.",
+      annehmen: "Nicht ganz. Nimm erst an, alle sind von der kleinen Sorte. Wie viel fehlt? Wie viel bringt ein Tausch?",
       drei: "Nicht ganz. Erst die Ziegen finden, dann die Enten von den Vögeln abziehen.",
       quiz: "Nicht ganz. Eine falsche Antwort kostet 7 Punkte gegenüber einer richtigen.",
       waage: "Nicht ganz. Erst alle leicht annehmen, dann den Rest durch den Unterschied teilen.",
     },
     tables: { tausch: (a) => [SBIG[a.kind], SWHAT[a.kind]] },
-    tableIntro: { tausch: (f, a) => `Stell dir vor, alle ${a.n} sind ${SSMALL[a.kind]}. Dann tauschst du eins nach dem anderen:` },
+    tableIntro: { tausch: (f, a) => `Stell dir vor, alle ${a.n} sind ${SSMALL[a.kind]}. Dann tauschst du einen nach dem anderen um:` },
     reasons: {
       other: "Sie hat die andere Sorte gezählt.",
-      divide: "Sie hat vergessen, durch den Unterschied zu teilen.",
+      divide: "Sie hat vergessen zu teilen: ein Tausch bringt mehr als 1.",
       base: "Sie hat einfach geteilt, als wären alle von der großen Sorte.",
       minus: "Sie hat vergessen, dass eine falsche Antwort Punkte kostet.",
       ducks: "Sie hat die Enten mitgezählt.",

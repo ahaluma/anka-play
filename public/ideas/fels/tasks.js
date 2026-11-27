@@ -145,7 +145,7 @@ function handsOn(r, level) {
 /** Regel finden: small figures in a table, then a big one. */
 function ruleTask(r, level) {
   if (level === 1) {
-    const m = r.int(6, 12);
+    const m = r.int(5, 8);
     return { story: "faechergross", a: { m, rays: m + 1, small: m, one: C2(m + 1) }, answer: fanCount(m, 1), tool: "ordnung", table: { id: "faecher", rows: [1, 2, 3].map((i) => [i, fanCount(i, 1)]), next: [4, fanCount(4, 1)] }, key: `tf${m}` };
   }
   if (level === 2 || (level === 3 && r.chance(0.5))) {

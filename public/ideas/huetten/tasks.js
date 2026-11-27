@@ -15,7 +15,7 @@
 //   luege     truth-tellers and liars: try each suspect and count the true sentences
 //   zaehlen   Kombi with camp 2: how many arrangements are still possible after the clues?
 //
-// Four levels: 1 three people, two or three clues · 2 four people, only "not" clues · 3 two kinds of
+// Four levels: 1 two or three people, one to three clues · 2 four people, only "not" clues · 3 two kinds of
 // things at once, counting what is left · 4 seats in a row, liars, five people.
 //
 //   task({ p, range }, r) → { kind, story, n, clues, solution, ask, answer, options, tool, key }
@@ -157,14 +157,18 @@ const levels = {
 };
 
 function gridTask(r, level, story = null) {
-  const spec = level === 4 && r.chance(0.35) ? { kind: "grid", n: 5, types: ["not", "not", "is"], most: 8 } : levels[level];
+  // Level 1 starts with two children and one clue: the smallest puzzle where ruling out already decides.
+  const spec = level === 4 && r.chance(0.35) ? { kind: "grid", n: 5, types: ["not", "not", "is"], most: 8 } : level === 1 && r.chance(0.4) ? { ...levels[1], n: 2, types: ["not"] } : levels[level];
   const made = puzzle(r, spec);
   const kind = spec.kind;
   const dims = spec.dims ?? 1;
   const st = kind === "seats" ? "bus" : story ?? r.pick(dims === 2 ? ONE.filter((k) => k !== "zimmer") : ONE);
   const kinds = kind === "seats" ? ["sitz"] : dims === 2 ? [st, "haus"] : [st];
   const base = { kind, story: st, kinds, n: spec.n, clues: made.clues, tool: kind === "seats" ? "reihe" : dims === 2 ? "kette" : level === 1 ? "rest" : "tabelle" };
-  const t = asked(r, base, made.w, spec.n, dims);
+  // Never ask what a clue already says outright ("Ben schläft in Zimmer 1. Wer schläft in Zimmer 1?").
+  let t = asked(r, base, made.w, spec.n, dims);
+  const told = (x) => made.clues.some((c) => c.type === "is" && c.d === x.ask.d && c.v === x.ask.v);
+  for (let i = 0; i < 20 && told(t); i++) t = asked(r, base, made.w, spec.n, dims);
   return { ...t, key: `${st}${JSON.stringify(made.clues)}${t.ask.d}${t.ask.v}` };
 }
 
@@ -211,7 +215,7 @@ function countTask(r, level) {
 
 /** Regel finden here: clue after clue, how many arrangements are left? Then the question. */
 function stepTask(r, level) {
-  const spec = level === 1 ? { kind: "grid", n: 3, types: ["not", "not", "is"], most: 3 } : level === 2 ? { kind: "grid", n: 3, types: ["not"], most: 4 } : level === 3 ? { kind: "grid", n: 4, types: ["not", "is"], most: 5 } : { kind: "seats", n: 4, types: ["end", "next", "apart", "leftof"], most: 5 };
+  const spec = level === 1 ? (r.chance(0.4) ? { kind: "grid", n: 2, types: ["not"], most: 1 } : { kind: "grid", n: 3, types: ["not", "not", "is"], most: 3 }) : level === 2 ? { kind: "grid", n: 3, types: ["not"], most: 4 } : level === 3 ? { kind: "grid", n: 4, types: ["not", "is"], most: 5 } : { kind: "seats", n: 4, types: ["end", "next", "apart", "leftof"], most: 5 };
   const made = puzzle(r, spec);
   const all = worlds(spec.n, 1);
   const steps = made.clues.map((_, i) => fits(made.clues.slice(0, i + 1), all).length);
