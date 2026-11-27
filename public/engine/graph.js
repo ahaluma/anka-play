@@ -11,11 +11,13 @@
 //   rounds: (station) => number,
 //   visited: (station) => boolean,
 //   parent: (key) => boolean,                // a switch on the parents' page
+//   ready?: (station) => boolean,            // optional: has the station something to play yet? Guidance skips it
 // }
 
 import { MAPS, STATIONS, EDGES, HOME, HOME_DOORS, BANDS } from "../content/universe.js";
 
-export const station = (id) => STATIONS.find((s) => s.id === id) || null;
+export const STATIONS_BY_ID = Object.fromEntries(STATIONS.map((s) => [s.id, s]));
+export const station = (id) => STATIONS_BY_ID[id] || null;
 export const map = (id) => MAPS.find((m) => m.id === id) || null;
 export const bandOf = (stationId) => map(station(stationId)?.map)?.band ?? null;
 
@@ -125,11 +127,12 @@ export function near(id, min = 0.5) {
  *  A suggestion, never a lock: conditions alone decide what is open. */
 export function next(id, facts) {
   const can = reachable(facts);
-  const candidates = near(id, 0).filter((x) => can.has(x.id) && stationOpen(x.id, facts) && !isMastered(x.id, facts));
+  const ready = (s) => facts.ready?.(s) ?? true;
+  const candidates = near(id, 0).filter((x) => can.has(x.id) && ready(x.id) && stationOpen(x.id, facts) && !isMastered(x.id, facts));
   if (candidates.length) return candidates[0].id;
   // Nothing near is left: the nearest unmastered reachable station on the same map, then any in the band.
   const here = station(id);
-  const rest = STATIONS.filter((s) => s.id !== id && bandOf(s.id) === bandOf(id) && can.has(s.id) &&
+  const rest = STATIONS.filter((s) => s.id !== id && bandOf(s.id) === bandOf(id) && can.has(s.id) && ready(s.id) &&
     stationOpen(s.id, facts) && !isMastered(s.id, facts));
   return (rest.find((s) => s.map === here.map) ?? rest[0])?.id ?? null;
 }

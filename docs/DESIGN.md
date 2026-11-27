@@ -206,8 +206,10 @@ anwenden: {                                   // zahl, use: more, fewer or the s
 }
 ```
 
-The engine (`engine/recipe.js`, about 90 lines) draws, retries until the rules hold, avoids repeats, adds the
-two near wrong options, and hands the board plain data. `$max` comes from the rung's params, so the same
+The engine (`engine/recipe.js`, about 150 lines) draws, retries until the rules hold, avoids repeats, adds the
+two near wrong options, and hands the board plain data. A perspective with several kinds of task (the meadow's
+"use": compare, one more or less, make both the same) lists them as `variants`, each with a `weight` and an
+optional `when` that limits it to some rungs. `$max` comes from the rung's params, so the same
 recipe serves every rung. The mistake of a wrong answer is also an expression (`oneOff` when
 `|given − right| = 1`), so every station, not only the market, knows its typical mistakes. `zahl` is
 written completely this way, and `check-ideas` makes and checks 10,000 of its tasks.
@@ -233,7 +235,11 @@ written completely this way, and `check-ideas` makes and checks 10,000 of its ta
 | `raster` | a grid: ways, boards, colouring | haken, schauen, socken |
 | `text` | a word problem with one picture | platz, the mountain |
 
-Every board takes the same extras: `hide` (cover part of it after a moment), `owl` (the owl claims
+A board is one module, `boards/<name>.js`, with `draw(host, task, ctx)` returning `{ ready, ownAnswer, onAnswer,
+hint }`. The frame (`engine/ui/play.js`) draws the answer buttons for `choose`, `type` and `yesNo` and checks every
+answer against the recipe's right one; a board takes `build`, `order`, `place` and `tapThings` itself. The
+sentences come from the idea's language files under the recipe's `ask` (`ask`, `right`, `miss`, `hint`, and
+what the board needs, like `look` or `start`). Every board takes the same extras: `hide` (cover part of it after a moment), `owl` (the owl claims
 something, the child checks: the whole "check" perspective in one place), `story` (steps shown one after
 the other). Seven answer modes: `choose`, `type`, `tapThings`, `build`, `order`, `place`, `yesNo`.
 
@@ -379,8 +385,8 @@ in Nepal.
 
 ## 11. After you agree: the order of work
 
-1. Engine core: graph (done here), recipe (done here), learner, policy, round, router, question and voice.
-2. The Tal map with wiese (zahl, already written as data) end to end, on the phone.
+1. Engine core: graph, recipe, learner, policy, round, router, question and voice. **Done.**
+2. The Tal map with wiese (zahl, already written as data) end to end, on the phone. **Done.**
 3. The other 10 Tal stations, ported from think-lab's ideas into recipes and boards.
 4. Fluss and Feld; the Feld policy (learning box, bridges).
 5. Berg: recipes where they fit, `tasks.js` for the camps that need a solver.
