@@ -494,13 +494,14 @@ export async function render(root, route) {
       done.append(feelBox);
     }
 
-    // The tour (Tal), decided: the owl stays at this station until all its stars are there. First the ways the
-    // child has not tried yet, then the ways without a star, in their order (this way itself last: the owl then
-    // plays it again). Only when the station is mastered does it walk the child on to the next station.
+    // Decided, on every map: the owl stays at this station until all its stars are there. First the ways the
+    // child has not tried yet, then the ways without a star, in their order, else the way the station suggests
+    // (it may be this one: the owl then plays it again). Only a mastered station sends the child on: the Tal
+    // walks there (tour), Fluss and Feld mark the next station (hint), the Berg as well (glimpse).
     const gNow = L.groupOf(def, res.level);
-    const ways = m.guide === "tour" && !L.isGame(def) && !f.mastered(s.id) ? def.perspectives : [];
-    const nextWay = ways.find((x) => x !== p && !L.played(state.rec, def.id, x)) ??
-      ways.find((x) => x !== p && !L.starred(state.rec, def, x, gNow)) ?? (ways.length && !L.starred(state.rec, def, p, gNow) ? p : null);
+    const ways = m.guide !== "none" && !L.isGame(def) && !f.mastered(s.id) ? def.perspectives : [];
+    const nextWay = !ways.length ? null : ways.find((x) => x !== p && !L.played(state.rec, def.id, x)) ??
+      ways.find((x) => x !== p && !L.starred(state.rec, def, x, gNow)) ?? L.suggest(state.rec, def, kidAge);
     const nextId = m.guide !== "none" && !nextWay ? nextOf(s.id, f) : null;
     const nav = el("div", "next");
     const again = button("btn", T.labels.again, small ? "" : T.labels.again);
@@ -518,6 +519,7 @@ export async function render(root, route) {
         startRound();
       });
       follow.append(el("span", "", "🦉"), el("span", "", PERSPECTIVES.find((x) => x.id === nextWay).icon));
+      if (!small) follow.append(el("span", "", names[nextWay]));
       follow.setAttribute("aria-label", `${T.round.followShort}: ${names[nextWay]}`);
       done.append(follow);
     } else if (nextId) {
