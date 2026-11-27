@@ -168,7 +168,7 @@ example wiese and steg: how many / where on the line). Nearness is used three wa
 
    | guide | Map | What the child sees |
    | --- | --- | --- |
-   | `tour` | Tal | a guided tour for small children: after a round the guide (the owl) walks along the path to `next()` and the child only has to follow |
+   | `tour` | Tal | a guided tour for small children: after a round the owl first shows the ways of the same station not tried yet, then the ways without a star (decided: it stays until all the station's stars are in); then it walks along the path to `next()` and the child only has to follow. The round end there speaks only news and every button is a picture |
    | `hint` | Fluss, Feld | the map marks `next()` and the station points at it; the child may go anywhere |
    | `glimpse` | Berg | `next()` plus `glimpse()`: near stations still in the fog or locked, with what opens them, to wake curiosity |
 
