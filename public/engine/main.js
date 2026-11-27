@@ -12,6 +12,7 @@ const screens = {
   station: () => import("./ui/station.js"),
   play: () => import("./ui/play.js"),
   gate: () => import("./ui/play.js"),
+  eltern: () => import("../eltern/eltern.js"),
 };
 
 let cleanup = null;
@@ -36,3 +37,11 @@ async function show() {
 
 window.addEventListener("hashchange", show);
 show();
+
+// Works without a connection after the first visit (sw.js). Network first, so a change still shows at once.
+// (The modules wait for their texts, so the page may have loaded already.)
+if ("serviceWorker" in navigator) {
+  const register = () => navigator.serviceWorker.register("/sw.js").catch(() => {});
+  if (document.readyState === "complete") register();
+  else addEventListener("load", register);
+}

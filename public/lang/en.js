@@ -31,6 +31,9 @@ export default {
     whereTo: "Where are we going today?",
     soon: "Soon",
     privacy: "Everything stays on this device. No ads, no tracking.",
+    privacyLink: "Privacy",
+    parents: "Parents",
+    parentsLabel: "For parents: progress, settings, backup",
   },
 
   maps: {

@@ -167,7 +167,7 @@ const rel = (a, b, nearness) => [{ from: a, to: b, kind: "relation", nearness }]
 const mastered = (...ids) => ({ mastered: ids });
 
 /** The third way into the Berg: the school basics mastered. */
-const BERG_BASICS = mastered("steg", "blumenfeld", "apfelbaum", "beeren");
+export const BERG_BASICS = mastered("steg", "blumenfeld", "apfelbaum", "beeren");
 
 export const EDGES = [
   // ---- Tal: hubs and the stations behind them -------------------------------------------------

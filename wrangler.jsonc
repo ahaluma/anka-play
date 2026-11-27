@@ -5,8 +5,13 @@
   "compatibility_date": "2026-11-01",
   "assets": {
     "directory": "./public",
-    "not_found_handling": "single-page-application"
+    // Any unknown address shows the one page (the app finds its screen after "#").
+    "not_found_handling": "single-page-application",
+    // /datenschutz/ serves datenschutz/index.html.
+    "html_handling": "auto-trailing-slash"
   },
+  // Preview links for pull requests: the same settings as above.
   "previews": {},
+  // Nothing to log: no code runs, and no tracking.
   "observability": { "enabled": false }
 }

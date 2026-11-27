@@ -5,6 +5,8 @@
 //   #/s/wiese              a station: its perspectives with stars
 //   #/s/wiese/sehen        a round (a station with several ideas: #/s/bau/zehn/sehen)
 //   #/gate/steg            the first-visit questions of a station (only when they are due)
+//   #/eltern               for parents: the children, their progress per map and station, switches, backup
+//                          (#/eltern?kind=k1 shows that child)
 
 import { PERSPECTIVES } from "../content/perspectives.js";
 
@@ -14,6 +16,7 @@ export function parse(hash = location.hash) {
   const [path, query = ""] = hash.replace(/^#\/?/, "").split("?");
   const parts = path.split("/").filter(Boolean).map(decodeURIComponent);
   const q = Object.fromEntries(new URLSearchParams(query));
+  if (parts[0] === "eltern") return { screen: "eltern", q };
   if (parts[0] === "map" && parts[1]) return { screen: "map", map: parts[1], q };
   if (parts[0] === "gate" && parts[1]) return { screen: "gate", station: parts[1], q };
   if (parts[0] === "s" && parts[1]) {
@@ -36,4 +39,5 @@ export const href = {
   station: (id, idea = null) => `#/s/${id}${idea ? "/" + idea : ""}`,
   play: (id, idea, p, many = false) => `#/s/${id}${many ? "/" + idea : ""}/${p}`,
   gate: (id) => `#/gate/${id}`,
+  parents: (kid = null) => `#/eltern${kid ? "?kind=" + encodeURIComponent(kid) : ""}`,
 };
