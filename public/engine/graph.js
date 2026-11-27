@@ -120,11 +120,12 @@ export function near(id, min = 0.5) {
 /** The journey (decided): nearness guides the child from station to station, the way the Denk-Berg's camps
  *  lead upwards. next() is the nearest station that is reachable, open and not mastered yet, same band only.
  *  How a map shows it is its `guide`:
- *    tour     small children: after a round the owl shows the station's ways without a star; once the station is
- *             mastered, it walks the child along the path to next() (Tal, engine/ui/play.js finish)
+ *    tour     small children: after a round the guide walks the child along the path to next() (Tal)
  *    hint     the map marks next() and the station screen points at it; the child may go anywhere (Fluss, Feld)
  *    glimpse  next() plus glimpse(): near stations still in the fog or locked, with what opens them,
  *             to wake curiosity (Berg)
+ *  On every map the round end first keeps the child at its station until the station is mastered (decided:
+ *  the ways not tried yet, then the ways without a star; engine/ui/play.js finish), and only then points to next().
  *  A suggestion, never a lock: conditions alone decide what is open. */
 export function next(id, facts) {
   const can = reachable(facts);

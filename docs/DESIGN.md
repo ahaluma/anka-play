@@ -172,6 +172,9 @@ example wiese and steg: how many / where on the line). Nearness is used three wa
    | `hint` | Fluss, Feld | the map marks `next()` and the station points at it; the child may go anywhere |
    | `glimpse` | Berg | `next()` plus `glimpse()`: near stations still in the fog or locked, with what opens them, to wake curiosity |
 
+   On every map the round end keeps the child at its station first (decided): the owl offers the ways not
+   tried yet, then the ways without a star, and only when the station is mastered does it point to `next()`.
+
    It guides, it never locks: conditions alone decide what is open. `check-graph` walks the tour from every
    map's entry and proves it reaches every station of the band a child of that age can reach.
 3. **Review tasks.** One task per round from a near station (nearness 0.5 or more) the child has already
