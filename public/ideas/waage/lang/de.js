@@ -18,7 +18,8 @@ const WN = {
 };
 const wn = (n, id) => `${n} ${n === "1" ? WN[id][0] : WN[id][1]}`;
 const wList = (ws) => ws.map((w) => `${w} kg`).join(" und ");
-const scales = (a, b) => `Auf der ersten Waage liegen links ${wn(a[0], a[1])}, rechts ${wn(a[2], a[3])}. Auf der zweiten links ${wn(b[0], b[1])}, rechts ${wn(b[2], b[3])}. Beide sind im Gleichgewicht.`;
+const weighs = (n) => (n === "1" ? "wiegt" : "wiegen");
+const scales = (a, b) => `Erste Waage: ${wn(a[0], a[1])} ${weighs(a[0])} so viel wie ${wn(a[2], a[3])}. Zweite Waage: ${wn(b[0], b[1])} ${weighs(b[0])} so viel wie ${wn(b[2], b[3])}.`;
 
 export default {
   ...B,
@@ -36,7 +37,7 @@ export default {
     grew: "Logbuch: Was gleich schwer ist, kann sich vertreten.",
     kg: (n) => `${n} kg`,
     stories: {
-      tausch: (a) => [`Auf der Marktwaage: 1 ${WN[a.big][0]} wiegt so viel wie ${wn(a.k, a.small)}. Jetzt liegen links ${wn(a.nb, a.big)} und ${wn(a.ns, a.small)}.`, `Wie viele ${WN[a.small][1]} müssen rechts liegen, damit die Waage gerade ist?`],
+      tausch: (a) => [`Obere Waage: 1 ${WN[a.big][0]} wiegt so viel wie ${wn(a.k, a.small)}. Untere Waage: links liegen ${wn(a.nb, a.big)} und ${wn(a.ns, a.small)}.`, `Wie viele ${WN[a.small][1]} müssen rechts hin, damit die Waage gerade ist?`],
       zwei: (a) => [scales(["1", a.big, a.k, a.mid], ["1", a.mid, a.m, a.small]), `Wie viele ${WN[a.small][1]} wiegen so viel wie ${wn(a.n, a.big)}?`],
       korb: (a) => [`Im Korb liegen ${wn(a.c, a.thing)}, alle gleich schwer. Mit dem Korb zusammen wiegen sie ${a.w} kg. Der leere Korb wiegt ${a.b} kg.`, `Wie schwer ist ${WN[a.thing][3]}?`],
       taschen: (a) => [`Annas und Bens Schultaschen wiegen zusammen ${a.s} kg. Annas Tasche ist ${a.d} kg schwerer als Bens.`, "Wie schwer ist Annas Tasche?"],
@@ -54,9 +55,9 @@ export default {
       ersetzen: "Was gleich schwer ist, darf tauschen: jedes große Ding gegen so viele kleine, wie es wiegt.",
       zwei: "Zwei Waagen: zweimal tauschen, bis nur noch eine Sorte übrig ist.",
       abziehen: "Was auf beiden Seiten gleich ist, darf weg: erst den Korb weg, dann teilen.",
-      summe: "Summe und Unterschied: den Unterschied dazu, dann sind es zwei Schwere. Halbieren.",
+      summe: "Leg den Unterschied dazu. Dann ist es zweimal der Schwere. Halbieren.",
       drei: "Alle Paare zusammen: Darin ist jedes Ding zweimal. Halbieren.",
-      kette: "Such eine Zahl, die ohne Rest tauscht. Dann in diesen Schritten weiter.",
+      kette: "Such eine Anzahl, die glatt aufgeht. Dann in solchen Schritten weiter.",
       gewichte: "Ein Gewicht neben dem Paket zählt minus, eins auf der anderen Seite plus.",
       rueck: "Was weg ist, war die Hälfte. Doppelt so viel ist alles, der Rest ist der leere Behälter. Werkzeug aus Lager 4.",
     },
@@ -74,7 +75,7 @@ export default {
       ersetzen: "Nicht ganz. Jedes große Ding sind mehrere kleine. Vergiss die kleinen nicht, die schon da liegen.",
       zwei: "Nicht ganz. Zweimal tauschen.",
       abziehen: "Nicht ganz. Erst den Korb abziehen, dann teilen.",
-      summe: "Nicht ganz. Unterschied dazu, dann halbieren.",
+      summe: "Nicht ganz. Erst den Unterschied dazu, dann halbieren.",
       drei: "Nicht ganz. In allen Waagen zusammen ist jedes Tier zweimal.",
       kette: "Nicht ganz. Geh in Schritten, die ohne Rest tauschen.",
       gewichte: "Nicht ganz. Gewichte neben dem Paket zählen minus.",
@@ -91,7 +92,7 @@ export default {
       kette: (f, a) => `${wn(a.p, a.big)} gegen ${wn(a.q, a.mid)}, ${wn(a.u, a.mid)} gegen ${wn(a.v, a.small)}. Bei diesen Zahlen geht es glatt auf:`,
     },
     reasons: {
-      rest: "Sie hat die kleinen Dinge vergessen, die schon auf der Waage lagen.",
+      rest: "Sie hat die kleinen Dinge vergessen, die schon links lagen.",
       all: "Sie hat auch die kleinen Dinge noch einmal getauscht.",
       add: "Sie hat zusammengezählt statt getauscht.",
       once: "Sie hat nur einmal getauscht, nicht zweimal.",

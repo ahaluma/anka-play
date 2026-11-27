@@ -67,7 +67,8 @@ function weightTask(r) {
 
 function storyTask(r, level, kombi) {
   if (kombi && r.chance(0.3)) return weightTask(r);
-  if (level === 1) return assume(r, r.pick(["stall", "stall", "boote"]), r.int(3, 6));
+  // Level 1 starts at 2 animals (one of each): the smallest stall where assuming already works.
+  if (level === 1) return assume(r, r.pick(["stall", "stall", "boote"]), r.int(2, 5));
   if (level === 2) {
     const story = r.pick(["stall", "tische", "boote", "fahrrad"]);
     return assume(r, story, r.int(8, 30));
@@ -79,14 +80,14 @@ function storyTask(r, level, kombi) {
 /** Ausprobieren: all are the small kind at first. Tap one to swap it, until the total is right. */
 function handsOn(r, level) {
   const story = level === 1 ? "stall" : level === 2 ? r.pick(["stall", "boote"]) : r.pick(["fahrrad", "spinnen", "muenzen"]);
-  const n = level === 1 ? r.int(3, 6) : level === 2 ? r.int(6, 12) : r.int(10, 16);
+  const n = level === 1 ? r.int(2, 5) : level === 2 ? r.int(6, 12) : r.int(10, 16);
   const t = assume(r, story, n);
   return { ...t, mode: "swap", icons: KINDS[story].icons, key: `m${t.key}` };
 }
 
 /** Regel finden: 0, 1, 2 of the big kind; then the real question. */
 function ruleTask(r, level) {
-  const t = level === 1 ? assume(r, "stall", r.int(4, 6)) : level === 2 ? assume(r, r.pick(["stall", "boote", "tische"]), r.int(10, 30)) : assume(r, r.pick(["fahrrad", "spinnen", "muenzen"]), r.int(15, 50));
+  const t = level === 1 ? assume(r, "stall", r.int(3, 6)) : level === 2 ? assume(r, r.pick(["stall", "boote", "tische"]), r.int(10, 30)) : assume(r, r.pick(["fahrrad", "spinnen", "muenzen"]), r.int(15, 50));
   const row = (k) => [k, t.a.base + k * t.a.diff];
   return { ...t, table: { id: "tausch", rows: [0, 1, 2].map(row), next: row(3) } };
 }

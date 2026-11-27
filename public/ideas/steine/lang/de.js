@@ -23,7 +23,7 @@ export default {
     grew: "Logbuch: Wer vom Ende her denkt, weiß schon am Anfang, wer gewinnt.",
     choices: { who: ["Ich, ich fange an", "Die Eule"] },
     stories: {
-      steine: (a) => [`Vor dir liegen ${a.n} Steine. Du und die Eule nehmt abwechselnd 1 bis ${a.k} Steine. Wer den letzten nimmt, gewinnt. Du fängst an.`, "Wie viele Steine musst du jetzt nehmen, damit du sicher gewinnst?"],
+      steine: (a) => [`Vor dir liegen ${a.n} Steine. Du und die Eule nehmt abwechselnd 1 bis ${a.k} Steine. Wer den letzten nimmt, gewinnt. Du fängst an.`, "Wie viele nimmst du jetzt, damit du sicher gewinnst?"],
       hoelzer: (a) => [`${a.n} Streichhölzer liegen auf dem Tisch. Abwechselnd nehmt ihr 1 bis ${a.k}. Wer das letzte nimmt, gewinnt. Du bist zuerst dran.`, "Wie viele musst du nehmen, damit du sicher gewinnst?"],
       kekse: (a) => [`Auf dem Teller liegen ${a.n} Kekse. Du und dein Bruder nehmt abwechselnd 1 bis ${a.k}. Wer den letzten bekommt, darf den Abwasch auslassen. Du fängst an.`, "Wie viele Kekse nimmst du zuerst, um sicher zu gewinnen?"],
       chili: (a) => [`In der Schale sind ${a.n} Bonbons. Das letzte ist ein Chili-Bonbon! Abwechselnd nehmt ihr 1 bis ${a.k}. Wer das letzte nehmen muss, verliert. Du fängst an.`, "Wie viele nimmst du zuerst, damit die Eule das Chili-Bonbon bekommt?"],
@@ -35,11 +35,11 @@ export default {
     },
     units: { steine: "", hoelzer: "", kekse: "", chili: "", zaehlen: "", zwei: "", schokolade: "Brüche", schokower: "", fallen: "" },
     rules: {
-      falle: `Vom Ende her: Wer vor k + 1 Steinen dran ist, verliert. Also auch vor dem Doppelten, dem Dreifachen … Lass der Eule immer so einen Haufen.`,
+      falle: "Vom Ende her: Darf man 1 oder 2 nehmen, verliert, wer vor 3 Steinen dran ist. Und vor 6, 9, 12 … Lass der Eule immer so einen Haufen.",
       letzter: "Wenn der letzte verliert: Lass der Eule genau 1, oder 1 mehr als eine Fallen-Zahl.",
-      zaehlen: "Vom Ende her: Wer das Ziel sagt, gewinnt. Also gewinnt auch, wer k + 1 davor sagt, und so weiter bis ganz nach unten.",
+      zaehlen: "Vom Ziel aus rückwärts: Darf man 1 bis 3 dazuzählen, liegen die Gewinnzahlen immer 4 auseinander.",
       gleich: "Zwei Haufen: Mach sie gleich groß. Dann mach immer nach, was die Eule macht, nur auf dem anderen Haufen.",
-      brueche: "Jeder Bruch macht aus einem Stück zwei. Von 1 Stück bis m · n Stücke sind es m · n − 1 Brüche, ganz egal wie.",
+      brueche: "Jeder Bruch macht aus einem Stück zwei. Bei 12 Stückchen sind es also 11 Brüche, ganz egal wie.",
       paar: "Die Zahl der Brüche steht fest. Ist sie ungerade, macht der Erste den letzten. Werkzeug aus Lager 8.",
     },
     hints: {
@@ -51,9 +51,9 @@ export default {
       paar: "Wie viele Brüche gibt es insgesamt? Gerade oder ungerade?",
     },
     miss: {
-      falle: "Nicht ganz. Lass der Eule eine Fallen-Zahl: ein Vielfaches von k + 1.",
+      falle: "Nicht ganz. Lass der Eule eine Falle: eins mehr, als man nehmen darf. Oder das Doppelte, das Dreifache …",
       letzter: "Nicht ganz. Diesmal muss die Eule am Ende vor genau 1 stehen.",
-      zaehlen: "Nicht ganz. Rechne vom Ziel in Schritten von k + 1 zurück.",
+      zaehlen: "Nicht ganz. Geh vom Ziel zurück, in Schritten von eins mehr, als man dazuzählen darf.",
       gleich: "Nicht ganz. Mach beide Haufen gleich groß.",
       brueche: "Nicht ganz. Jeder Bruch macht genau ein Stück mehr.",
       paar: "Nicht ganz. Zähl die Brüche und schau, ob die Zahl gerade ist.",
@@ -62,7 +62,7 @@ export default {
     tableIntro: { fallen: (f, a) => `Ihr nehmt 1 bis ${a.k}. Bei welchen Haufen verliert, wer dran ist? Das sind Fallen:` },
     reasons: {
       greedy: "Sie hat einfach so viele genommen wie möglich.",
-      kplus: "Sie hat in Schritten von k gerechnet statt von k + 1.",
+      kplus: "Sie hat sich bei der Schrittweite um eins vertan.",
       last: "Sie hat vergessen, dass hier der letzte verliert.",
       equal: "Sie hat die Haufen nicht gleich groß gemacht.",
       breaks: "Sie hat Stücke oder Linien gezählt statt Brüche.",

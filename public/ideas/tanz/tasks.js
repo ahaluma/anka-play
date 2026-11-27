@@ -23,24 +23,29 @@ export const DIGITS = 3;
 const YES = { kind: "yesno", ids: [0, 1] }; // 0 yes, 1 no
 const LIGHT = { kind: "light", ids: [0, 1] }; // 0 on, 1 off
 const PARITY = { kind: "parity", ids: [0, 1] }; // 0 even, 1 odd
+/** Children for the pictures of level 1 (as many as can be shown without "…"). */
+const KIDS = ["🧒", "👧", "👦", "🧒🏽", "👧🏾", "👦🏻", "🧒🏿", "👧🏼"];
 const DAYS = { kind: "days", ids: [0, 1, 2, 3, 4, 5, 6] };
 
 /** Do all dancers find a partner? */
 function danceTask(r, level) {
-  const n = r.int(level === 1 ? 7 : 20, level === 1 ? 31 : 99);
-  return { story: "tanz", a: { n, pairs: Math.floor(n / 2), left: n % 2 }, answer: n % 2 === 0 ? 0 : 1, choices: YES, tool: "paar", key: `t${n}` };
+  // Level 1: few enough children to see them all in the picture (2 is where pairs start).
+  const n = level === 1 ? r.int(2, 8) : r.int(20, 99);
+  const pic = level === 1 ? [{ icons: KIDS.slice(0, n) }] : undefined;
+  return { story: "tanz", a: { n, pairs: Math.floor(n / 2), left: n % 2 }, pic, answer: n % 2 === 0 ? 0 : 1, choices: YES, tool: "paar", key: `t${n}` };
 }
 
 /** The light is off; the switch is pressed n times. */
 function lightTask(r, level) {
-  const n = r.int(level === 1 ? 4 : 30, level === 1 ? 25 : 150);
-  return { story: "licht", a: { n, pairs: Math.floor(n / 2) }, answer: n % 2 === 1 ? 0 : 1, choices: LIGHT, tool: "paar", key: `l${n}` };
+  const n = level === 1 ? r.int(1, 7) : r.int(30, 150);
+  const pic = level === 1 ? [{ icon: "👆", n }] : undefined;
+  return { story: "licht", a: { n, pairs: Math.floor(n / 2) }, pic, answer: n % 2 === 1 ? 0 : 1, choices: LIGHT, tool: "paar", key: `l${n}` };
 }
 
 /** A sum of numbers: even or odd? Only the odd ones count. */
 function sumTask(r, level) {
-  const count = level === 1 ? r.int(3, 5) : r.int(5, 8);
-  const nums = Array.from({ length: count }, () => r.int(1, level === 1 ? 20 : 99));
+  const count = level === 1 ? r.int(2, 3) : r.int(5, 8);
+  const nums = Array.from({ length: count }, () => r.int(1, level === 1 ? 9 : 99));
   const odd = nums.filter((x) => x % 2).length;
   return { story: "summe", a: { nums, odd, count }, answer: odd % 2, choices: PARITY, tool: "paar", key: `s${nums.join(",")}` };
 }
@@ -56,12 +61,13 @@ function gaussTask(r) {
 function groupTask(r, level, story = r.pick(["teams", "zug"])) {
   const k = level === 1 ? 3 : r.int(3, 8);
   let n;
-  do n = r.int(k + 1, level <= 2 ? 40 : 99);
+  do n = r.int(k + 1, level === 1 ? 8 : level === 2 ? 40 : 99);
   while (n % k === 0);
   const full = Math.floor(n / k);
   const rest = n % k;
   const answer = story === "zug" ? full + (rest ? 1 : 0) : rest;
-  return { story, a: { n, k, full, rest, missing: k - rest }, answer, tool: "rest", key: `${story}${n}${k}` };
+  const pic = level === 1 ? [{ icons: KIDS.slice(0, n) }] : undefined;
+  return { story, a: { n, k, full, rest, missing: k - rest }, pic, answer, tool: "rest", key: `${story}${n}${k}` };
 }
 
 /** A chessboard with squares taken away: can dominoes cover the rest? */
@@ -130,7 +136,7 @@ function storyTask(r, level, kombi) {
 /** Ausprobieren: tap the dancers into groups of k. What is left over? */
 function handsOn(r, level) {
   const k = level === 1 ? 2 : level === 2 ? r.int(3, 4) : r.int(4, 6);
-  let n = r.int(k + 2, level === 1 ? 15 : 26);
+  let n = r.int(k + 1, level === 1 ? 9 : 26);
   if (n % k === 0 && r.chance(0.7)) n++;
   return { mode: "groups", story: "teams", a: { n, k, full: Math.floor(n / k), rest: n % k, missing: k - (n % k) }, answer: n % k, tool: "rest", key: `mg${n}${k}` };
 }

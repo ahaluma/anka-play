@@ -20,7 +20,7 @@ export default {
     names: ["Anna", "Ben", "Clara", "David", "Emma"],
     kinds: {
       tiere: {
-        intro: (n) => `${n} Kinder, ${n} Haustiere. Jedes Kind hat genau ein Tier, kein Tier gehört zwei Kindern.`,
+        intro: (n) => `${n} Kinder, ${n} Haustiere. Jedes Kind hat ein anderes Tier.`,
         one: "ein anderes Haustier",
         things: ["den Hund", "die Katze", "den Hasen", "den Hamster", "den Wellensittich"],
         ref: ["das Kind mit dem Hund", "das Kind mit der Katze", "das Kind mit dem Hasen", "das Kind mit dem Hamster", "das Kind mit dem Wellensittich"],
@@ -38,7 +38,7 @@ export default {
         who: (x) => `Wer hat ${x} dabei?`,
       },
       musik: {
-        intro: (n) => `Die Schulband: ${n} Kinder, ${n} Instrumente. Jedes Kind spielt genau eins.`,
+        intro: (n) => `Die Schulband: ${n} Kinder, ${n} Instrumente. Jedes Kind spielt ein anderes.`,
         one: "ein anderes Instrument",
         things: ["Gitarre", "Schlagzeug", "Klavier", "Trompete", "Geige"],
         ref: ["das Kind mit der Gitarre", "das Kind am Schlagzeug", "das Kind am Klavier", "das Kind mit der Trompete", "das Kind mit der Geige"],
@@ -47,7 +47,7 @@ export default {
         who: (x) => `Wer spielt ${x}?`,
       },
       sport: {
-        intro: (n) => `${n} Kinder, ${n} Sport-AGs. Jedes Kind ist in genau einer, jede AG hat genau ein Kind aus unserer Gruppe.`,
+        intro: (n) => `${n} Kinder, ${n} Sport-AGs. Jedes Kind ist in einer anderen AG.`,
         one: "eine andere Sport-AG",
         things: ["Fußball", "Basketball", "Schwimmen", "Tennis", "Tischtennis"],
         ref: ["das Kind aus der Fußball-AG", "das Kind aus der Basketball-AG", "das Kind aus der Schwimm-AG", "das Kind aus der Tennis-AG", "das Kind aus der Tischtennis-AG"],
@@ -83,7 +83,7 @@ export default {
         who: (x) => `Wer sitzt ${x}?`,
       },
     },
-    two: (n, one) => `${n} Kinder wohnen in ${n} Häusern nebeneinander. Jedes hat ${one}. Nichts kommt doppelt vor.`,
+    two: (n, one) => `${n} Kinder, ${n} Häuser. Jedes Kind wohnt in einem anderen Haus und hat ${one}.`,
     link: (ref, house) => `${ref.charAt(0).toUpperCase()}${ref.slice(1)} wohnt ${house}.`,
     nolink: (ref, house) => `${ref.charAt(0).toUpperCase()}${ref.slice(1)} wohnt nicht ${house}.`,
     seat: {
@@ -105,14 +105,14 @@ export default {
       self: { did: "Ich war es.", not: "Ich war es nicht." },
       other: { did: (q) => `${q} war es.`, not: (q) => `${q} war es nicht.` },
     },
-    countAsk: "Wie viele Verteilungen passen noch zu allen Hinweisen?",
+    countAsk: "Wie viele Möglichkeiten passen noch zu allen Hinweisen?",
     rules: {
-      tabelle: "Ins Raster: ✗, wo es nicht sein kann. Bleibt in einer Zeile nur ein Feld frei, kommt dort das ✓ hin.",
+      tabelle: "Ins Raster: ✗, wo es nicht sein kann. Ist in einer Zeile nur noch ein Feld frei, kommt dort das ✓ hin.",
       rest: "Wenn alle anderen ausgeschlossen sind, muss es der sein, der übrig bleibt.",
       kette: "Zwei Sorten zugleich: was zusammengehört, gehört zum selben Kind.",
       reihe: "Plätze aufmalen, feste Plätze zuerst, dann jeden Hinweis prüfen.",
       luege: "Jeden Verdächtigen einmal annehmen und zählen, wie viele Sätze dann stimmen.",
-      zaehlen: "Erst alle Verteilungen zählen, dann bei jedem Hinweis die streichen, die nicht passen.",
+      zaehlen: "Erst alle Möglichkeiten zählen. Dann bei jedem Hinweis die streichen, die nicht passen.",
     },
     hints: {
       tabelle: "Mach ein Raster. Wo kann es auf keinen Fall sein? Dort kommt ein ✗ hin.",
@@ -120,7 +120,7 @@ export default {
       kette: "Fang mit dem Hinweis an, der am meisten festlegt. Was gehört zusammen?",
       reihe: "Wer sitzt sicher am Rand? Setz die festen Kinder zuerst.",
       luege: "Nimm an, das erste Kind war es. Wie viele Sätze stimmen dann? Und beim nächsten?",
-      zaehlen: "Schreib alle Verteilungen auf und streich, was nicht zum Hinweis passt.",
+      zaehlen: "Schreib alle Möglichkeiten auf. Streich, was nicht zum Hinweis passt.",
     },
     miss: {
       tabelle: "Nicht ganz. Prüf jeden Hinweis noch einmal.",
@@ -128,14 +128,14 @@ export default {
       kette: "Nicht ganz. Was gehört zusammen?",
       reihe: "Nicht ganz. Mal die Plätze auf und setz die Kinder.",
       luege: "Nicht ganz. Zähl die wahren Sätze für diesen Verdächtigen.",
-      zaehlen: "Nicht ganz. Zähl nur die Verteilungen, die zu allen Hinweisen passen.",
+      zaehlen: "Nicht ganz. Zähl nur die Möglichkeiten, die zu allen Hinweisen passen.",
     },
     reasons: {
       missed: "Sie hat einen Hinweis übersehen.",
       flip: "Sie hat ein „nicht“ überlesen.",
       liar: "Sie hat dem Falschen geglaubt.",
       first: "Sie hat einfach den Ersten genommen.",
-      count: "Sie hat eine Verteilung zu viel gezählt.",
+      count: "Sie hat eine Möglichkeit zu viel gezählt.",
     },
     tools: {
       tabelle: "Raster mit ✗ und ✓", rest: "Wer bleibt übrig?", kette: "Zusammengehöriges verbinden", reihe: "Plätze aufmalen",
@@ -147,7 +147,7 @@ export default {
       kette: (a) => [["kette", `Jeder „wohnt“-Hinweis verbindet zwei Dinge. Mit den ✗ zusammen bleibt nur eine Lösung: ${a.answer}.`], ["tabelle", "Ein Raster aus zwei Teilen nebeneinander, ein Teil für jede Sorte."]],
       reihe: (a) => [["reihe", `${a.n} Plätze aufmalen und die festen Kinder zuerst setzen. Dann passt nur ${a.answer}.`], ["probieren", `Jedes Kind auf diesen Platz setzen und prüfen: nur mit ${a.answer} stimmen alle Hinweise.`]],
       luege: (a) => [["luege", `Für jeden Verdächtigen zählen, wie viele Sätze dann stimmen. Nur bei ${a.answer} passt die Zahl.`], ["tabelle", "Eine Tabelle: Verdächtige nach rechts, Sätze nach unten, wahr oder falsch eintragen."]],
-      zaehlen: (a) => [["zaehlen", `Ohne Hinweise gibt es ${a.all} Verteilungen. Jeder Hinweis streicht welche weg, ${a.answer} bleiben.`], ["tabelle", `Alle Verteilungen als Liste aufschreiben und abhaken, was passt: ${a.answer}.`]],
+      zaehlen: (a) => [["zaehlen", `Ohne Hinweise gibt es ${a.all} Möglichkeiten. Jeder Hinweis streicht welche weg, ${a.answer} bleiben.`], ["tabelle", `Alle Möglichkeiten als Liste aufschreiben und abhaken, was passt: ${a.answer}.`]],
     },
     machen: {
       ask: "Trag ✗ und ✓ ins Raster ein, bis alles klar ist. Einmal tippen: ✗, zweimal: ✓.",
@@ -158,10 +158,10 @@ export default {
       solved: "Alles eingetragen, alles passt!",
     },
     forschen: {
-      start: "Noch ohne Hinweis: wie viele Verteilungen gibt es?",
-      after: (k) => `Nach Hinweis ${k}: wie viele Verteilungen passen noch?`,
+      start: "Noch ohne Hinweis: Wie viele Möglichkeiten gibt es?",
+      after: (k) => `Nach Hinweis ${k}: Wie viele Möglichkeiten passen noch?`,
       allMiss: "Nicht ganz. Wie viele Möglichkeiten hat das erste Kind? Und dann das zweite?",
-      miss: "Nicht ganz. Streich die Verteilungen, die nicht zum neuen Hinweis passen.",
+      miss: "Nicht ganz. Streich die Möglichkeiten, die nicht zum neuen Hinweis passen.",
       allGood: (n) => `Genau, ${n}. Jetzt kommt der erste Hinweis.`,
       left: (n) => `Genau, noch ${n}.`,
       one: "Nur noch eine! Jetzt ist alles klar.",

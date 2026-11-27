@@ -31,7 +31,8 @@ const pic = (colors) => colors.map(([id, n]) => ({ icon: COLORS[id], n }));
 function sameTask(r, level) {
   const c = level === 1 ? r.int(2, 3) : r.int(3, 5);
   const k = level === 1 ? 2 : r.int(2, 4);
-  const colors = drawer(r, c, k + 1, level === 1 ? 8 : 12);
+  // Level 1: two or three colours with a handful each, so every one is in the picture.
+  const colors = drawer(r, c, k + 1, level === 1 ? 5 : 12);
   const story = r.pick(level === 1 ? ["socken", "bonbons"] : ["socken", "bonbons", "murmeln"]);
   return { story, a: { colors, c, k, km1: k - 1, worst: c * (k - 1), total: total(colors) }, pic: pic(colors), answer: c * (k - 1) + 1, tool: "schlimm", key: `s${story}${colors.flat().join("")}${k}` };
 }
@@ -95,7 +96,7 @@ function handsOn(r, level) {
 /** Regel finden: 1, 2, 3 colours (pairs), or 2, 3, 4 of a kind with fixed colours. */
 function ruleTask(r, level) {
   if (level <= 2) {
-    const c = r.int(6, 15);
+    const c = level === 1 ? r.int(5, 8) : r.int(6, 15);
     return { story: "farben", a: { c, k: 2, km1: 1, worst: c }, answer: c + 1, tool: "schlimm", table: { id: "farben", rows: [1, 2, 3].map((i) => [i, i + 1]), next: [4, 5] }, key: `tf${c}` };
   }
   const c = r.int(3, 6);

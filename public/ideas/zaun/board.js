@@ -316,7 +316,7 @@ export function sehen(host, t, ctx) {
       win(host, ctx, t, Z.sehen.done[t.kind](n(ctx, L.thing, t.posts), n(ctx, L.gap, boards)));
     },
   });
-  story(host, ctx, L.see[t.kind], L.seeAsk, pad);
+  story(host, ctx, L.see[t.kind], L.seeAsk[t.kind] ?? L.seeAsk, pad);
   return {
     hint() {
       f.markGaps();

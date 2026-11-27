@@ -44,9 +44,10 @@ export function digitAt(p) {
 /** always + k (or − k) */
 function plusTask(r, level) {
   const story = r.pick(["folge", "sparen", "kino", "baum"]);
-  const k = level === 1 ? r.int(2, 9) : r.int(3, 15);
-  const first = r.int(1, 20);
-  const n = level === 1 ? r.int(6, 12) : r.int(15, 40);
+  // Level 1: small jumps and a place a few stones past the ones shown (writing it all down still works).
+  const k = level === 1 ? r.int(2, 5) : r.int(3, 15);
+  const first = level === 1 ? r.int(1, 10) : r.int(1, 20);
+  const n = level === 1 ? r.int(5, 10) : r.int(15, 40);
   const answer = first + (n - 1) * k;
   if (answer > 999) return plusTask(r, level);
   const shown = [0, 1, 2, 3].map((i) => first + i * k);

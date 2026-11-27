@@ -79,11 +79,16 @@ const STORIES = ["murmeln", "karten", "geld", "kekse"];
 /** Level 1: one step. */
 function oneStep(r) {
   if (r.chance(0.3)) {
-    const t = chain(r, "aufzug", [r.pick(["plus", "minus"])], { most: 20, least: 1 });
+    const t = chain(r, "aufzug", [r.pick(["plus", "minus"])], { most: 10, least: 1 });
     return { ...t, ops: t.ops.map((o) => ({ ...o, k: Math.min(o.k, 9) })), ...fixLift(t) };
   }
-  return chain(r, r.pick(STORIES), [r.pick(["plus", "minus", "double", "half"])], { most: 60 });
+  // Small numbers, and what is left at the end lies in the picture.
+  const t = chain(r, r.pick(STORIES), [r.pick(["plus", "minus", "double", "half"])], { most: 10 });
+  return { ...t, pic: [{ icon: PIC[t.story], n: t.end }] };
 }
+
+/** What the things of a story look like (level 1 draws what is left at the end). */
+const PIC = { murmeln: "🔵", karten: "🃏", geld: "🪙", kekse: "🍪" };
 
 /** A lift never goes below the ground floor and moves at most 9 floors at once. */
 function fixLift(t) {
@@ -164,7 +169,7 @@ function ruleTask(r, level) {
     const starts = level === 3 ? [4, 6, 8, 10] : [10, 11, 12, 13];
     const ends = starts.map((s) => run(s, ops));
     if (!whole(ends) || ends.some((e) => e < 1)) continue;
-    const startBig = level === 3 ? 2 * r.int(30, 99) : r.int(30, 150);
+    const startBig = level === 3 ? 2 * r.int(30, 99) : level === 1 ? r.int(20, 60) : r.int(30, 150);
     const endBig = run(startBig, ops);
     if (!whole([endBig]) || endBig < 1) continue;
     return { story: "maschine", ops, a: { ops, end: endBig }, start: startBig, end: endBig, answer: startBig, tool: kinds.includes("halfminus") ? "halb" : "rueck", table: { id: "maschine", rows: starts.slice(0, 3).map((s, i) => [ends[i], s]), next: [ends[3], starts[3]] }, key: `m${JSON.stringify(ops)}${startBig}` };

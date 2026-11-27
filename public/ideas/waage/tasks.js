@@ -32,9 +32,10 @@ export const WEIGHTS = [1, 3, 9];
 /** a big ones and b small ones: how many small ones on the other side? */
 function swapTask(r, level) {
   const [big, small] = r.pick(PAIRS);
-  const k = level === 1 ? r.int(2, 4) : r.int(3, 8);
-  const nb = level === 1 ? r.int(1, 3) : r.int(3, 9);
-  const ns = r.int(1, level === 1 ? 4 : 9);
+  // Level 1 starts at 1 big = 2 small: few enough things to count on the scale in the picture.
+  const k = level === 1 ? r.int(2, 3) : r.int(3, 8);
+  const nb = level === 1 ? r.int(1, 2) : r.int(3, 9);
+  const ns = r.int(1, level === 1 ? 3 : 9);
   const answer = nb * k + ns;
   return { story: "tausch", a: { big, small, k, nb, ns, swapped: nb * k }, pic: { scales: [[[[big, 1]], [[small, k]]], [[[big, nb], [small, ns]], [["?", 1]]]] }, answer, tool: "ersetzen", key: `t${big}${k}${nb}${ns}` };
 }

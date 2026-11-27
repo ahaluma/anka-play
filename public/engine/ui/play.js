@@ -107,7 +107,7 @@ export async function render(root, route) {
   board.hidden = done.hidden = true;
   root.append(question, caption, start, board, done);
   voice.mount({ caption, question });
-  voice.aloud = profiles.readAloud(state.kid, m.band);
+  voice.aloud = !def.silent && profiles.readAloud(state.kid, m.band); // a silent game (memory) only makes short sounds
 
   const show = (name) => {
     start.hidden = name !== "start";
@@ -130,7 +130,9 @@ export async function render(root, route) {
   play.addEventListener("click", async () => {
     play.disabled = true;
     sound.tap();
-    await voice.tell(intro);
+    // The station's little line stays on screen but is not read out: the task itself says what to do.
+    // Only the first-visit questions still greet aloud.
+    if (isGate) await voice.tell(intro);
     startRound();
   });
 
@@ -259,7 +261,7 @@ export async function render(root, route) {
     recent.length = Math.min(recent.length, RECENT);
     texts = lookup(stexts, task.ask);
     stage = { kind: "answer", value: task.answer.value };
-    voice.aloud = profiles.readAloud(state.kid, m.band); // who plays: preschool maps read aloud, school maps on 🔊
+    voice.aloud = !def.silent && profiles.readAloud(state.kid, m.band); // who plays: preschool maps read aloud, school maps on 🔊
     voice.newTask();
     board.className = `screen board board-${task.board} p-${slot.p}`;
     const mod = sdef.board === task.board ? await import(`../../ideas/${slot.idea}/board.js`) : await import(`../../boards/${task.board}.js`);
