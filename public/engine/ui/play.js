@@ -28,7 +28,7 @@ import { random, pick, shuffle } from "../random.js";
 import { policyFor, roundSize, afterRound, afterFeel, isTop } from "../policy.js";
 import { plan, Round } from "../round.js";
 import { THING_IDS, icon } from "../things.js";
-import { href, go } from "../router.js";
+import { href, redirect } from "../router.js";
 import { el, button, link, wait, icons } from "./parts.js";
 import { topbar, homeLink } from "./topbar.js";
 import { voice } from "./voice.js";
@@ -59,16 +59,16 @@ export async function render(root, route) {
   const isGate = route.screen === "gate";
   const s = stationOf(route.station);
   const f0 = facts();
-  if (!s || !f0.ready(s.id) || !reachable(f0).has(s.id) || !stationOpen(s.id, f0)) return go(href.map(s?.map ?? "tal"));
+  if (!s || !f0.ready(s.id) || !reachable(f0).has(s.id) || !stationOpen(s.id, f0)) return redirect(href.map(s?.map ?? "tal"));
   const m = mapOf(s.map);
   const many = s.ideas.length > 1;
   const ideaId = s.ideas.includes(route.idea) ? route.idea : s.ideas[0];
   const def = await loadIdea(ideaId);
   const words = await loadTexts(ideaId);
   const questions = isGate ? gate.questions(s.id, def) : [];
-  if (isGate && !gate.due(state.rec, s.id, def)) return go(href.station(s.id, many ? ideaId : null));
+  if (isGate && !gate.due(state.rec, s.id, def)) return redirect(href.station(s.id, many ? ideaId : null));
   const p = isGate ? questions[0]?.p : def.perspectives.includes(route.p) ? route.p : null;
-  if (!p) return go(href.station(s.id));
+  if (!p) return redirect(href.station(s.id));
   const pol = policyFor(m.policy, def);
   const persp = PERSPECTIVES.find((x) => x.id === p);
   const names = T.perspectives[m.perspectiveNames] ?? T.perspectives.standard;
@@ -84,7 +84,10 @@ export async function render(root, route) {
   const hintBtn = button("icon-btn hint-btn", T.labels.hint, "💡");
   hintBtn.hidden = true;
   const stationHref = href.station(s.id, many ? ideaId : null);
-  root.append(topbar({ back: { href: stationHref, label: T.labels.station }, middle: steps, extra: [hintBtn] }));
+  // Out of the first-visit questions, the way back is the map: the station would only send the child back to
+  // the questions, as long as they are not answered.
+  const back = isGate ? { href: href.map(s.map), label: T.labels.map } : { href: stationHref, label: T.labels.station };
+  root.append(topbar({ back, middle: steps, extra: [hintBtn] }));
   const question = el("p", "question card");
   question.setAttribute("aria-live", "polite");
   question.hidden = true;

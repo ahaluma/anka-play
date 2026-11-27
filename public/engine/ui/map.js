@@ -17,7 +17,7 @@ import { state, facts } from "../app.js";
 import { store } from "../store.js";
 import * as profiles from "../profiles.js";
 import * as L from "../learner.js";
-import { href, go } from "../router.js";
+import { href, go, redirect } from "../router.js";
 import { el, button, wait } from "./parts.js";
 import { topbar } from "./topbar.js";
 import { voice } from "./voice.js";
@@ -29,7 +29,7 @@ const H = 600;
 
 export async function render(root, route) {
   const m = mapOf(route.map);
-  if (!m) return go(href.home());
+  if (!m) return redirect(href.home());
   voice.aloud = profiles.readAloud(state.kid);
   const f = facts();
   const can = reachable(f);
@@ -180,6 +180,8 @@ export async function render(root, route) {
     await wait(300);
     if (location.hash.includes("walk=")) {
       store.set("last", walkTo);
+      // The walk is over: back from the station is the map itself, not the walk again.
+      history.replaceState(history.state, "", href.map(m.id));
       go(href.station(walkTo));
     }
     return;

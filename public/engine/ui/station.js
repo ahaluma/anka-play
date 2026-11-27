@@ -10,7 +10,7 @@ import * as L from "../learner.js";
 import * as gate from "../gate.js";
 import * as profiles from "../profiles.js";
 import { store } from "../store.js";
-import { href, go } from "../router.js";
+import { href, redirect } from "../router.js";
 import { el, button, link } from "./parts.js";
 import { topbar, homeLink } from "./topbar.js";
 import { voice } from "./voice.js";
@@ -27,7 +27,7 @@ export const groupName = (g, def) => (def?.levels ? T.stationText.levelPlain(num
 export async function render(root, route) {
   const s = stationOf(route.station);
   const f = facts();
-  if (!s || !f.ready(s.id) || !reachable(f).has(s.id) || !stationOpen(s.id, f)) return go(href.map(s?.map ?? "tal"));
+  if (!s || !f.ready(s.id) || !reachable(f).has(s.id) || !stationOpen(s.id, f)) return redirect(href.map(s?.map ?? "tal"));
   const m = mapOf(s.map);
   voice.aloud = profiles.readAloud(state.kid);
   store.set("last", s.id);
@@ -38,7 +38,7 @@ export async function render(root, route) {
   const def = await loadIdea(ideaId);
   const many = s.ideas.length > 1;
 
-  if (gate.due(state.rec, s.id, def)) return go(href.gate(s.id));
+  if (gate.due(state.rec, s.id, def)) return redirect(href.gate(s.id));
 
   const caption = el("p", "caption");
   root.append(
