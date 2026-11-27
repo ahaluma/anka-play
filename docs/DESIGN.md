@@ -19,7 +19,8 @@ written only as data, and `node tools/check-ideas.mjs` makes 10,000 tasks from i
   memorable landmarks. Four maps: **Tal** (valley, preschool, 3 to 6), **Fluss** (river, school: numbers,
   space, time), **Feld** (field edge, school: calculation), **Berg** (mountain, olympiad, 9 to 12).
 - **A station teaches one idea in 1 to 5 perspectives,** as many as its idea needs, and has its own
-  background. A concept usually has all five; a station that is just a game (number memory) has one. 35 stations.
+  background. A concept usually has all five; a station that is just a game (number memory) has one, is
+  always open and counts as mastered from the start. 35 stations.
 - **A graph** connects stations: paths inside a map, portals between maps, Home from everywhere. Every
   connection has a direction, a condition and a nearness. Related stations sit near each other on the map.
 - **A portal can ask a few questions** on the first visit to its station. It always lets the child in; the
@@ -88,7 +89,8 @@ Three separate questions, each answered by `engine/graph.js` from the child's fa
 - **Visible:** a station is drawn when it is in the map's `shows`, or the child has been there, or an
   open path from a drawn station leads to it ("the fog lifts when the way opens"). No per-station
   visibility settings are needed.
-- **Open:** a station's door is `always` open or has a condition (only lichtung today). A child can stand
+- **Open:** a station's door is `always` open or has a condition (only lichtung today). A pure game
+  station (`game: true`) is always open, and every way into it is always open; the checker enforces it. A child can stand
   in front of a closed door and see what opens it.
 - **Reachable:** a walk from Home along open edges, stopping at closed doors.
 
@@ -135,7 +137,8 @@ station's ladder), `rounds`, `visited`, `reached` (a map), `parent` (a switch on
 
 **Mastered** (for conditions): every perspective the station has (1 to 5) has its star in the idea's
 mastery group (default: its highest group). **Flag**: every perspective of the station starred in one named
-group. Conditions never count stars as a number, so they mean the same for a station with one perspective
+group. A pure game station counts as mastered from the start, so it never blocks anything that depends on it.
+Conditions never count stars as a number, so they mean the same for a station with one perspective
 and one with five.
 
 ### 5.2 Nearness
@@ -221,7 +224,8 @@ the other). Seven answer modes: `choose`, `type`, `tapThings`, `build`, `order`,
 
 An idea lists its perspectives, 1 to 5, in the fixed order (`perspectives` in `idea.js`), and has one recipe
 for each. `zahl` has all five. A station that is only a game has the one perspective `spielen` 🎲, which
-stands alone. `check-ideas` refuses an idea with none, more than five, a wrong order, `spielen` mixed with
+stands alone. A game has no stars to earn: its station is marked `game: true` in `universe.js`, is always
+open and is mastered from the start. `check-ideas` refuses an idea with none, more than five, a wrong order, `spielen` mixed with
 others, or a recipe for a perspective it does not list.
 
 ### 6.5 Where the line is, and why
@@ -259,7 +263,8 @@ then the way in small steps.
 - **Down:** 2 weak rounds in a row (2 of 5 or fewer) → one group down, and the age catch-up stops.
 - **Flag:** all the station's perspectives starred in a group. A flag on a higher group fills the lower ones (Feld).
 - **Mastered station:** all the station's perspectives starred in the mastery group. This is what
-  conditions read. Number memory is mastered with one star; zahl needs five.
+  conditions read. zahl needs five stars; a pure game like number memory needs none, it is mastered from
+  the start.
 
 ### 7.3 Policies
 
@@ -378,8 +383,8 @@ in Nepal.
 5. **Map names and cut:** Tal, Fluss, Feld, Berg. Fluss and Feld could also be one map; I kept two because
    ten stations on one phone screen are too many.
 6. **The mountain loses "how was it?"** (the standing rule for children). Please confirm.
-7. **Zahlen-Memory:** its own station, baumstumpf, next to the wiese, with one perspective (play). Ported
-   with the Tal.
+7. **Zahlen-Memory:** decided: its own station, baumstumpf, next to the wiese, a pure game with one
+   perspective (play), always open and mastered from the start. Ported with the Tal.
 8. **The mountain portal:** from 9, or earlier by the parents' switch.
 9. **Import from think-lab's backup:** not at launch; think-lab stays online.
 10. **The repository is empty** (no `main` yet), so this design is on its own branch. Say if it should

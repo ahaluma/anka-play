@@ -5,7 +5,8 @@
 // A station has 1 to 5 perspectives: its idea lists the ones it has (`perspectives` in ideas/<id>/idea.js),
 // always in this order. A concept idea usually has all five; a station that is only a game (number memory)
 // has the one perspective "spielen". Stars, flags, "mastered" and moving up count the station's OWN
-// perspectives, never a fixed five.
+// perspectives, never a fixed five. A pure game ("spielen") has no stars to earn: its station is always
+// open and counts as mastered from the start (`game: true` in universe.js).
 
 export const PERSPECTIVES = [
   { id: "sehen", icon: "👁️", card: "vergleichen" }, // standard: see        · berg: understand

@@ -13,6 +13,8 @@
 //   requires the condition of an edge (null = always open)
 //   open     the condition of a station's door ("always" or a condition)
 //   nearness 0 to 1, how closely the two ideas are related. Related stations sit near each other on a map.
+//   game     a station that is a pure game (one perspective, "spielen"): always open, mastered from the start,
+//            no stars to earn. It never blocks anything that depends on it.
 //   gate     questions a portal asks on the child's FIRST visit to its target. It always lets the child
 //            pass; the answers only choose the rung the child starts on.
 //
@@ -96,7 +98,7 @@ export const STATIONS = [
   // Tal (preschool, 3 to 6): concepts with things and pictures, numbers up to 10, no signs.
   { id: "wiese", map: "tal", idea: "zahl", landmark: "bach", pos: { x: 200, y: 430 } }, // a number says how many; more, fewer, the same
   { id: "bau", map: "tal", idea: "teile", landmark: "grosser-baum", pos: { x: 320, y: 320 } }, // numbers are made of numbers
-  { id: "baumstumpf", map: "tal", idea: "memory", landmark: "bach", pos: { x: 90, y: 330 } }, // number memory: one perspective, "spielen"
+  { id: "baumstumpf", map: "tal", idea: "memory", game: true, landmark: "bach", pos: { x: 90, y: 330 } }, // number memory: a pure game
   { id: "teich", map: "tal", idea: "zehn", landmark: "teich", pos: { x: 460, y: 400 } }, // friends of five and ten
   { id: "obstbaum", map: "tal", idea: "gruppen", pos: { x: 160, y: 230 } }, // groups of the same size, sharing fairly
   { id: "wald", map: "tal", idea: "muster", pos: { x: 90, y: 90 } }, // a row goes on

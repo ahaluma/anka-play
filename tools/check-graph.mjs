@@ -31,6 +31,12 @@ for (const e of EDGES) {
 }
 for (const d of dup(EDGES.map((e) => `${e.kind}:${e.from}>${e.to}`))) problems.push(`edge twice: ${d}`);
 
+// 1b. A pure game station is always open: no door condition, and every way into it is always open.
+for (const s of STATIONS.filter((x) => x.game)) {
+  if (s.open && s.open !== "always") problems.push(`${s.id}: a game station is always open, it cannot have a door condition`);
+  for (const e of EDGES.filter((x) => x.to === s.id && x.requires)) problems.push(`${e.from}>${s.id}: the way into a game station must be always open`);
+}
+
 // 2. Reachability. A child who can do everything reaches every station; every station has a way Home;
 //    a three-year-old with nothing played reaches the Tal.
 const all = { age: 12, mastered: () => true, starred: () => true, flag: () => true, rounds: () => 99, visited: () => true, parent: () => true };
