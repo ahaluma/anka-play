@@ -210,4 +210,29 @@ export default {
     bee: { many: "Bienen", one: "eine Biene" },
     nut: { many: "Nüsse", one: "eine Nuss" },
   },
+
+  // A map's own voice: these sentences take the place of the shared ones above on that map (engine/i18n.js voiceOf).
+  // A station's own sentences (ideas/<id>/lang: intro, bigger, smaller, grew) come before both.
+  voices: {
+    tal: {
+      round: { grew: "Schau, deine neue Blume! Sie wächst auch auf der Karte.", bedName: (station) => `Deine Blumen: ${station}` },
+    },
+    berg: {
+      // Das Logbuch der Expedition, wie im Denk-Berg von think-lab: Ich-Form, trocken und ein bisschen frech.
+      mapText: {
+        whereTo: "Expedition Denk-Berg. Ausrüstung: Kopf. Ziel: ganz oben.",
+        fog: "Oben ist Nebel. Hol dir hier alle fünf Sterne ⭐, dann lichtet er sich.",
+      },
+      round: {
+        star: "Ein Stern ⭐ für diesen Weg!",
+        mastered: "Alle fünf Sterne ⭐! Auf der Karte wartet etwas Neues.",
+        noStar: (first, n) => `Für den Stern ⭐ brauchst du 4 von 5 beim ersten Versuch. Diesmal: ${first} von ${n}.`,
+        bigger: "Zu leicht? Die Ziege nickt. Ab jetzt wird es fies.",
+        biggerPlain: "Zu leicht? Die Ziege nickt. Ab jetzt wird es fies.",
+        smaller: "Okay, einen Schritt zurück. Auch Bergsteiger machen Pausen.",
+        smallerPlain: "Okay, einen Schritt zurück. Auch Bergsteiger machen Pausen.",
+        toStation: "Anderer Weg",
+      },
+    },
+  },
 };

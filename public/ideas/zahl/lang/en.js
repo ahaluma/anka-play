@@ -13,15 +13,15 @@ export default {
     sehen: {
       look: "Look closely!",
       ask: (v) => (v.seen ? "How many flowers were there?" : "How many flowers are there?"),
-      right: (v, h) => `There are ${h.w(v.n)}.`,
+      right: (v, h) => (v.n === 1 ? "There is one." : `There are ${h.w(v.n)}.`),
       miss: "Look once more!",
       hint: "Take your time and count. The flowers stay.",
     },
 
     machen: {
       ask: (v, h) => (v.n === 1 ? "Pick one flower into the basket!" : `Pick ${h.w(v.n)} flowers into the basket!`),
-      miss: (v, h) => (v.given === 0 ? "The basket is still empty. Tap a flower!" : `There are ${h.w(v.given)} in the basket. You need ${h.w(v.n)}.`),
-      right: (v, h) => `There are ${h.w(v.n)} in the basket. Just right!`,
+      miss: (v, h) => (v.given === 0 ? "The basket is still empty. Tap a flower!" : `There ${v.given === 1 ? "is one" : "are " + h.w(v.given)} in the basket. You need ${h.w(v.n)}.`),
+      right: (v, h) => `There ${v.n === 1 ? "is one" : "are " + h.w(v.n)} in the basket. Just right!`,
       hint: "Tap a flower. It hops into the basket.",
     },
 
@@ -81,8 +81,8 @@ export default {
       miss: "Count again!",
       fix: "Well spotted! How many are there?",
       fixMiss: "Not yet. Count again!",
-      right: (v, h) => `Yes! There are ${h.w(v.n)}.`,
-      fixed: (v, h) => `Now it is right: there are ${h.w(v.n)}.`,
+      right: (v, h) => (v.n === 1 ? "Yes! There is one." : `Yes! There are ${h.w(v.n)}.`),
+      fixed: (v, h) => (v.n === 1 ? "Now it is right: there is one." : `Now it is right: there are ${h.w(v.n)}.`),
       hint: "Count along: one, two, three …",
     },
   },

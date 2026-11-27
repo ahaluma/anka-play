@@ -30,7 +30,7 @@ export const IDEA = {
   words: "rechnung", // its sentences are in boards/rechnung/lang/<language>.js (platz)
   levels: true, // the groups are the five levels, not number ranges
   ladder: STAGES.map((s) => ({ id: String(s), group: String(s), age: 6, params: { stage: s } })),
-  start: { byAge: { 6: "1" } },
+  start: { at: "1" }, // a concept starts at its smallest numbers, whatever the age (only plain calculation starts by age)
   perspectives: ["anwenden"],
   context: (facts) => ({ allowed: allowed(facts) }), // added to the rung's params when a task is made
   tasks: { make, check: (t) => checkStory(t, t.allowed) },

@@ -17,7 +17,7 @@ export const IDEA = {
     { id: "5", group: "5", age: 3, params: { range: 5, lo: 3, hi: 5 } },
     { id: "10", group: "10", age: 5, params: { range: 10, lo: 6, hi: 10 } },
   ],
-  start: { byAge: { 3: "5", 6: "10" } },
+  start: { at: "5" }, // a concept starts at its smallest numbers, whatever the age (only plain calculation starts by age)
   perspectives: ["sehen", "machen", "forschen", "anwenden", "pruefen"],
   roundTasks: { forschen: 3 }, // the hollow tree takes long: three trees are a round
 

@@ -13,15 +13,15 @@ export default {
     sehen: {
       look: "Schau genau!",
       ask: (v) => (v.seen ? "Wie viele Blumen waren es?" : "Wie viele Blumen sind es?"),
-      right: (v, h) => `Es sind ${h.w(v.n)}.`,
+      right: (v, h) => (v.n === 1 ? "Es ist eins." : `Es sind ${h.w(v.n)}.`),
       miss: "Schau noch einmal!",
       hint: "Zähl in Ruhe. Die Blumen bleiben da.",
     },
 
     machen: {
       ask: (v, h) => (v.n === 1 ? "Pflück eine Blume in den Korb!" : `Pflück ${h.w(v.n)} Blumen in den Korb!`),
-      miss: (v, h) => (v.given === 0 ? "Der Korb ist noch leer. Tipp auf eine Blume!" : `Im Korb sind ${h.w(v.given)}. Du brauchst ${h.w(v.n)}.`),
-      right: (v, h) => `Im Korb sind ${h.w(v.n)}. Genau richtig!`,
+      miss: (v, h) => (v.given === 0 ? "Der Korb ist noch leer. Tipp auf eine Blume!" : `Im Korb ${v.given === 1 ? "ist eins" : "sind " + h.w(v.given)}. Du brauchst ${h.w(v.n)}.`),
+      right: (v, h) => `Im Korb ${v.n === 1 ? "ist eins" : "sind " + h.w(v.n)}. Genau richtig!`,
       hint: "Tipp auf eine Blume. Sie hüpft in den Korb.",
     },
 
@@ -85,8 +85,8 @@ export default {
       miss: "Zähl nochmal nach!",
       fix: "Gut aufgepasst! Wie viele sind es?",
       fixMiss: "Noch nicht. Zähl nochmal!",
-      right: (v, h) => `Ja! Es sind ${h.w(v.n)}.`,
-      fixed: (v, h) => `Jetzt stimmt es: Es sind ${h.w(v.n)}.`,
+      right: (v, h) => (v.n === 1 ? "Ja! Es ist eins." : `Ja! Es sind ${h.w(v.n)}.`),
+      fixed: (v, h) => (v.n === 1 ? "Jetzt stimmt es: Es ist eins." : `Jetzt stimmt es: Es sind ${h.w(v.n)}.`),
       hint: "Zähl mit: eins, zwei, drei …",
     },
   },

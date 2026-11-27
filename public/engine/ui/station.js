@@ -18,7 +18,9 @@ import { sound } from "./sound.js";
 
 /** The background of a station: art/<map>/<station>.svg over the map's own. */
 export function backdrop(s) {
-  document.body.style.backgroundImage = `url("art/${s.map}/${s.id}.svg"), url("art/${s.map}/station.svg")`;
+  const look = mapOf(s.map)?.look;
+  if (look) document.body.dataset.look = look; // the Berg: notebook paper instead of a picture (app.css)
+  else document.body.style.backgroundImage = `url("art/${s.map}/${s.id}.svg"), url("art/${s.map}/station.svg")`;
 }
 
 /** How a group is named: a number range ("Zahlen bis 10"), or a level ("Stufe 2") when the idea says `levels`. */
@@ -29,7 +31,7 @@ export async function render(root, route) {
   const f = facts();
   if (!s || !f.ready(s.id) || !reachable(f).has(s.id) || !stationOpen(s.id, f)) return redirect(href.map(s?.map ?? "tal"));
   const m = mapOf(s.map);
-  voice.aloud = profiles.readAloud(state.kid);
+  voice.aloud = profiles.readAloud(state.kid, m.band);
   store.set("last", s.id);
   backdrop(s);
 

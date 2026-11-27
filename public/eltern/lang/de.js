@@ -21,11 +21,12 @@ export default {
 
   // Einstellungen pro Kind
   settingsTitle: "Einstellungen",
-  readAloudTitle: "Automatisch vorlesen",
-  readAloudOn: (name) => `Die Spiele lesen ${name} jeden Satz vor`,
-  readAloudOff: (name) => `Vorgelesen werden Aufgaben mit Zahlen bis 20, der Rest auf Tipp auf 🔊`,
-  readAloudAge: (a) => `ohne Ihre Wahl: unter ${n(a)} Jahren an, ab ${n(a)} aus`,
-  readAloudLabel: (name) => `Für ${name} automatisch vorlesen`,
+  readAloudTitle: "Überall vorlesen",
+  readAloudOn: (name) => `Die Spiele lesen ${name} auf jeder Karte jeden Satz vor`,
+  readAloudOff: () => `Im Tal wird alles vorgelesen, auf Fluss, Feld und Berg nur auf Tipp auf 🔊`,
+  readAloudAge: () => "so ist es ohne Ihre Wahl: Vorschulkinder brauchen die Stimme, Schulkinder lesen selbst",
+  readAloudNever: "Vorgelesen wird nur auf Tipp auf 🔊",
+  readAloudLabel: (name) => `Für ${name} auf jeder Karte vorlesen`,
   byYou: "von Ihnen eingestellt",
   guestSettings: "Ein Gast hat keine eigenen Einstellungen: Er bekommt alles vorgelesen.",
   bergTitle: "Den Berg schon jetzt öffnen",

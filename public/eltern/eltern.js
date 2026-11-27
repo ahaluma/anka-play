@@ -132,16 +132,16 @@ export async function render(root, route) {
   settings.append(el("h2", "", T.settingsTitle));
   if (shown) {
     const hint = el("span", "muted");
+    // By default the preschool maps read aloud and the school maps do not (engine/profiles.js readAloud); the switch
+    // reads every sentence on every map.
     const say = () => {
-      const on = profiles.readAloud(shown);
-      const mine = typeof shown.readAloud === "boolean";
-      hint.textContent = `${on ? T.readAloudOn(kidName(shown)) : T.readAloudOff(kidName(shown))} · ${mine ? T.byYou : T.readAloudAge(profiles.READ_ALOUD_UNTIL)}`;
+      const r = shown.readAloud;
+      hint.textContent = r === true ? `${T.readAloudOn(kidName(shown))} · ${T.byYou}` : r === false ? `${T.readAloudNever} · ${T.byYou}` : `${T.readAloudOff(kidName(shown))} · ${T.readAloudAge()}`;
     };
     say();
     settings.append(
-      settingRow("🔊", T.readAloudTitle, hint, toggle(profiles.readAloud(shown), T.readAloudLabel(kidName(shown)), (on) => {
-        const byAge = profiles.readAloud({ ...shown, readAloud: undefined });
-        profiles.setReadAloud(shown.id, on === byAge ? null : on);
+      settingRow("🔊", T.readAloudTitle, hint, toggle(shown.readAloud === true, T.readAloudLabel(kidName(shown)), (on) => {
+        profiles.setReadAloud(shown.id, on ? true : null);
         shown.readAloud = profiles.get(shown.id).readAloud;
         say();
       })),

@@ -70,6 +70,10 @@ export async function textsIn(base) {
 /** The shared words (lang/<code>.js). */
 export const shared = await textsIn(new URL("../lang/", import.meta.url));
 
+/** The shared words as a map speaks them: a map may have its own voice (lang/<code>.js, voices.<map>), which
+ *  takes the place of the shared sentences it names (the Berg: the expedition's logbook). */
+export const voiceOf = (mapId) => merge(shared, shared.voices?.[mapId]);
+
 /** Helpers every sentence gets as its second argument. */
 export const helpers = {
   w: (n) => shared.numbers?.[n] ?? num(n), // the number word ("drei"), for the voice

@@ -17,7 +17,7 @@
 import { station as stationOf, map as mapOf, stationOpen, reachable, reviewFrom, next as nextOf, isMastered } from "../graph.js";
 import { STATIONS } from "../../content/universe.js";
 import { PERSPECTIVES, CARDS } from "../../content/perspectives.js";
-import { shared as T, helpers, say, num } from "../i18n.js";
+import { voiceOf, helpers, say, num } from "../i18n.js";
 import { state, facts, idea as loadIdea, texts as loadTexts, age, save } from "../app.js";
 import * as L from "../learner.js";
 import * as gate from "../gate.js";
@@ -29,6 +29,8 @@ import { policyFor, roundSize, afterRound, afterFeel, isTop } from "../policy.js
 import { plan, Round } from "../round.js";
 import { THING_IDS, icon } from "../things.js";
 import { href, redirect } from "../router.js";
+import { store } from "../store.js";
+import { BED, FLOWERS, flowersAt } from "./flowers.js";
 import { el, button, link, wait, icons } from "./parts.js";
 import { topbar, homeLink } from "./topbar.js";
 import { voice } from "./voice.js";
@@ -49,8 +51,6 @@ const oneOf = (list) => {
 };
 const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 
-/** Read aloud by itself: every sentence for young children, else tasks whose numbers are all up to 20. */
-const smallNumbers = (task) => Object.values(task.vars).flat().every((x) => typeof x !== "number" || Math.abs(x) <= 20);
 
 /** A text entry by its dotted key ("zahl.sehen"). */
 const lookup = (texts, key) => key.split(".").reduce((o, k) => o?.[k], texts) ?? {};
@@ -61,6 +61,7 @@ export async function render(root, route) {
   const f0 = facts();
   if (!s || !f0.ready(s.id) || !reachable(f0).has(s.id) || !stationOpen(s.id, f0)) return redirect(href.map(s?.map ?? "tal"));
   const m = mapOf(s.map);
+  const T = voiceOf(m.id); // the map's own voice where it has one (the Berg's logbook)
   const many = s.ideas.length > 1;
   const ideaId = s.ideas.includes(route.idea) ? route.idea : s.ideas[0];
   const def = await loadIdea(ideaId);
@@ -70,6 +71,13 @@ export async function render(root, route) {
   const p = isGate ? questions[0]?.p : def.perspectives.includes(route.p) ? route.p : null;
   if (!p) return redirect(href.station(s.id));
   const pol = policyFor(m.policy, def);
+  // A sentence of the round in the station's own words where it has them (ideas/<id>/lang: bigger, smaller, grew),
+  // else in the map's voice, else the shared one.
+  const own = words[ideaId] ?? {};
+  const line = (key, ...args) => {
+    const x = typeof own[key] === "string" ? own[key] : T.round[key];
+    return typeof x === "function" ? x(...args) : x ?? "";
+  };
   const persp = PERSPECTIVES.find((x) => x.id === p);
   const names = T.perspectives[m.perspectiveNames] ?? T.perspectives.standard;
   const r = random(new URLSearchParams(location.search).get("seed") ?? route.q.seed);
@@ -99,7 +107,7 @@ export async function render(root, route) {
   board.hidden = done.hidden = true;
   root.append(question, caption, start, board, done);
   voice.mount({ caption, question });
-  voice.aloud = true;
+  voice.aloud = profiles.readAloud(state.kid, m.band);
 
   const show = (name) => {
     start.hidden = name !== "start";
@@ -251,7 +259,7 @@ export async function render(root, route) {
     recent.length = Math.min(recent.length, RECENT);
     texts = lookup(stexts, task.ask);
     stage = { kind: "answer", value: task.answer.value };
-    voice.aloud = profiles.readAloud(state.kid) || smallNumbers(task);
+    voice.aloud = profiles.readAloud(state.kid, m.band); // who plays: preschool maps read aloud, school maps on 🔊
     voice.newTask();
     board.className = `screen board board-${task.board} p-${slot.p}`;
     const mod = sdef.board === task.board ? await import(`../../ideas/${slot.idea}/board.js`) : await import(`../../boards/${task.board}.js`);
@@ -442,6 +450,19 @@ export async function render(root, route) {
     }
     if (!L.isGame(def)) done.append(row);
 
+    // The Tal (reward "flowers"): every round grows a flower at the station, here and on the map (engine/ui/map.js).
+    const grown = m.reward === "flowers" ? flowersAt(s) : 0;
+    const flowers = grown > 0 && grown <= BED;
+    if (flowers) {
+      const bed = el("div", "flower-bed card");
+      bed.append(el("small", "", T.round.bedName?.(T.stations[s.id] ?? s.id) ?? ""));
+      const row2 = el("div", "bed-flowers");
+      for (let i = 0; i < grown; i++) row2.append(el("span", i === grown - 1 ? "new" : "", FLOWERS[i % FLOWERS.length]));
+      bed.append(row2);
+      done.append(bed);
+      store.set("newFlower", s.id);
+    }
+
     let feelBox = null;
     if (pol.askFeel) {
       feelBox = el("div", "feel");
@@ -454,7 +475,7 @@ export async function render(root, route) {
           sound.tap();
           if (afterFeel(state.rec, def, pol, { share: res.share, feel: k, age: kidAge }) < 0) {
             save();
-            voice.tell(numeric(g) ? T.round.smaller : T.round.smallerPlain);
+            voice.tell(own.smaller ?? (numeric(g) ? T.round.smaller : T.round.smallerPlain));
           }
         });
         feelBox.append(fb);
@@ -483,19 +504,25 @@ export async function render(root, route) {
 
     await voice.tell(`${T.round.done} ${T.round.cardGot(T.cards[card]?.name ?? "")} ${T.cards[card]?.text ?? ""}`);
     if (!done.isConnected) return;
+    if (flowers) await voice.tell(line("grew"));
     if (res.newStar) await voice.tell(T.round.star);
     if (nowMastered) await voice.tell(T.round.mastered);
+    // A map that counts out loud (the Berg) says how close the star was: "this time 3 of 5".
+    else if (!res.newStar && T.round.noStar && !L.starred(state.rec, def, p, g) && !L.isGame(def)) await voice.tell(T.round.noStar(num(first), num(tasks)));
     const newG = L.groupOf(def, res.level);
     const sameGroup = newG === g; // the Feld moves by sub-steps inside a range
     const stepName = def.rungName?.(L.rung(def, res.level), words);
-    if (res.moved > 0) await voice.tell(sameGroup ? T.round.stepOn(stepName ?? "") : numeric(newG) ? T.round.bigger : T.round.biggerPlain);
-    if (res.moved < 0) await voice.tell(numeric(newG) && !sameGroup ? T.round.smaller : T.round.smallerPlain);
+    if (res.moved > 0) await voice.tell(sameGroup ? T.round.stepOn(stepName ?? "") : own.bigger ?? (numeric(newG) ? T.round.bigger : T.round.biggerPlain));
+    if (res.moved < 0) await voice.tell(own.smaller ?? (numeric(newG) && !sameGroup ? T.round.smaller : T.round.smallerPlain));
+    // The Berg's logbook: a line of the camp when nothing moved (think-lab said it after every round without a step up)
+    if (res.moved <= 0 && typeof own.grew === "string" && !flowers) await voice.tell(own.grew);
     if (!res.moved && !res.star && pol.star.atTop && !isTop(def, level)) await voice.tell(T.round.starsOnTop);
     if (pol.askFeel) await voice.tell(T.round.feelQuestion);
     else if (nextId && m.guide === "tour") voice.tell(T.round.follow(T.stations[nextId] ?? nextId));
   }
 
   show("start");
+  caption.textContent = intro; // the station's little story stays readable before the child starts (show() empties the caption)
   return () => clearTimeout(nudgeTimer);
 }
 

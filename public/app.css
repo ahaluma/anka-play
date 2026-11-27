@@ -3,6 +3,7 @@
 
 :root {
   --paper: #e9eef2;
+  --grid: rgba(27, 33, 64, 0.07);
   --ink: #1b2140;
   --card: #fbfcfe;
   --muted: #535b7b;
@@ -321,7 +322,15 @@ body.listening .board .answers { pointer-events: none; }
 /* ====================== A station ====================== */
 body[data-screen="station"], body[data-screen="play"], body[data-screen="gate"] { background-color: var(--grass); }
 /* A task on screen: a plain background, no station picture behind the task's own pictures (engine/ui/play.js). */
-body.in-round { background-image: none !important; background-color: var(--paper); }
+/* A round, and every screen of a map with look "paper" (the Berg): squared notebook paper, as all of think-lab */
+body.in-round,
+body[data-look="paper"] {
+  background-color: var(--paper);
+  background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px) !important;
+  background-size: 24px 24px;
+  background-position: 0 0;
+  background-attachment: scroll;
+}
 .station { display: flex; flex-direction: column; gap: 12px; padding: 14px; background: rgba(251, 252, 254, 0.94); }
 .station-head { display: flex; align-items: center; gap: 12px; }
 .station-icon { font-size: 48px; line-height: 1; }
@@ -500,3 +509,14 @@ button.stone.loose.used { visibility: hidden; }
 .feel-btn { display: flex; flex-direction: column; align-items: center; padding: 6px 10px; border: 3px solid var(--ink); border-radius: 16px; background: #fff; font-size: 34px; }
 .feel-btn small { font-size: 14px; font-weight: 700; }
 .feel-btn.on { background: var(--sun); }
+
+/* ---------- The Tal's flowers (engine/ui/flowers.js): one per round, around the station and on the done screen */
+.spot-flowers { position: absolute; left: 50%; top: 50%; width: 0; height: 0; pointer-events: none; z-index: -1; }
+.spot-flower { position: absolute; font-size: 15px; line-height: 1; transform: translate(-50%, -50%); }
+.spot-flower.bloom { animation: bloom 1.6s ease-out 0.4s both; }
+@keyframes bloom { 0% { transform: translate(-50%, -50%) scale(0); } 60% { transform: translate(-50%, -50%) scale(1.8); } 100% { transform: translate(-50%, -50%) scale(1); } }
+.flower-bed { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 8px 12px; }
+.flower-bed small { font-weight: 800; }
+.bed-flowers { display: flex; flex-wrap: wrap; justify-content: center; gap: 2px; font-size: 26px; line-height: 1.2; }
+.bed-flowers .new { animation: bloom-in 1.2s ease-out 0.6s both; }
+@keyframes bloom-in { 0% { transform: scale(0); } 60% { transform: scale(1.6); } 100% { transform: scale(1); } }
