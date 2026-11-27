@@ -183,7 +183,7 @@ anwenden: {                                   // zahl, use: more, fewer or the s
 }
 ```
 
-The engine (`engine/recipe.js`, 100 lines) draws, retries until the rules hold, avoids repeats, adds the
+The engine (`engine/recipe.js`, about 90 lines) draws, retries until the rules hold, avoids repeats, adds the
 two near wrong options, and hands the board plain data. `$max` comes from the rung's params, so the same
 recipe serves every rung. The mistake of a wrong answer is also an expression (`oneOff` when
 `|given − right| = 1`), so every station, not only the market, knows its typical mistakes. `zahl` is
