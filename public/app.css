@@ -502,6 +502,10 @@ button.stone.loose.used { visibility: hidden; }
 .star-cell b { font-size: 24px; color: var(--muted); }
 .star-cell.on b { color: inherit; }
 .star-cell.new b { animation: pop 0.6s ease-out 0.4s both, pulse 1.4s ease-in-out 1s infinite; }
+/* Preschool: the other ways of this station are pictures to tap (engine/ui/play.js, finish) */
+.star-cell.to-way { min-width: 52px; padding: 4px 6px; border-radius: 14px; background: var(--card); box-shadow: 0 2px 0 rgba(0, 0, 0, 0.12); color: inherit; text-decoration: none; }
+.star-cell.to-way:active { transform: translateY(2px); box-shadow: none; }
+.next .btn svg { width: 30px; height: 30px; vertical-align: middle; }
 .next { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
 .next .btn { padding-left: 16px; padding-right: 16px; } /* "Nochmal" and "Etwas anderes" side by side on a phone */
 .follow { min-width: min(100%, 300px); font-size: 22px; }

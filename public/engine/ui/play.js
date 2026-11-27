@@ -431,6 +431,7 @@ export async function render(root, route) {
     const { first, tasks } = round.result;
     const card = def.cards?.[p] ?? persp.card;
     const before = facts().mastered(s.id);
+    const newCard = !!card && !state.rec.cards?.[card]; // the first time the child gets this thinking card
     const res = afterRound(state.rec, def, pol, { p, rung: level, first, tasks, age: kidAge });
     L.roundDone(state.rec, ideaId, card);
     save();
@@ -442,10 +443,18 @@ export async function render(root, route) {
     c.append(el("span", "think-icon", CARDS[card] ?? "✨"), el("strong", "", T.cards[card]?.name ?? ""), el("span", "", T.cards[card]?.text ?? ""));
     done.append(c);
     const g = L.groupOf(def, level);
+    // Preschool (the Tal): children who cannot read yet. The round end speaks only news, every button is a
+    // picture, and the ways to play this station are the pictures to tap (instead of a "something else" text).
+    const small = m.band === "vorschule";
     const row = el("div", "star-row card");
     for (const x of def.perspectives) {
       const on = L.starred(state.rec, def, x, g);
-      const st = el("span", "star-cell" + (on ? " on" : "") + (x === p && res.newStar ? " new" : ""));
+      const cls = "star-cell" + (on ? " on" : "") + (x === p && res.newStar ? " new" : "");
+      const st = small && x !== p ? link(cls + " to-way", href.play(s.id, ideaId, x, many)) : el("span", cls);
+      if (st.tagName === "A") {
+        st.setAttribute("aria-label", names[x]);
+        st.addEventListener("click", () => sound.tap());
+      }
       st.append(el("span", "", PERSPECTIVES.find((y) => y.id === x).icon), el("b", "", on ? "⭐" : "☆"));
       row.append(st);
     }
@@ -484,18 +493,36 @@ export async function render(root, route) {
       done.append(feelBox);
     }
 
-    const nextId = m.guide !== "none" ? nextOf(s.id, f) : null;
+    // The tour (Tal), decided: the owl stays at this station until all its stars are there. First the ways the
+    // child has not tried yet, then the ways without a star, in their order (this way itself last: the owl then
+    // plays it again). Only when the station is mastered does it walk the child on to the next station.
+    const gNow = L.groupOf(def, res.level);
+    const ways = m.guide === "tour" && !L.isGame(def) && !f.mastered(s.id) ? def.perspectives : [];
+    const nextWay = ways.find((x) => x !== p && !L.played(state.rec, def.id, x)) ??
+      ways.find((x) => x !== p && !L.starred(state.rec, def, x, gNow)) ?? (ways.length && !L.starred(state.rec, def, p, gNow) ? p : null);
+    const nextId = m.guide !== "none" && !nextWay ? nextOf(s.id, f) : null;
     const nav = el("div", "next");
-    const again = button("btn", T.labels.again, T.labels.again);
+    const again = button("btn", T.labels.again, small ? "" : T.labels.again);
+    if (small) again.innerHTML = icons.again;
     again.addEventListener("click", () => {
       sound.tap();
       startRound();
     });
-    nav.append(again, link("btn sun", stationHref, T.round.toStation));
-    if (nextId) {
+    nav.append(again);
+    if (!small) nav.append(link("btn sun", stationHref, T.round.toStation));
+    if (nextWay) {
+      const follow = nextWay === p ? button("btn go follow") : link("btn go follow", href.play(s.id, ideaId, nextWay, many));
+      if (nextWay === p) follow.addEventListener("click", () => {
+        sound.tap();
+        startRound();
+      });
+      follow.append(el("span", "", "🦉"), el("span", "", PERSPECTIVES.find((x) => x.id === nextWay).icon));
+      follow.setAttribute("aria-label", `${T.round.followShort}: ${names[nextWay]}`);
+      done.append(follow);
+    } else if (nextId) {
       const follow = link("btn go follow", m.guide === "tour" ? href.map(s.map, `walk=${s.id},${nextId}`) : href.station(nextId));
-      follow.append(el("span", "", "🦉"), el("span", "", T.stations[nextId] ?? nextId));
-      follow.setAttribute("aria-label", T.round.followShort);
+      follow.append(el("span", "", "🦉"), el("span", "", small ? stationOf(nextId).icon ?? "" : T.stations[nextId] ?? nextId));
+      follow.setAttribute("aria-label", `${T.round.followShort}: ${T.stations[nextId] ?? nextId}`);
       done.append(follow);
     }
     done.append(nav);
@@ -503,9 +530,11 @@ export async function render(root, route) {
     sound.win();
     celebrate();
 
-    await voice.tell(`${T.round.done} ${T.round.cardGot(T.cards[card]?.name ?? "")} ${T.cards[card]?.text ?? ""}`);
+    // Preschool: only news is said. The thinking card the first time, the flower the first time at this station.
+    if (small && !newCard) await voice.tell(T.round.done);
+    else await voice.tell(`${T.round.done} ${T.round.cardGot(T.cards[card]?.name ?? "")} ${T.cards[card]?.text ?? ""}`);
     if (!done.isConnected) return;
-    if (flowers) await voice.tell(line("grew"));
+    if (flowers && (!small || grown === 1)) await voice.tell(line("grew"));
     if (res.newStar) await voice.tell(T.round.star);
     if (nowMastered) await voice.tell(T.round.mastered);
     // A map that counts out loud (the Berg) says how close the star was: "this time 3 of 5".
@@ -519,7 +548,7 @@ export async function render(root, route) {
     if (res.moved <= 0 && typeof own.grew === "string" && !flowers) await voice.tell(own.grew);
     if (!res.moved && !res.star && pol.star.atTop && !isTop(def, level)) await voice.tell(T.round.starsOnTop);
     if (pol.askFeel) await voice.tell(T.round.feelQuestion);
-    else if (nextId && m.guide === "tour") voice.tell(T.round.follow(T.stations[nextId] ?? nextId));
+    // The tour says its sentence once, on the map, while the owl walks (engine/ui/map.js).
   }
 
   show("start");
