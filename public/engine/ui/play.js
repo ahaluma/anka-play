@@ -103,6 +103,8 @@ export async function render(root, route) {
     board.hidden = name !== "board";
     done.hidden = name !== "done";
     hintBtn.hidden = name !== "board" || isGate;
+    // While a task is on screen, the station's picture behind it goes away: it would run into the task's own pictures.
+    document.body.classList.toggle("in-round", name === "board");
     if (name !== "board") voice.newTask();
   };
 

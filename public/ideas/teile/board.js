@@ -432,7 +432,7 @@ export function pruefen(host, t, ctx) {
   drawSaid();
   bubble.append(saidBox, saidDots);
   talk.append(el("span", "owl", "🦉"), bubble);
-  const groups = el("div", "groups" + (t.a + t.b > 10 ? " big" : ""));
+  const groups = el("div", "groups" + (t.a + t.b > 6 ? " big" : "")); // two rows of more than three must still fit side by side
   const parts = [t.a, t.b].map((n) => {
     const box = el("div", "part");
     box.append(group(n, thing.icon));
