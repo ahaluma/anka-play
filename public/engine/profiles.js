@@ -82,9 +82,12 @@ export function remove(id) {
   store.remove(`learner:${id}`);
 }
 
-/** Does every sentence read itself aloud for this child? The parents' choice, else by age. A guest: yes. */
-export function readAloud(kid) {
+/** Does every sentence read itself aloud for this child, on a map of this band? Who plays decides: the preschool
+ *  maps (the Tal) read everything aloud, the school maps (Fluss, Feld, Berg) only on a tap on 🔊. The parents can
+ *  switch it on everywhere (or, from earlier, off everywhere). Without a band (Home): by age. A guest: yes. */
+export function readAloud(kid, band) {
   if (typeof kid?.readAloud === "boolean") return kid.readAloud;
+  if (band) return band === "vorschule";
   const a = age(kid);
   return a === null || a < READ_ALOUD_UNTIL;
 }

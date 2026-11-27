@@ -36,7 +36,9 @@ These are standing decisions. They hold everywhere and are therefore rules of th
 | Preschool concept learning and school calculation are never mixed | `band` of each map; suggestions and review tasks never cross bands |
 | A perspective is mastered with 4 of 5 tasks right at the first try in one round; it gets a visible star at once, no waiting days | `engine/learner.js` (one rule for all) |
 | From the range up to 20, answers are typed on the number pad, not chosen | `BANDS` in `universe.js` and the recipe's `answer.mode` |
-| Tasks whose numbers are all ≤ 20 are read aloud; taps are locked until the voice ends (at most 10 s) | `ui/question.js`, `ui/voice.js` |
+| **Who plays decides** (27 Nov): preschool maps (Tal) read every sentence aloud and lock taps until the voice ends (at most 10 s); school maps (Fluss, Feld, Berg) read only on 🔊. Parents can switch reading on for every map | `band` of the map, `profiles.readAloud`, `ui/voice.js` |
+| **A concept starts small** (27 Nov): every concept starts at its first, smallest rung whatever the age; only plain calculation (plus, minus, times, divided) starts by age or by first-visit questions, because there the number range is the difficulty (friends of ten work up to 20, not beyond). Preschool games never leave the range up to 20 | `start` of each idea, `gate` only on the bridge to the Feld |
+| **Every map keeps its own look and voice** (27 Nov): one engine, but a map may have its own sentences (`voices.<map>` in `lang/<code>.js`), a look (`look: "paper"`: the Berg on squared notebook paper with its expedition logbook) and a reward (`reward: "flowers"`: the Tal grows a flower per round). A station's own sentences (`intro`, `bigger`, `smaller`, `grew`) come first | `universe.js`, `lang/`, `ideas/<id>/lang/` |
 | The whole question stays visible until the next task | `ui/question.js` |
 | No "how was it?" question for children up to 10; the Berg (9 to 12) keeps it (decided) | `askFeel` of the map and policy |
 | Difficulty eases by itself: 3 wrong in a row → an easier task; 2 weak rounds → one group down | `content/policies.js` |
@@ -115,9 +117,9 @@ the child has crossed into them, Berg by the three ways of 4.4 or once reached.
 
 | Portal | Condition | Gate on the first visit |
 | --- | --- | --- |
-| wiese → steg (stepping stones over the stream) | age 6, **or** wiese and teich mastered | three "where is it on the bridge?" tasks at 20, 100, 1000 |
+| wiese → steg (stepping stones over the stream) | age 6, **or** wiese and teich mastered | none: the number line is a concept, it starts at 20 |
 | steg → apfelbaum (the bridge to the field) | always | three plus tasks of rising difficulty (3 + 6, 8 + 5, 23 + 40) |
-| sonnenfels → zaun (the mountain path) | three ways (decided): age 9, **or** the parents' switch "berg", **or** the school basics mastered (steg, blumenfeld, apfelbaum, beeren: about grade 3) | three fence tasks at levels 1, 2, 3 |
+| sonnenfels → zaun (the mountain path) | three ways (decided): age 9, **or** the parents' switch "berg", **or** the school basics mastered (steg, blumenfeld, apfelbaum, beeren: about grade 3) | none: every camp starts at level 1, as in think-lab |
 | every way back | always | none |
 
 A portal is drawn on its map at its own place (`pos`: the stepping stones in the stream, the bridge at the
@@ -128,7 +130,8 @@ child comes in first (also straight from the map). The gate never blocks. The hi
 at the first try becomes the starting rung; with none right the child starts on the first rung. The
 station welcomes the child either way, and the result is saved, so the parents' page can say "started at
 20 after the door questions". Any station can get first-visit questions by giving any edge into it a
-`gate`; stations without one start by age (`start.byAge` of the idea).
+`gate`; stations without one start at the first rung (`start` of the idea). Only calculation uses gates
+and `start.byAge` (section 2, "a concept starts small"); the memory game, a game and no concept, also starts by age.
 
 ## 5. The graph in detail
 
@@ -136,8 +139,9 @@ station welcomes the child either way, and the result is saved, so the parents' 
 
 ```js
 { from: "wiese", to: "steg", kind: "portal", nearness: 0.7, icon: "stepping-stones",
-  requires: { any: [{ age: 6 }, { mastered: ["wiese", "teich"] }] },
-  gate: { perspective: "sehen", levels: ["20", "100", "1000"] } }
+  requires: { any: [{ age: 6 }, { mastered: ["wiese", "teich"] }] } }
+{ from: "steg", to: "apfelbaum", kind: "portal", nearness: 0.6, icon: "bridge", requires: null,
+  gate: { perspective: "anwenden", levels: ["10/luecke", "20/uebergang", "100/zehner"] } }
 ```
 
 Condition types: `age`, `mastered` (stations), `idea` (ideas, wherever they live), `perspective` (one star), `flag` (a whole group of a
@@ -281,7 +285,7 @@ Generalisation stops in three places, on purpose:
 
 ### 7.1 A round
 
-A round is 5 tasks of one station in one perspective (3 for children under 5 in the Tal). Its slots come
+A round is 5 tasks of one station in one perspective (3 for children up to 6 in the Tal, as think-lab). Its slots come
 from the policy: `cur` (the child's rung), `easier` (after 3 wrong in a row), `review` (a near mastered
 station), `inverse` and `bridge` (Feld), `backpack` (Berg), `surprise` (another perspective
 already played, not counted; only at stations with two or more perspectives). The help ladder comes from the policy: hint after 2 misses, then picture,
@@ -435,7 +439,7 @@ All open questions are answered (27 November 2026):
 
 | # | Question | Decision |
 | --- | --- | --- |
-| 1 | Number ranges: levels or stations? | **Levels** inside one idea: rungs and groups of one ladder. |
+| 1 | Number ranges: levels or stations? | **Levels** inside one idea: rungs and groups of one ladder. Refined 27 Nov: number ranges are the levels of plain calculation only; a concept is practised with small numbers. |
 | 2 | Perspectives: the same everywhere? | **One shared set:** the same ids, icons, order and star rule everywhere, names per map. A station has 1 to 5 of them, as its idea needs. |
 | 3 | What is nearness for? | **A guided, controlled journey** (section 5.2): a tour for small children, curiosity for older ones; plus one review task per round from a near mastered station. |
 | 4 | One idea per station? | **No:** a station can serve several ideas when they are trained at the same place. |
@@ -445,3 +449,4 @@ All open questions are answered (27 November 2026):
 | 8 | Into the Berg? | **Three ways:** age 9, the parents' switch, or the school basics mastered. |
 | 9 | Import think-lab's progress? | **No.** |
 | 10 | The repository | The design is the first commit of `main`; changes go in as pull requests. |
+| 11 | Who plays, and how much the engine generalises (27 Nov) | **The engine stays** (stations, nearness, conditions, navigation, policies), **but every game may get special treatment where it needs it**: its own look, voice and sentences. Preschool: audio, many pictures, short simple sentences, numbers up to 20. School: no automatic voice, dry calculation is fine. The Berg looks and talks like think-lab's Denk-Berg. |

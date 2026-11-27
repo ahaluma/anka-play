@@ -46,6 +46,7 @@ export const MAPS = [
     band: "vorschule",
     policy: "tal",
     perspectiveNames: "standard",
+    reward: "flowers", // every round finished at a station grows a flower there on the map (as think-lab's nature world)
     entry: "wiese",
     landmarks: [
       { id: "bach", pos: { x: 120, y: 470 } }, // the stream along the bottom
@@ -94,6 +95,7 @@ export const MAPS = [
     policy: "berg",
     perspectiveNames: "berg", // understand, try out, find the rule, transfer, explain why
     askFeel: true, // the only map that asks "how was it?" after a round (decided: it stays on the mountain)
+    look: "paper", // stations and rounds on squared notebook paper, as think-lab's Denk-Berg: a logbook, not a picture book
     keepsake: true, // a camp that comes out of the fog is a surprise, with a picture to save (boards/berg/keepsake.js)
     entry: "zaun",
     landmarks: [
@@ -226,7 +228,6 @@ export const EDGES = [
   {
     from: "wiese", to: "steg", kind: "portal", nearness: 0.7, icon: "stepping-stones", pos: { x: 300, y: 545 },
     requires: { any: [{ age: 6 }, mastered("wiese", "teich")] },
-    gate: { perspective: "sehen", levels: ["20", "100", "1000"] }, // where does it stand on the bridge?
   },
   { from: "steg", to: "wiese", kind: "portal", nearness: 0.7, icon: "stepping-stones", pos: { x: 90, y: 300 }, requires: null },
 
@@ -242,7 +243,6 @@ export const EDGES = [
   {
     from: "sonnenfels", to: "zaun", kind: "portal", nearness: 0.3, icon: "mountain-path", pos: { x: 940, y: 70 },
     requires: { any: [{ age: 9 }, { parent: "berg" }, BERG_BASICS] },
-    gate: { perspective: "sehen", levels: ["1", "2", "3"] },
   },
   { from: "zaun", to: "sonnenfels", kind: "portal", nearness: 0.3, icon: "mountain-path", pos: { x: 880, y: 560 }, requires: null },
 

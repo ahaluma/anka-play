@@ -92,6 +92,7 @@ export default {
   },
 
   mapText: {
+    cards: "Your thinking tricks",
     whereTo: "Where would you like to go?",
     asleep: "Everything is still asleep here. Soon there will be something to play.",
     locked: "This way is still closed.",
@@ -126,7 +127,7 @@ export default {
   round: {
     backpack: (station) => `Backpack! A task from “${station}”.`,
     surprise: "Surprise! Now something different.",
-    review: (station) => `Do you remember? A task from ${station}.`,
+    review: (station) => `Do you remember? A task from “${station}”.`,
     bridge: (why) => `Let's practise something for a moment. ${why}`,
     stepOn: (name) => `You are good at this! On we go: ${name}.`,
     starsOnTop: "The stars come when everything is mixed. You are on your way there.",
@@ -202,5 +203,28 @@ export default {
     panda: { many: "pandas", one: "one panda" },
     bee: { many: "bees", one: "a bee" },
     nut: { many: "nuts", one: "a nut" },
+  },
+
+  // A map's own voice: these sentences take the place of the shared ones above on that map (engine/i18n.js voiceOf).
+  voices: {
+    tal: {
+      round: { grew: "Look, your new flower! It grows on the map too.", bedName: (station) => `Your flowers: ${station}` },
+    },
+    berg: {
+      mapText: {
+        whereTo: "Expedition Thinking Mountain. Equipment: your head. Goal: the very top.",
+        fog: "There is fog up there. Win all five stars ⭐ here, then it clears.",
+      },
+      round: {
+        star: "A star ⭐ for this way!",
+        mastered: "All five stars ⭐! Something new is waiting on the map.",
+        noStar: (first, n) => `For the star ⭐ you need 4 of 5 right the first time. This time: ${first} of ${n}.`,
+        bigger: "Too easy? The goat nods. From now on it gets nasty.",
+        biggerPlain: "Too easy? The goat nods. From now on it gets nasty.",
+        smaller: "Okay, one step back. Climbers take breaks too.",
+        smallerPlain: "Okay, one step back. Climbers take breaks too.",
+        toStation: "Another way",
+      },
+    },
   },
 };

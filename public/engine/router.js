@@ -33,6 +33,14 @@ export const go = (hash) => {
   else location.hash = hash;
 };
 
+/** A screen that sends the child on at once (a station whose first-visit questions are due, a closed station):
+ *  it takes the place of the route in the history, so the phone's back button skips it instead of landing on
+ *  it and being sent on again. */
+export const redirect = (hash) => {
+  if (location.hash === hash) window.dispatchEvent(new HashChangeEvent("hashchange"));
+  else location.replace(hash);
+};
+
 export const href = {
   home: () => "#/",
   map: (id, q = "") => `#/map/${id}${q ? "?" + q : ""}`,

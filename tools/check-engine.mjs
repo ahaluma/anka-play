@@ -39,8 +39,9 @@ function play(rec, def, p, right, { age = 4, size = 5 } = {}) {
 {
   const rec = L.blank();
   check(L.level(rec, zahl, 3) === "5", "a 3-year-old starts zahl at 5");
-  check(L.level(rec, zahl, 6) === "10", "a 6-year-old starts zahl at 10");
+  check(L.level(rec, zahl, 6) === "5", "a 6-year-old starts zahl at 5 too: a concept starts small");
   check(L.level(rec, zahl, null) === "5", "a guest starts zahl at 5");
+  check(L.level(rec, defs.memory, 8) === "verdeckt-15", "the memory game starts by age");
 }
 
 // ---------- A star: 4 of 5 at the first try, at once; 3 of 5 is no star
@@ -67,8 +68,17 @@ function play(rec, def, p, right, { age = 4, size = 5 } = {}) {
   check(f.mastered("wiese"), "the wiese station is mastered");
 }
 
-// ---------- Down: 2 weak rounds in a row -> one group down, and it stays down despite the age
+// ---------- A concept starts at its smallest numbers, whatever the age; only plain calculation starts by age
 {
+  const rec = L.blank();
+  check(L.level(rec, zahl, 6) === "5" && L.level(rec, defs.reihe, 10) === "20" && L.level(rec, defs.zaun, 12) === "1", "a concept starts small for every age");
+  check(READY.every((id) => !defs[id].start?.byAge || ["plus", "minus", "mal", "geteilt", "memory"].includes(id)), "only calculation and the memory game start by age");
+}
+
+// ---------- Down: 2 weak rounds in a row -> one group down, and it stays down despite the age
+// (with a start by age, as calculation has it; zahl here only for its two groups)
+{
+  const zahl = { ...defs.zahl, start: { byAge: { 3: "5", 6: "10" } } };
   const rec = L.blank();
   check(L.level(rec, zahl, 6) === "10", "a 6-year-old plays at 10");
   play(rec, zahl, "sehen", 2, { age: 6 });
@@ -85,7 +95,7 @@ function play(rec, def, p, right, { age = 4, size = 5 } = {}) {
 {
   const rec = L.blank();
   const r = random(1);
-  check(roundSize(tal, 4) === 3 && roundSize(tal, 5) === 5 && roundSize(tal, null) === 5, "rounds have 3 tasks under 5, else 5");
+  check(roundSize(tal, 4) === 3 && roundSize(tal, 6) === 3 && roundSize(tal, 7) === 5 && roundSize(tal, null) === 5, "rounds have 3 tasks up to 6 (as think-lab), else 5");
   let slots = plan({ def: zahl, p: "sehen", rung: "5", pol: tal, size: 5, played: () => false, r });
   check(slots.length === 5 && slots.every((s) => s.kind === "cur"), "a first round has no surprise");
   slots = plan({ def: zahl, p: "sehen", rung: "5", pol: tal, size: 5, played: (p) => p === "machen", r });
@@ -109,14 +119,14 @@ function play(rec, def, p, right, { age = 4, size = 5 } = {}) {
 
 // ---------- First-visit questions: the highest rung right at the first try is the start
 {
-  const def = { id: "reihe", perspectives: ["sehen"], ladder: [{ id: "20", group: "20" }, { id: "100", group: "100" }, { id: "1000", group: "1000" }] };
-  check(gate.questions("steg", def).map((q) => q.rung).join() === "20,100,1000", "the bridge asks at 20, 100 and 1000");
-  check(gate.start(def, [{ rung: "20", first: true }, { rung: "100", first: true }, { rung: "1000", first: false }]) === "100", "start at the highest rung answered right");
-  check(gate.start(def, [{ rung: "20", first: false }]) === "20", "with none right, start on the first rung");
+  const def = defs.plus;
+  const [a, b, c] = gate.questions("apfelbaum", def).map((q) => q.rung);
+  check(gate.start(def, [{ rung: a, first: true }, { rung: b, first: true }, { rung: c, first: false }]) === b, "start at the highest rung answered right");
+  check(gate.start(def, [{ rung: a, first: false }]) === def.ladder[0].id, "with none right, start on the first rung");
   const rec = L.blank();
-  check(gate.due(rec, "steg", def), "the questions are due on the first visit");
-  gate.save(rec, def, [{ rung: "100", first: true }]);
-  check(!gate.due(rec, "steg", def) && rec.ideas.reihe.level === "100", "asked once; the answers set the level");
+  check(gate.due(rec, "apfelbaum", def), "the questions are due on the first visit");
+  gate.save(rec, def, [{ rung: b, first: true }]);
+  check(!gate.due(rec, "apfelbaum", def) && rec.ideas.plus.level === b, "asked once; the answers set the level");
 }
 
 // ---------- The journey: next() leads to a near, open, unmastered station that has something to play
@@ -195,9 +205,9 @@ function play(rec, def, p, right, { age = 4, size = 5 } = {}) {
   check(allowed(f1).plus === 20 && allowed(f1).minus === 20 && !allowed(f1).mal, "the stories use plus and minus up to 20, no times yet");
 }
 
-// ---------- The gates of the Fluss and the Feld ask the written ideas
+// ---------- Only calculation asks first-visit questions: a concept (the Fluss, the Berg) starts small
 {
-  check(gate.questions("steg", defs.reihe).map((q) => q.rung).join() === "20,100,1000", "the stepping stones ask reihe at 20, 100, 1000");
+  check(!gate.questions("steg", defs.reihe).length && !gate.questions("zaun", defs.zaun).length, "the stepping stones and the mountain path ask nothing");
   check(gate.questions("apfelbaum", defs.plus).map((q) => q.rung).join() === "10/luecke,20/uebergang,100/zehner", "the bridge to the field asks plus at 10, 20, 100");
 }
 
@@ -205,7 +215,6 @@ function play(rec, def, p, right, { age = 4, size = 5 } = {}) {
 {
   const zaun = defs.zaun;
   const berg = policyFor("berg", zaun);
-  check(gate.questions("zaun", zaun).map((q) => q.rung).join() === "1,2,3", "the mountain path asks the fence at levels 1, 2, 3");
   const rec = L.blank();
   for (const p of zaun.perspectives) L.slot(rec, "zaun").cells[L.cellKey(p, "2")] = { n: 5, first: 5, recent: [], star: "2026-11-27" };
   const f = L.facts(rec, { age: 9, defs });

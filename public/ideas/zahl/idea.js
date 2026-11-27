@@ -18,7 +18,7 @@ export const IDEA = {
     { id: "5", group: "5", age: 3, params: { lo: 1, max: 5 } },
     { id: "10", group: "10", age: 5, params: { lo: 4, max: 10 } },
   ],
-  start: { byAge: { 3: "5", 6: "10" } },
+  start: { at: "5" }, // a concept starts at its smallest numbers, whatever the age (only plain calculation starts by age)
   // The station's perspectives (1 to 5, in the fixed order). zahl has all five; a game station has ["spielen"].
   perspectives: ["sehen", "machen", "forschen", "anwenden", "pruefen"],
   cards: { machen: "nachpruefen", anwenden: "vergleichen" },

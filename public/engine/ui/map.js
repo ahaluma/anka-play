@@ -12,14 +12,16 @@
 
 import { STATIONS, EDGES } from "../../content/universe.js";
 import { map as mapOf, station as stationOf, visible, stationOpen, reachable, edgeOpen, next as nextOf, glimpse, isMastered } from "../graph.js";
-import { shared as T, num, textsIn } from "../i18n.js";
+import { shared as T, voiceOf, num, textsIn } from "../i18n.js";
 import { state, facts } from "../app.js";
 import { store } from "../store.js";
 import * as profiles from "../profiles.js";
 import * as L from "../learner.js";
-import { href, go } from "../router.js";
+import { href, go, redirect } from "../router.js";
 import { el, button, wait } from "./parts.js";
 import { topbar } from "./topbar.js";
+import { CARDS } from "../../content/perspectives.js";
+import { BED, FLOWERS, flowersAt } from "./flowers.js";
 import { voice } from "./voice.js";
 import { sound, celebrate } from "./sound.js";
 
@@ -29,8 +31,9 @@ const H = 600;
 
 export async function render(root, route) {
   const m = mapOf(route.map);
-  if (!m) return go(href.home());
-  voice.aloud = profiles.readAloud(state.kid);
+  if (!m) return redirect(href.home());
+  voice.aloud = profiles.readAloud(state.kid, m.band);
+  const V = voiceOf(m.id); // the map's own voice where it has one (the Berg: "Expedition Denk-Berg …")
   const f = facts();
   const can = reachable(f);
   const here = STATIONS.filter((s) => s.map === m.id);
@@ -43,7 +46,7 @@ export async function render(root, route) {
   const scene = el("div", `map-scene map-${m.id}`);
   scene.style.backgroundImage = `url("art/${m.id}/scene.svg")`;
   wrap.append(scene);
-  root.append(wrap);
+  root.append(wrap, thinkRow());
 
   // The paths between drawn stations, as a dashed trail.
   const shown = new Set(here.filter((s) => visible(s.id, f) && can.has(s.id)).map((s) => s.id));
@@ -93,6 +96,24 @@ export async function render(root, route) {
       if (f.mastered(s.id) && !s.game) mark("🏅", "gold");
       else if (stars) mark(`⭐${stars > 1 ? stars : ""}`);
     }
+    if (m.reward === "flowers" && ready) {
+      // The Tal: one flower for every round played here, the newest one blooms once (engine/ui/play.js).
+      const n = Math.min(BED, flowersAt(s));
+      const bloom = store.get("newFlower", null) === s.id;
+      if (n) {
+        const bed = el("span", "spot-flowers");
+        bed.setAttribute("aria-hidden", "true");
+        for (let i = 0; i < n; i++) {
+          const a = (i / BED) * Math.PI * 2 + Math.PI / 2;
+          const fl = el("span", "spot-flower" + (bloom && i === n - 1 ? " bloom" : ""), FLOWERS[i % FLOWERS.length]);
+          fl.style.left = `${Math.round(Math.cos(a) * 48)}px`;
+          fl.style.top = `${Math.round(Math.sin(a) * 40)}px`;
+          bed.append(fl);
+        }
+        disc.append(bed);
+      }
+      if (bloom) store.remove("newFlower");
+    }
     b.addEventListener("click", () => {
       sound.tap();
       if (!ready) return void voice.tell(T.mapText.asleep);
@@ -113,13 +134,13 @@ export async function render(root, route) {
         if (seen.has(g.id) || shown.has(g.id) || s.map !== m.id || !f.ready(g.id)) continue;
         seen.add(g.id);
         const what = needs(g.opens, f);
-        const b = button("spot fog", T.mapText.fog);
+        const b = button("spot fog", V.mapText.fog);
         b.style.left = `${(s.pos.x / W) * 100}%`;
         b.style.top = `${(s.pos.y / H) * 100}%`;
         b.append(el("span", "spot-icon", "☁️"));
         b.addEventListener("click", () => {
           sound.tap();
-          voice.tell(`${T.mapText.fog} ${what ? T.mapText.opens(what) : ""}`.trim());
+          voice.tell(`${V.mapText.fog} ${what ? T.mapText.opens(what) : ""}`.trim());
         });
         scene.append(b);
       }
@@ -180,11 +201,27 @@ export async function render(root, route) {
     await wait(300);
     if (location.hash.includes("walk=")) {
       store.set("last", walkTo);
+      // The walk is over: back from the station is the map itself, not the walk again.
+      history.replaceState(history.state, "", href.map(m.id));
       go(href.station(walkTo));
     }
     return;
   }
-  voice.tell(T.mapText.whereTo);
+  voice.tell(V.mapText.whereTo);
+}
+
+/** The thinking cards the child has collected (one per round), in a row under the map, as think-lab had them:
+ *  the ones not yet found are grey. */
+function thinkRow() {
+  const row = el("ul", "think-row");
+  row.setAttribute("aria-label", T.mapText.cards);
+  for (const [id, icon] of Object.entries(CARDS)) {
+    const li = el("li", state.rec.cards?.[id] ? "got" : "", icon);
+    li.setAttribute("aria-label", T.cards[id]?.name ?? id);
+    li.title = T.cards[id]?.name ?? id;
+    row.append(li);
+  }
+  return row;
 }
 
 /** A station that came out of the fog for the first time (once per child): the surprise, and a picture to save

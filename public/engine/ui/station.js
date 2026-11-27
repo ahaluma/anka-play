@@ -10,7 +10,7 @@ import * as L from "../learner.js";
 import * as gate from "../gate.js";
 import * as profiles from "../profiles.js";
 import { store } from "../store.js";
-import { href, go } from "../router.js";
+import { href, redirect } from "../router.js";
 import { el, button, link } from "./parts.js";
 import { topbar, homeLink } from "./topbar.js";
 import { voice } from "./voice.js";
@@ -18,7 +18,9 @@ import { sound } from "./sound.js";
 
 /** The background of a station: art/<map>/<station>.svg over the map's own. */
 export function backdrop(s) {
-  document.body.style.backgroundImage = `url("art/${s.map}/${s.id}.svg"), url("art/${s.map}/station.svg")`;
+  const look = mapOf(s.map)?.look;
+  if (look) document.body.dataset.look = look; // the Berg: notebook paper instead of a picture (app.css)
+  else document.body.style.backgroundImage = `url("art/${s.map}/${s.id}.svg"), url("art/${s.map}/station.svg")`;
 }
 
 /** How a group is named: a number range ("Zahlen bis 10"), or a level ("Stufe 2") when the idea says `levels`. */
@@ -27,9 +29,9 @@ export const groupName = (g, def) => (def?.levels ? T.stationText.levelPlain(num
 export async function render(root, route) {
   const s = stationOf(route.station);
   const f = facts();
-  if (!s || !f.ready(s.id) || !reachable(f).has(s.id) || !stationOpen(s.id, f)) return go(href.map(s?.map ?? "tal"));
+  if (!s || !f.ready(s.id) || !reachable(f).has(s.id) || !stationOpen(s.id, f)) return redirect(href.map(s?.map ?? "tal"));
   const m = mapOf(s.map);
-  voice.aloud = profiles.readAloud(state.kid);
+  voice.aloud = profiles.readAloud(state.kid, m.band);
   store.set("last", s.id);
   backdrop(s);
 
@@ -38,7 +40,7 @@ export async function render(root, route) {
   const def = await loadIdea(ideaId);
   const many = s.ideas.length > 1;
 
-  if (gate.due(state.rec, s.id, def)) return go(href.gate(s.id));
+  if (gate.due(state.rec, s.id, def)) return redirect(href.gate(s.id));
 
   const caption = el("p", "caption");
   root.append(
