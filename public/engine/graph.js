@@ -4,9 +4,9 @@
 //
 // facts = {
 //   age: 7,
-//   mastered: (station) => boolean,          // all five perspectives starred (engine/learner.js)
+//   mastered: (station) => boolean,          // all the station's perspectives (1 to 5) starred (engine/learner.js)
 //   starred: (station, perspective) => boolean,
-//   flag: (station, group) => boolean,       // all five perspectives starred in that group of the ladder
+//   flag: (station, group) => boolean,       // all the station's perspectives starred in that group of the ladder
 //   rounds: (station) => number,
 //   visited: (station) => boolean,
 //   parent: (key) => boolean,                // a switch on the parents' page
@@ -19,9 +19,12 @@ export const map = (id) => MAPS.find((m) => m.id === id) || null;
 export const bandOf = (stationId) => map(station(stationId)?.map)?.band ?? null;
 
 /** One checker per condition type. A new type is one new line here, nothing else changes. */
+/** A pure game station is mastered from the start: it never blocks what depends on it. */
+export const isMastered = (id, facts) => !!station(id)?.game || facts.mastered(id);
+
 export const CONDITIONS = {
   age: (n, f) => (f.age ?? 0) >= n,
-  mastered: (ids, f) => ids.every((s) => f.mastered(s)),
+  mastered: (ids, f) => ids.every((s) => isMastered(s, f)),
   perspective: ({ station: s, p }, f) => f.starred(s, p),
   flag: ({ station: s, group }, f) => f.flag(s, group),
   rounds: ({ station: s, n }, f) => f.rounds(s) >= n,
@@ -58,7 +61,7 @@ export const allEdges = () => [...EDGES, ...homeEdges()];
 export const edgeOpen = (edge, facts) => walkable(edge) || edge.kind === "home" ? holds(edge.requires, facts) : false;
 
 /** Is the station's own door open (whichever way the child came)? */
-export const stationOpen = (id, facts) => holds(station(id)?.open ?? "always", facts);
+export const stationOpen = (id, facts) => !!station(id)?.game || holds(station(id)?.open ?? "always", facts); // a game is always open
 
 /** The ways out of a node, as a station screen or the map draws them. */
 export const outgoing = (id) => allEdges().filter((e) => e.from === id && (walkable(e) || e.kind === "home"));
@@ -114,7 +117,7 @@ export function near(id, min = 0.5) {
  *  station that is reachable and not mastered yet. A suggestion, never a lock. */
 export function suggest(id, facts) {
   const can = reachable(facts);
-  return near(id, 0).find((x) => can.has(x.id) && stationOpen(x.id, facts) && !facts.mastered(x.id))?.id ?? null;
+  return near(id, 0).find((x) => can.has(x.id) && stationOpen(x.id, facts) && !isMastered(x.id, facts))?.id ?? null;
 }
 
 export { BANDS };

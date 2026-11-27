@@ -11,6 +11,8 @@ export const IDEA = {
     { id: "10", group: "10", age: 5, params: { max: 10 } },
   ],
   start: { byAge: { 3: "5", 6: "10" } },
+  // The station's perspectives (1 to 5, in the fixed order). zahl has all five; a game station has ["spielen"].
+  perspectives: ["sehen", "machen", "forschen", "anwenden", "pruefen"],
   cards: { machen: "nachpruefen", anwenden: "vergleichen" },
 
   recipes: {

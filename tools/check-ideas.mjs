@@ -1,11 +1,11 @@
 // Makes 1000 tasks per rung and perspective of every idea written as data (public/ideas/*/idea.js) and
-// checks them: the right answer is among the options, numbers stay in range, no task fails to draw.
+// checks them: the idea has 1 to 5 perspectives in the fixed order and a recipe for each, the right answer is among the options, numbers stay in range, no task fails to draw.
 // Run: node tools/check-ideas.mjs
 
 import { readdirSync, existsSync } from "node:fs";
 import { make } from "../public/engine/recipe.js";
 import { BOARDS, ANSWERS } from "../public/content/boards.js";
-import { PERSPECTIVES } from "../public/content/perspectives.js";
+import { PERSPECTIVES, checkPerspectives } from "../public/content/perspectives.js";
 
 const dir = new URL("../public/ideas/", import.meta.url);
 const problems = [];
@@ -15,7 +15,12 @@ for (const name of readdirSync(dir)) {
   const file = new URL(`${name}/idea.js`, dir);
   if (!existsSync(file)) continue;
   const { IDEA } = await import(file);
-  for (const p of PERSPECTIVES) {
+  const bad = checkPerspectives(IDEA.perspectives);
+  if (bad) problems.push(`${name}: ${bad}`);
+  for (const extra of Object.keys(IDEA.recipes ?? {})) {
+    if (!IDEA.perspectives?.includes(extra)) problems.push(`${name}: recipe for ${extra}, which is not one of its perspectives`);
+  }
+  for (const p of PERSPECTIVES.filter((x) => IDEA.perspectives?.includes(x.id))) {
     const recipe = IDEA.recipes?.[p.id];
     if (!recipe) { problems.push(`${name}: no recipe for ${p.id}`); continue; }
     if (!BOARDS[recipe.board]) problems.push(`${name}/${p.id}: unknown board ${recipe.board}`);
