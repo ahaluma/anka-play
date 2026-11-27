@@ -9,7 +9,9 @@ twelve stations, eleven ideas in all five ways of playing each, and number memor
 Fluss (the river, school): the number line at the footbridge, tens and ones in the flower field, shapes at the
 gravel bank, clock and charts at the sunny rock. The Feld (the field edge, school): plus, minus, times and
 divide at the apple tree, the berries, the hen yard and the nut tree, money at the farm stand, and stories at
-the clearing, with the learning box and the bridges of think-lab's market. The Berg is next. The design is in [docs/DESIGN.md](docs/DESIGN.md); section 11 is the
+the clearing, with the learning box and the bridges of think-lab's market. The Berg (the mountain, 9 to 12): the
+twelve camps of think-lab's Denk-Berg from the fence at the foot to the number wall, and the summit with its
+competition rounds; camps come out of the fog as the ones below are mastered. The design is in [docs/DESIGN.md](docs/DESIGN.md); section 11 is the
 order of work.
 
 ## Try it
@@ -31,11 +33,12 @@ node tools/serve.mjs        # then open http://localhost:8080 (Node 22 or newer,
   - `ui/`: the screens (Home, map, station, round) and the shared parts (question box and voice, answer
     buttons, number pad, sounds).
 - `public/boards/`: the reusable pictures a task is drawn with (`menge`, `vergleich`, `reihe`, and
-  `rechnung`: the sums of the Feld, with its task code, stories and sentences in `boards/rechnung/`).
+  `rechnung`: the sums of the Feld, with its task code, stories and sentences in `boards/rechnung/`; `berg/`: the
+  parts every camp of the Berg shares, the summit's tool backpack and the keepsake picture).
 - `public/ideas/<id>/`: one idea: `idea.js` (ladder and recipes) and `lang/de.js`, `en.js`, `ne.js`; where a
   picture exists only there, its `board.js`; where tasks are picked from tables with rules, `tasks.js`.
   The Tal ideas other than *zahl* are think-lab's, ported with `engine/ui/ported.js` (their pictures are
-  in `public/ported.css`); so are the Fluss ideas and the money stand (`public/ported-schule.css`). The four
+  in `public/ported.css`); so are the Fluss ideas and the money stand (`public/ported-schule.css`), and the Berg's camps (`public/ported-berg.css`). The four
   operations and the clearing share think-lab's market code in `boards/rechnung/`. `ideas/index.js` lists the ideas that are written.
 - `public/lang/`: shared words: numbers, praise, buttons, names of maps, stations and things.
 - `public/art/<map>/`: the map's scene and the stations' backgrounds.

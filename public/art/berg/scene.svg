@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 600" preserveAspectRatio="none">
+  <!-- The Berg: one big mountain. Meadow and trees at the foot, then grass, rock, and snow only at the top (true to
+       the world). The waterfall comes down the rock on the left. The camps are drawn over it by engine/ui/map.js,
+       from the foot (the fence) up to the summit. -->
+  <rect width="1000" height="600" fill="#cfeaff"/>
+  <circle cx="900" cy="70" r="36" fill="#ffc83a" stroke="#1b2140" stroke-width="5"/>
+  <g fill="#fff" stroke="#1b2140" stroke-width="4"><ellipse cx="150" cy="80" rx="70" ry="22"/><ellipse cx="188" cy="64" rx="40" ry="22"/></g>
+  <!-- a smaller mountain behind, on the right -->
+  <path d="M640 600 L850 170 L1080 600Z" fill="#a9b4c2" stroke="#1b2140" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M820 230 L850 170 L882 232 L864 222 L850 238 L836 222Z" fill="#fff" stroke="#1b2140" stroke-width="3"/>
+  <!-- the mountain, in four heights -->
+  <clipPath id="hill"><path d="M-60 600 L500 22 L1060 600Z"/></clipPath>
+  <g clip-path="url(#hill)">
+    <rect width="1000" height="600" fill="#fff"/>
+    <path d="M0 160 Q250 140 500 165 T1000 150 V600 H0Z" fill="#9aa5b4"/>
+    <path d="M0 300 Q250 280 500 305 T1000 290 V600 H0Z" fill="#a7d68c"/>
+    <path d="M0 420 Q250 400 500 425 T1000 410 V600 H0Z" fill="#b9e5a0"/>
+    <path d="M330 230 l24 14 M620 250 l-20 18 M420 270 l26 8 M560 200 l18 12" stroke="#6f7a89" stroke-width="5" stroke-linecap="round"/>
+  </g>
+  <path d="M-60 600 L500 22 L1060 600" fill="none" stroke="#1b2140" stroke-width="5" stroke-linejoin="round"/>
+  <!-- the waterfall on the left, its pool -->
+  <path d="M150 170 Q170 160 190 172 L200 320 Q178 330 156 322Z" fill="#8fd3ff" stroke="#1b2140" stroke-width="4" stroke-linejoin="round"/>
+  <path d="M164 190 V300 M178 186 V310 M190 196 V300" stroke="#fff" stroke-width="4" stroke-linecap="round"/>
+  <ellipse cx="180" cy="330" rx="62" ry="16" fill="#8fd3ff" stroke="#1b2140" stroke-width="4"/>
+  <!-- trees at the foot -->
+  <g stroke="#1b2140" stroke-width="4">
+    <rect x="52" y="520" width="12" height="34" fill="#8a5a33"/><path d="M58 450 l34 74 h-68z" fill="#3f9b57"/>
+    <rect x="922" y="510" width="12" height="34" fill="#8a5a33"/><path d="M928 440 l34 74 h-68z" fill="#2f8a4b"/>
+    <rect x="800" y="530" width="12" height="30" fill="#8a5a33"/><circle cx="806" cy="512" r="26" fill="#57b86a"/>
+    <rect x="150" y="540" width="12" height="30" fill="#8a5a33"/><circle cx="156" cy="522" r="24" fill="#57b86a"/>
+  </g>
+  <!-- flowers at the foot -->
+  <g stroke="#1b2140" stroke-width="3"><circle cx="400" cy="560" r="7" fill="#e8488a"/><circle cx="620" cy="575" r="7" fill="#ffc83a"/><circle cx="280" cy="580" r="7" fill="#fff"/><circle cx="700" cy="548" r="6" fill="#e8488a"/></g>
+</svg>

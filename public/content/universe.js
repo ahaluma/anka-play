@@ -94,6 +94,7 @@ export const MAPS = [
     policy: "berg",
     perspectiveNames: "berg", // understand, try out, find the rule, transfer, explain why
     askFeel: true, // the only map that asks "how was it?" after a round (decided: it stays on the mountain)
+    keepsake: true, // a camp that comes out of the fog is a surprise, with a picture to save (boards/berg/keepsake.js)
     entry: "zaun",
     landmarks: [
       { id: "fuss", pos: { x: 500, y: 570 } },
@@ -137,16 +138,16 @@ export const STATIONS = [
     open: { all: [{ flag: { station: "apfelbaum", group: "10" } }, { flag: { station: "beeren", group: "10" } }] } },
   { id: "hofstand", map: "feld", ideas: ["geld"], icon: "🧺", landmark: "feldweg", pos: { x: 500, y: 520 } }, // money at a farm stand
 
-  // Berg (Mathe-Olympiade, 9 to 12): twelve camps in four heights and the summit.
+  // Berg (Mathe-Olympiade, 9 to 12): twelve camps in four heights and the summit, in think-lab's order (camp 1 to 12).
   { id: "zaun", map: "berg", ideas: ["zaun"], icon: "🪵", pos: { x: 500, y: 520 } },
   { id: "haken", map: "berg", ideas: ["haken"], icon: "✔️", pos: { x: 330, y: 470 } },
-  { id: "ameisen", map: "berg", ideas: ["ameisen"], icon: "🐜", pos: { x: 680, y: 450 } },
   { id: "huetten", map: "berg", ideas: ["huetten"], icon: "🛖", pos: { x: 250, y: 380 } },
   { id: "vorrat", map: "berg", ideas: ["vorrat"], icon: "🎒", pos: { x: 380, y: 330 } },
-  { id: "tanz", map: "berg", ideas: ["tanz"], icon: "💃", pos: { x: 690, y: 330 } },
-  { id: "fels", map: "berg", ideas: ["fels"], icon: "🪨", landmark: "wasserfall", pos: { x: 170, y: 270 } },
+  { id: "ameisen", map: "berg", ideas: ["ameisen"], icon: "🐜", pos: { x: 680, y: 450 } },
   { id: "waage", map: "berg", ideas: ["waage"], icon: "⚖️", pos: { x: 470, y: 260 } },
   { id: "stall", map: "berg", ideas: ["stall"], icon: "🐄", pos: { x: 360, y: 190 } },
+  { id: "tanz", map: "berg", ideas: ["tanz"], icon: "💃", pos: { x: 690, y: 330 } },
+  { id: "fels", map: "berg", ideas: ["fels"], icon: "🪨", landmark: "wasserfall", pos: { x: 170, y: 270 } },
   { id: "socken", map: "berg", ideas: ["socken"], icon: "🧦", pos: { x: 610, y: 190 } },
   { id: "steine", map: "berg", ideas: ["steine"], icon: "🗿", pos: { x: 740, y: 200 } },
   { id: "mauer", map: "berg", ideas: ["mauer"], icon: "🧱", pos: { x: 470, y: 140 } },

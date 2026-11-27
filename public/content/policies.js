@@ -60,5 +60,8 @@ export const POLICIES = {
     askFeel: true, // easy / just right / hard after a round
     down: { when: "weakInRow", count: 2, orWeakAndHard: true }, // a weak round felt "hard" also moves down
     slots: ["cur", "cur", "cur", "cur", "backpack"], // one task from a camp already mastered
+    // the backpack: a camp the child has mastered, the one played longest ago, in a perspective played there
+    // (understand, transfer or explain why), at the child's level there (engine/ui/play.js pickBackpack)
+    backpack: { perspectives: ["sehen", "anwenden", "pruefen"] },
   },
 };

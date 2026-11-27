@@ -41,7 +41,7 @@ export default {
     feld: { name: "Das Feld", note: "Schule: Rechnen" },
     berg: { name: "Der Berg", note: "9–12 Jahre: Knobeln" },
   },
-  landmarks: { bach: "der Bach", "grosser-baum": "der große Baum", teich: "der Teich", huegel: "der Hügel", wolke: "die Wolke", fluss: "der Fluss", bruecke: "die Brücke", weide: "die Weide", kiesbank: "die Kiesbank", "grosser-fels": "der große Fels", feldweg: "der Feldweg", obstgarten: "der Obstgarten", huehnerhof: "der Hühnerhof", lichtung: "die Lichtung" },
+  landmarks: { bach: "der Bach", "grosser-baum": "der große Baum", teich: "der Teich", huegel: "der Hügel", wolke: "die Wolke", fluss: "der Fluss", bruecke: "die Brücke", weide: "die Weide", kiesbank: "die Kiesbank", "grosser-fels": "der große Fels", feldweg: "der Feldweg", obstgarten: "der Obstgarten", huehnerhof: "der Hühnerhof", lichtung: "die Lichtung", fuss: "der Fuß des Berges", wasserfall: "der Wasserfall", gipfel: "der Gipfel" },
   stations: {
     wiese: "Die Wiese", bau: "Der Bau", baumstumpf: "Der Baumstumpf", teich: "Der Teich", obstbaum: "Der Obstbaum",
     wald: "Der Wald", himmel: "Der Himmel", nester: "Die Nester", pfuetze: "Die Pfütze", huegel: "Der Hügel",
@@ -49,6 +49,8 @@ export default {
     steg: "Der Steg", blumenfeld: "Das Blumenfeld", kiesbank: "Die Kiesbank", sonnenfels: "Der Sonnenfels",
     apfelbaum: "Der Apfelbaum", beeren: "Die Beeren", huehner: "Der Hühnerhof", nussbaum: "Der Nussbaum", lichtung: "Die Lichtung",
     hofstand: "Der Hofstand",
+    zaun: "Der Zaun", haken: "Alle der Reihe nach", huetten: "Wer wohnt wo?", vorrat: "Rückwärts denken", ameisen: "Die Regel finden", waage: "Die Waage", stall: "Köpfe und Beine",
+    tanz: "Paare bilden", fels: "Formen zählen", socken: "Der schlimmste Fall", steine: "Vom Ende her", mauer: "Die Zahlenmauer", gipfel: "Der Gipfel",
   },
   // Short names of the ideas (the tabs of a station with more than one idea) and what they are about.
   ideas: {
@@ -74,6 +76,19 @@ export default {
     mal: { name: "Mal", about: "Gleiche Gruppen" },
     geteilt: { name: "Geteilt", about: "Gerecht verteilen und packen" },
     platz: { name: "Geschichten", about: "Alles zusammen in kleinen Geschichten" },
+    zaun: { name: "Lücken zählen", about: "Pfähle und Lücken" },
+    haken: { name: "Alle der Reihe nach", about: "Alle Möglichkeiten zählen, keine doppelt" },
+    huetten: { name: "Ausschließen", about: "Logik-Rätsel: ausschließen, bis eins bleibt" },
+    vorrat: { name: "Rückwärts denken", about: "Rückwärts denken: vom Ende zum Anfang" },
+    ameisen: { name: "Regel finden", about: "Die Regel finden: weit springen, ohne alles aufzuschreiben" },
+    waage: { name: "Ersetzen", about: "Ersetzen: Was gleich schwer ist, darf tauschen" },
+    stall: { name: "Annehmen und verbessern", about: "Annehmen und verbessern: erst alle gleich, dann tauschen" },
+    tanz: { name: "Paare bilden", about: "Paare bilden: gerade, ungerade und der Rest" },
+    fels: { name: "Ordentlich zählen", about: "Ordentlich zählen und im Kopf drehen" },
+    socken: { name: "Der schlimmste Fall", about: "Der schlimmste Fall: sicher ist, was auch mit Pech klappt" },
+    steine: { name: "Vom Ende her", about: "Vom Ende her: Spiele gegen die Eule" },
+    mauer: { name: "Eingrenzen", about: "Eingrenzen: Hinweis für Hinweis, bis eine Zahl bleibt" },
+    gipfel: { name: "Wettbewerb", about: "Aufgaben aus dem ganzen Berg, ohne Uhr und ohne Punkte" },
   },
 
   // The map
@@ -82,6 +97,16 @@ export default {
     asleep: "Hier schläft noch alles. Bald gibt es hier etwas zu spielen.",
     locked: "Dieser Weg ist noch zu.",
     owl: "Komm, hier geht es weiter!",
+    fog: "Im Nebel liegt noch etwas.",
+    opens: (what) => `Der Weg öffnet sich, ${what}.`,
+    or: " oder ",
+    and: " und ",
+    need: {
+      mastered: (names) => `wenn du ${names} geschafft hast`,
+      age: (n) => `wenn du ${n} bist`,
+      parent: "wenn deine Eltern es einschalten",
+      flag: (name) => `wenn du bei ${name} alle Sterne hast`,
+    },
   },
 
   // A station
@@ -102,6 +127,7 @@ export default {
 
   // The round
   round: {
+    backpack: (station) => `Rucksack! Eine Aufgabe aus „${station}“.`,
     surprise: "Überraschung! Jetzt kommt etwas anderes.",
     review: (station) => `Weißt du noch? Eine Aufgabe von ${station}.`,
     bridge: (why) => `Wir üben kurz etwas. ${why}`,

@@ -10,6 +10,7 @@
 //   voice.aloud = true / false           does the voice read by itself now?
 //   await voice.tell(text)               the caption
 //   await voice.ask(text)                a part of the question
+//   voice.tell(text, false), voice.ask(text, false)   read aloud only: the board shows the words itself (the Berg)
 //   voice.newTask() / voice.clear()      a new task: the box empties / leave the round
 //   voice.again()                        the 🔊 button: the whole question, or the last sentence
 
@@ -90,20 +91,22 @@ export const voice = {
   },
 
   /** A sentence in the caption. */
-  tell(text) {
+  tell(text, show = true) {
     last = text;
-    if (caption) caption.textContent = text;
+    if (caption && show) caption.textContent = text;
     const said = this.aloud ? speak(text) : null;
     return said ? Promise.all([said, pause(Math.min(900, readTime(text)))]) : pause(readTime(text));
   },
 
   /** A part of the question: into the box, read aloud with the board locked. */
-  ask(text) {
+  ask(text, show = true) {
     if (!text) return Promise.resolve();
     if (caption) caption.textContent = "";
-    parts.push(text);
-    draw();
-    last = parts.join(" ");
+    if (show) {
+      parts.push(text);
+      draw();
+      last = parts.join(" ");
+    } else last = text;
     if (!this.aloud) return pause(readTime(text));
     const said = speak(text);
     const mine = task;

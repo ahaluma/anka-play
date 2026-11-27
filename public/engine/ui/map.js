@@ -4,13 +4,15 @@
 // The owl stands at the station the journey leads to next (graph next(), the map's `guide`):
 //   tour     the Tal: after a round the owl walks the child there (#/map/tal?walk=wiese,bau)
 //   hint     the station is marked, the child may go anywhere
+//   glimpse  the Berg: as hint, and near stations still in the fog are drawn as a cloud; a tap says what opens
+//            the way to them (graph glimpse()), to make older children curious
 // A portal is drawn where it leaves this map (its `pos`): the stepping stones to the river, the bridge to the
 // field. Open, it takes the child to the station on the other side (its first-visit questions come first);
 // closed, it shows a lock, like a closed door.
 
 import { STATIONS, EDGES } from "../../content/universe.js";
-import { map as mapOf, station as stationOf, visible, stationOpen, reachable, edgeOpen, next as nextOf } from "../graph.js";
-import { shared as T } from "../i18n.js";
+import { map as mapOf, station as stationOf, visible, stationOpen, reachable, edgeOpen, next as nextOf, glimpse, isMastered } from "../graph.js";
+import { shared as T, num, textsIn } from "../i18n.js";
 import { state, facts } from "../app.js";
 import { store } from "../store.js";
 import * as profiles from "../profiles.js";
@@ -19,7 +21,7 @@ import { href, go } from "../router.js";
 import { el, button, wait } from "./parts.js";
 import { topbar } from "./topbar.js";
 import { voice } from "./voice.js";
-import { sound } from "./sound.js";
+import { sound, celebrate } from "./sound.js";
 
 const SVG = "http://www.w3.org/2000/svg";
 const W = 1000;
@@ -102,6 +104,28 @@ export async function render(root, route) {
     nodes[s.id] = b;
   }
 
+  // glimpse (Berg): near stations still in the fog, as clouds. A tap says what opens the way.
+  if (m.guide === "glimpse") {
+    const seen = new Set();
+    for (const id of shown) {
+      for (const g of glimpse(id, f)) {
+        const s = stationOf(g.id);
+        if (seen.has(g.id) || shown.has(g.id) || s.map !== m.id || !f.ready(g.id)) continue;
+        seen.add(g.id);
+        const what = needs(g.opens, f);
+        const b = button("spot fog", T.mapText.fog);
+        b.style.left = `${(s.pos.x / W) * 100}%`;
+        b.style.top = `${(s.pos.y / H) * 100}%`;
+        b.append(el("span", "spot-icon", "☁️"));
+        b.addEventListener("click", () => {
+          sound.tap();
+          voice.tell(`${T.mapText.fog} ${what ? T.mapText.opens(what) : ""}`.trim());
+        });
+        scene.append(b);
+      }
+    }
+  }
+
   // The ways to other maps.
   const PORTAL = { "stepping-stones": "🪨", bridge: "🌉", "mountain-path": "🥾" };
   for (const e of EDGES) {
@@ -144,6 +168,8 @@ export async function render(root, route) {
   }
   centre(wrap, scene, stationOf(walkFrom || target || last)?.pos);
 
+  if (m.keepsake) await keepsake(root, m, here.filter((s) => shown.has(s.id)), f);
+
   if (walkFrom && walkTo && nodes[walkTo]) {
     // The tour: the owl walks along the path, the child follows, and the station opens.
     await wait(400);
@@ -159,6 +185,89 @@ export async function render(root, route) {
     return;
   }
   voice.tell(T.mapText.whereTo);
+}
+
+/** A station that came out of the fog for the first time (once per child): the surprise, and a picture to save
+ *  (think-lab's Denk-Berg, boards/berg/keepsake.js). The last station of the map (the summit) is a surprise of its own. */
+async function keepsake(root, m, drawn, f) {
+  const KEY = `seen:${m.id}:${state.kid?.id ?? "guest"}`;
+  const seen = store.get(KEY, [m.entry]);
+  const fresh = drawn.filter((s) => !seen.includes(s.id));
+  if (!fresh.length) return;
+  store.set(KEY, [...seen, ...fresh.map((s) => s.id)]);
+  const [{ keepsake: draw }, words] = await Promise.all([import("../../boards/berg/keepsake.js"), textsIn(new URL("../../boards/berg/lang/", import.meta.url))]);
+  const B = words.berg;
+  const K = B.keep;
+  const all = STATIONS.filter((s) => s.map === m.id);
+  const c = fresh.find((s) => s === all.at(-1)) ?? fresh.at(-1);
+  const top = c === all.at(-1);
+  const rank = all.indexOf(c) + 1;
+  const name = state.kid?.name ?? "";
+  const tools = drawn.filter((s) => isMastered(s.id, f) && B.tools[s.id]).map((s) => B.tools[s.id]);
+  const solved = all.flatMap((s) => s.ideas).reduce((n, i) => n + Object.values(state.rec.ideas[i]?.cells ?? {}).reduce((k, x) => k + (x.n ?? 0) + (x.extra ?? 0), 0), 0);
+  const reached = [...drawn.filter((s) => s !== c), c]; // every camp in sight, the new one last
+  const picture = draw({
+    title: T.maps[m.id].name,
+    headline: top ? K.summitHeadline(name) : K.headline(name, num(rank)),
+    camp: T.stations[c.id] ?? c.id,
+    lines: [...(tools.length ? [K.tools(tools)] : []), K.solved(num(solved))],
+    date: new Date().toLocaleDateString(K.locale, { day: "numeric", month: "long", year: "numeric" }),
+    brand: T.app,
+    animal: state.kid?.animal || "🐰",
+    camps: reached.map((s) => [s.pos.x, s.pos.y]),
+  });
+  const title = top ? K.summitTitle : K.title;
+  const text = top ? K.summitText : K.text(T.stations[c.id] ?? c.id);
+  const box = el("section", "reached card pop");
+  const img = el("img", "reached-img");
+  img.src = picture.toDataURL("image/png");
+  img.alt = K.alt;
+  const save = button("btn go", K.save, K.save);
+  const close = button("btn", K.close, K.close);
+  save.addEventListener("click", () => {
+    sound.tap();
+    const a = document.createElement("a");
+    a.href = img.src;
+    a.download = `${m.id}-${rank}.png`;
+    a.click();
+    voice.tell(K.saved);
+  });
+  close.addEventListener("click", () => {
+    sound.tap();
+    box.remove();
+  });
+  const btns = el("div", "reached-btns");
+  btns.append(save, close);
+  box.append(el("h2", "", title), el("p", "", text), img, btns);
+  root.append(box);
+  sound.win();
+  celebrate();
+  await voice.tell(`${title} ${text} ${K.offer}`);
+}
+
+/** What a condition still needs, in words ("when you have done The fence"), or "" when it cannot be said. */
+export function needs(cond, f) {
+  if (!cond || cond === "always") return "";
+  const [type, arg] = Object.entries(cond)[0] ?? [];
+  const N = T.mapText.need;
+  const names = (ids) => ids.map((id) => T.stations[id] ?? id).join(T.mapText.and);
+  switch (type) {
+    case "mastered": {
+      const left = arg.filter((id) => !isMastered(id, f));
+      return left.length ? N.mastered(names(left)) : "";
+    }
+    case "age":
+      return N.age(num(arg));
+    case "parent":
+      return N.parent;
+    case "flag":
+      return N.flag(T.stations[arg.station] ?? arg.station);
+    case "any":
+    case "all":
+      return arg.map((c) => needs(c, f)).filter(Boolean).join(type === "any" ? T.mapText.or : T.mapText.and);
+    default:
+      return "";
+  }
 }
 
 /** On a narrow phone the map is wider than the screen: show the part around a station. */

@@ -39,7 +39,7 @@ export default {
     feld: { name: "The field", note: "School: calculating" },
     berg: { name: "The mountain", note: "Ages 9–12: puzzles" },
   },
-  landmarks: { bach: "the stream", "grosser-baum": "the big tree", teich: "the pond", huegel: "the hill", wolke: "the cloud", fluss: "the river", bruecke: "the bridge", weide: "the willow", kiesbank: "the gravel bank", "grosser-fels": "the big rock", feldweg: "the field path", obstgarten: "the orchard", huehnerhof: "the hen yard", lichtung: "the clearing" },
+  landmarks: { bach: "the stream", "grosser-baum": "the big tree", teich: "the pond", huegel: "the hill", wolke: "the cloud", fluss: "the river", bruecke: "the bridge", weide: "the willow", kiesbank: "the gravel bank", "grosser-fels": "the big rock", feldweg: "the field path", obstgarten: "the orchard", huehnerhof: "the hen yard", lichtung: "the clearing", fuss: "the foot of the mountain", wasserfall: "the waterfall", gipfel: "the top" },
   stations: {
     wiese: "The meadow", bau: "The burrow", baumstumpf: "The tree stump", teich: "The pond", obstbaum: "The fruit tree",
     wald: "The forest", himmel: "The sky", nester: "The nests", pfuetze: "The puddle", huegel: "The hill",
@@ -47,6 +47,8 @@ export default {
     steg: "The footbridge", blumenfeld: "The flower field", kiesbank: "The gravel bank", sonnenfels: "The sunny rock",
     apfelbaum: "The apple tree", beeren: "The berries", huehner: "The hen yard", nussbaum: "The nut tree", lichtung: "The clearing",
     hofstand: "The farm stand",
+    zaun: "The fence", haken: "All in order", huetten: "Who lives where?", vorrat: "Think backwards", ameisen: "Find the rule", waage: "The balance", stall: "Heads and legs",
+    tanz: "Make pairs", fels: "Count the shapes", socken: "The worst case", steine: "From the end", mauer: "The number wall", gipfel: "The top",
   },
   ideas: {
     zahl: { name: "How many?", about: "A number says how many" },
@@ -71,6 +73,19 @@ export default {
     mal: { name: "Times", about: "Equal groups" },
     geteilt: { name: "Divided by", about: "Sharing fairly and packing" },
     platz: { name: "Stories", about: "Everything together in little stories" },
+    zaun: { name: "Count the gaps", about: "Posts and gaps" },
+    haken: { name: "Every one in order", about: "Count every possibility, none twice" },
+    huetten: { name: "Rule out", about: "Logic puzzles: rule out until one is left" },
+    vorrat: { name: "Think backwards", about: "Think backwards: from the end to the start" },
+    ameisen: { name: "Find the rule", about: "Find the rule: jump far without writing it all down" },
+    waage: { name: "Swap", about: "Swap it: what weighs the same may swap" },
+    stall: { name: "Guess and improve", about: "Assume and improve: all the same first, then swap" },
+    tanz: { name: "Make pairs", about: "Make pairs: even, odd and the rest" },
+    fels: { name: "Count in order", about: "Count in order and turn it in your head" },
+    socken: { name: "The worst case", about: "The worst case: sure is what works even with bad luck" },
+    steine: { name: "From the end", about: "From the end: games against the owl" },
+    mauer: { name: "Narrow it down", about: "Narrowing down: clue by clue, until one number is left" },
+    gipfel: { name: "Competition", about: "Tasks from the whole mountain, no clock and no points" },
   },
 
   mapText: {
@@ -78,6 +93,16 @@ export default {
     asleep: "Everything is still asleep here. Soon there will be something to play.",
     locked: "This way is still closed.",
     owl: "Come, this way!",
+    fog: "Something is still hidden in the fog.",
+    opens: (what) => `The way opens ${what}.`,
+    or: " or ",
+    and: " and ",
+    need: {
+      mastered: (names) => `when you have done ${names}`,
+      age: (n) => `when you are ${n}`,
+      parent: "when your parents switch it on",
+      flag: (name) => `when you have all the stars at ${name}`,
+    },
   },
 
   stationText: {
@@ -96,6 +121,7 @@ export default {
   },
 
   round: {
+    backpack: (station) => `Backpack! A task from “${station}”.`,
     surprise: "Surprise! Now something different.",
     review: (station) => `Do you remember? A task from ${station}.`,
     bridge: (why) => `Let's practise something for a moment. ${why}`,

@@ -10,10 +10,12 @@
 //   ctx.give(given, node, extra) -> Promise<boolean>   the board's own answer (build, order, its own buttons)
 //   ctx.miss(extra)         a wrong step inside a board's own answer (a stone out of order)
 //   ctx.solved(extra)       the board's own answer is right (the board checked it itself)
-//   ctx.say(sentence, ask)  a sentence the board made itself; extra.say does the same for miss, solved, hint
+//   ctx.say(sentence, ask, show)  a sentence the board made itself (show false: read aloud only, the board shows
+//                           it itself); extra.say does the same for miss, solved, hint
 //   ctx.icon, ctx.num, ctx.word, ctx.label(key), ctx.fresh(), ctx.tap(), ctx.ready()
 
-import { station as stationOf, map as mapOf, stationOpen, reachable, reviewFrom, next as nextOf } from "../graph.js";
+import { station as stationOf, map as mapOf, stationOpen, reachable, reviewFrom, next as nextOf, isMastered } from "../graph.js";
+import { STATIONS } from "../../content/universe.js";
 import { PERSPECTIVES, CARDS } from "../../content/perspectives.js";
 import { shared as T, helpers, say, num } from "../i18n.js";
 import { state, facts, idea as loadIdea, texts as loadTexts, age, save } from "../app.js";
@@ -22,7 +24,7 @@ import * as gate from "../gate.js";
 import * as profiles from "../profiles.js";
 import { taskOf, value } from "../recipe.js";
 import * as box from "../box.js";
-import { random, pick } from "../random.js";
+import { random, pick, shuffle } from "../random.js";
 import { policyFor, roundSize, afterRound, afterFeel, isTop } from "../policy.js";
 import { plan, Round } from "../round.js";
 import { THING_IDS, icon } from "../things.js";
@@ -141,7 +143,7 @@ export async function render(root, route) {
   function drawSteps() {
     steps.replaceChildren(
       ...round.slots.map((x, i) => {
-        const mark = { surprise: "🎁", review: x.counted ? "🎒" : "🔁", inverse: "🔁", bridge: "🌉" }[x.kind] ?? "";
+        const mark = { surprise: "🎁", review: x.counted ? "🎒" : "🔁", inverse: "🔁", bridge: "🌉", backpack: "🎒" }[x.kind] ?? "";
         return el("li", (mark ? "gift " : "") + (i < round.at ? "done" : i === round.at ? "now" : ""), mark);
       }),
     );
@@ -160,6 +162,32 @@ export async function render(root, route) {
     return { idea: id, p: pick(ps.length ? ps : d.perspectives, r), rung: L.level(state.rec, d, kidAge), station: sid };
   }
 
+  /** The backpack (Berg, policy backpack): tasks from other stations of this map the child has mastered. The one
+   *  played longest ago comes first (now and then the second oldest), in a perspective the child has played there,
+   *  at the child's level there. The summit (backpack.each) takes one camp per slot, at the top level. */
+  function pickBackpack() {
+    const bp = pol.backpack;
+    const want = (pol.slots ?? []).filter((k) => k === "backpack").length;
+    if (!bp || !want || isGate) return [];
+    const f = facts();
+    const lastDay = (id) => Object.values(state.rec.ideas[id]?.cells ?? {}).map((c) => c.last ?? "").sort().at(-1) ?? "";
+    const pool = shuffle(STATIONS.filter((x) => x.map === s.map && x.id !== s.id && f.ready(x.id) && isMastered(x.id, f)), r)
+      .flatMap((x) => x.ideas.map((id) => ({ station: x.id, idea: id, def: state.defs[id] })))
+      .filter((x) => x.def && !L.isGame(x.def))
+      .sort((a, b) => lastDay(a.idea).localeCompare(lastDay(b.idea)));
+    if (pool.length > 1 && r() < 0.3) [pool[0], pool[1]] = [pool[1], pool[0]];
+    const ps = bp.each ? shuffle(bp.perspectives, r) : bp.perspectives;
+    const out = [];
+    for (let i = 0; i < want && pool.length; i++) {
+      const x = bp.each ? pool.splice(Math.floor(r() * pool.length), 1)[0] : pool[i % pool.length];
+      const can = bp.each ? [ps[i % ps.length]] : ps.filter((p) => x.def.perspectives.includes(p) && L.played(state.rec, x.idea, p));
+      const p = pick(can.filter((p) => x.def.perspectives.includes(p)), r);
+      if (!p) continue;
+      out.push({ idea: x.idea, station: x.station, p, rung: bp.rung === "top" ? x.def.ladder.at(-1).id : L.level(state.rec, x.def, kidAge) });
+    }
+    return out;
+  }
+
   function startRound() {
     level = L.level(state.rec, def, kidAge);
     // Feld: a kind of mistake that came often brings a bridge (the rung that trains it) at the start of the round
@@ -167,7 +195,7 @@ export async function render(root, route) {
     const bridge = bridgeKind ? L.bridgeRung(def, level, bridgeKind) : null;
     const slots = isGate
       ? questions.map((q) => ({ kind: "gate", idea: ideaId, p: q.p, rung: q.rung, counted: false }))
-      : plan({ def, p, rung: level, pol, size: Math.min(roundSize(pol, kidAge), def.roundTasks?.[p] ?? Infinity), played: (x) => L.played(state.rec, ideaId, x), review: pol.review?.from === "below" ? null : pickReview(), below: L.belowTop(def, level), bridge, r });
+      : plan({ def, p, rung: level, pol, size: Math.min(roundSize(pol, kidAge), def.roundTasks?.[p] ?? Infinity), played: (x) => L.played(state.rec, ideaId, x), review: pol.review?.from === "below" ? null : pickReview(), below: L.belowTop(def, level), bridge, backpack: pickBackpack(), r });
     const below = def.ladder[L.rungIndex(def, level) - 1]?.id ?? null;
     round = new Round(slots, pol, isGate ? null : below);
     fresh = !L.played(state.rec, ideaId, p);
@@ -200,6 +228,7 @@ export async function render(root, route) {
     if (slot.kind === "review" && slot.station) await voice.tell(T.round.review(T.stations[slot.station] ?? slot.station));
     if (slot.kind === "bridge" && round.at === 0) await voice.tell(T.round.bridge(say(stexts[sdef.words ?? slot.idea]?.kinds?.[bridgeKind]) || ""));
     if (slot.kind === "easier") await voice.tell(T.round.easier);
+    if (slot.kind === "backpack" && !def.around) await voice.tell(T.round.backpack(T.stations[slot.station] ?? slot.station));
     if (!board.isConnected) return;
     const key = `${slot.idea}/${slot.p}`;
     const recent = (recentKeys[key] ??= []);
@@ -223,6 +252,12 @@ export async function render(root, route) {
     ctx.words = stexts;
     ctx.idea = slot.idea;
     b = mod.draw(board, task, ctx) ?? {};
+    if (def.around && !isGate) {
+      // something the round's idea adds to every task (the summit: pick a tool first, boards/berg/summit.js)
+      const own = b.hint;
+      const a = def.around(board, { idea: slot.idea, task, T: words, tell: (x) => voice.tell(x), tap: () => sound.tap(), r: { shuffle: (list) => shuffle(list, r) } }) ?? {};
+      b = { ...b, hint: (...args) => { const x = a.hint?.(); return x ? { say: x } : own?.(...args) ?? {}; } };
+    }
     if (!b.ownAnswer && FRAME_MODES.includes(task.answer.mode)) widget = frameAnswers(task.answer);
     restNudge();
     shownAt = Date.now();
@@ -257,7 +292,7 @@ export async function render(root, route) {
     // a wrong step of a board's own answer; on the first-visit questions there is only one try
     miss: (extra) => (isGate ? gateAnswer(false) : wrong(extra?.given, extra)),
     solved: (extra) => check(stage.value, extra),
-    say: (sentence, asking) => (asking ? voice.ask(sentence) : voice.tell(sentence)),
+    say: (sentence, asking, show = true) => (asking ? voice.ask(sentence, show) : voice.tell(sentence, show)),
     words: {}, // the texts of the idea of this task (set before each board is drawn)
     fresh: () => fresh && (slot?.kind === "cur" || slot?.kind === "easier"),
     tap: () => sound.tap(),

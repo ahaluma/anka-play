@@ -199,6 +199,26 @@ function play(rec, def, p, right, { age = 4, size = 5 } = {}) {
   check(gate.questions("apfelbaum", defs.plus).map((q) => q.rung).join() === "10/luecke,20/uebergang,100/zehner", "the bridge to the field asks plus at 10, 20, 100");
 }
 
+// ---------- The Berg: the gate of the mountain path, mastered with five stars at any level, the backpack
+{
+  const zaun = defs.zaun;
+  const berg = policyFor("berg", zaun);
+  check(gate.questions("zaun", zaun).map((q) => q.rung).join() === "1,2,3", "the mountain path asks the fence at levels 1, 2, 3");
+  const rec = L.blank();
+  for (const p of zaun.perspectives) L.slot(rec, "zaun").cells[L.cellKey(p, "2")] = { n: 5, first: 5, recent: [], star: "2026-11-27" };
+  const f = L.facts(rec, { age: 9, defs });
+  check(f.mastered("zaun") && !f.mastered("haken"), "five stars at level 2 master the fence (as in think-lab: any level)");
+  check(next("zaun", f) === "ameisen" || next("zaun", f) === "haken", "the journey goes on to a camp the fence opens");
+  const pack = { idea: "zaun", p: "anwenden", rung: "2", station: "zaun" };
+  const slots = plan({ def: defs.haken, p: "sehen", rung: "1", pol: berg, size: 5, backpack: [pack], r: random(1) });
+  check(slots.slice(0, 5).map((s) => s.kind).join() === "cur,cur,cur,cur,backpack" && slots[4].idea === "zaun" && slots[4].counted, "a Berg round: four of the camp and one from the backpack, counted");
+  const none = plan({ def: defs.haken, p: "sehen", rung: "1", pol: berg, size: 5, r: random(1) });
+  check(none.slice(0, 5).every((s) => s.kind === "cur"), "with an empty backpack the fifth task is the camp's own");
+  check(berg.askFeel && !policyFor("fluss", defs.reihe).askFeel, "only the Berg asks how it was");
+  const g = policyFor("berg", defs.gipfel);
+  check(g.slots.filter((k) => k === "backpack").length === 4 && !g.surprise, "the summit: four camp tasks and one of its own");
+}
+
 console.log(`${checks} checks.`);
 for (const p of problems) console.log(`PROBLEM: ${p}`);
 if (!problems.length) console.log("The engine keeps the rules.");

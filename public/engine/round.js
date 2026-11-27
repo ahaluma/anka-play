@@ -8,7 +8,9 @@
 //   review    one task from a near station of the same band the child has mastered (policy review). Not counted.
 //   surprise  at the end, one task from another perspective the child has already played (policy surprise;
 //             only for ideas with 2 or more perspectives). Not counted.
-//   backpack  (Berg) a task from a camp below. Counted with the round, as the mountain did.
+//   backpack  (Berg) a task from a camp the child has mastered (the summit: from every camp). Counted with the
+//             round, as the mountain did. The tasks come in as `backpack` (engine/ui/play.js picks them); without
+//             one the slot is one more cur.
 //
 // A policy with `slots` (Feld) lays the round out itself, every slot counted:
 //   cur       as above
@@ -26,11 +28,13 @@ import { pick } from "./random.js";
  *   played   (p) => has the child played this perspective before?
  *   review   { idea, p, rung } from a near mastered station, or null
  */
-export function plan({ def, p, rung, pol, size, played = () => false, review = null, below = null, bridge = null, r = Math.random }) {
+export function plan({ def, p, rung, pol, size, played = () => false, review = null, below = null, bridge = null, backpack = [], r = Math.random }) {
   const cur = { kind: "cur", idea: def.id, p, rung, counted: true };
   let slots;
   if (pol.slots) {
+    const pack = [...backpack];
     slots = pol.slots.slice(0, size).map((kind) => {
+      if (kind === "backpack" && pack.length) return { kind: "backpack", ...pack.shift(), counted: true };
       if (kind === "review" && pol.review?.from === "below" && below) return { ...cur, kind: "review", rung: below };
       if (kind === "inverse" && def.inverseIn?.includes(p)) return { ...cur, kind: "inverse" };
       return { ...cur };
