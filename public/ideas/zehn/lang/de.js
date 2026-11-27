@@ -9,7 +9,7 @@ export default {
       machen: "Füll die Nusskiste ganz voll!",
       forschen: "Einer mehr hier, einer weniger dort. Was fehlt?",
       anwenden: "Welche Zahl macht voll?",
-      pruefen: "Die Eule sucht Freunde. Stimmt das?",
+      pruefen: "Die Eule sagt zwei Zahlen. Machen sie voll?",
     },
     friends: (a, b, whole) => `${big(a)} und ${b} sind zusammen ${whole}.`,
     sehen: {
@@ -49,7 +49,7 @@ export default {
     pruefen: {
       question: (a, b, whole) => `Die Eule sagt: ${big(a)} und ${b} machen ${whole}. Stimmt das?`,
       look: "Schau, ob noch ein Platz frei ist oder einer übrig bleibt.",
-      fix: (a, whole) => `Gut aufgepasst! Welche Zahl macht die ${a} zur ${whole}?`,
+      fix: (a, whole) => `Richtig, das stimmt nicht. Welche Zahl macht die ${a} zur ${whole}?`,
       fixMiss: (whole) => `Noch nicht. Zusammen sollen es ${whole} sein.`,
       hint: (whole) => `Alle ${whole} Plätze sollen voll sein, keiner übrig.`,
     },

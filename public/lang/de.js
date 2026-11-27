@@ -216,7 +216,7 @@ export default {
   // A station's own sentences (ideas/<id>/lang: intro, bigger, smaller, grew) come before both.
   voices: {
     tal: {
-      round: { grew: "Schau, deine neue Blume! Sie wächst auch auf der Karte.", bedName: (station) => `Deine Blumen: ${station}` },
+      round: { starsOnTop: "Spiel weiter. Bald bekommst du den Stern.", grew: "Schau, deine neue Blume! Sie wächst auch auf der Karte.", bedName: (station) => `Deine Blumen: ${station}` },
     },
     berg: {
       // Das Logbuch der Expedition, wie im Denk-Berg von think-lab: Ich-Form, trocken und ein bisschen frech.

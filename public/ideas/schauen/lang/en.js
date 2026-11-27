@@ -45,7 +45,7 @@ export default {
       right: "Yes, the pictures really are the same.",
       lookAgain: "Compare again, place by place.",
       isRight: "Look again: every place has the same thing.",
-      fix: "Well spotted! Tap what is different in the right picture.",
+      fix: "Right, that is not true. Tap what is different in the right picture.",
       fixMiss: "That is the same in both pictures.",
       fixed: "Right, that is different.",
       hint: "Compare place by place, row by row.",

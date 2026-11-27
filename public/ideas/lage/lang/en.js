@@ -60,7 +60,7 @@ export default {
       question: (pet, where) => `The owl says: ${pet} is ${where}. Is that right?`,
       right: (pet, where) => `Yes, ${pet} is ${where}.`,
       lookAgain: "Look again closely where the animal is.",
-      fix: (pet) => `Well spotted! Where is ${pet} really?`,
+      fix: (pet) => `Right, that is not true. Where is ${pet} really?`,
       fixMiss: (pet, where) => `Is ${pet} really ${where}?`,
       fixed: (pet, where) => `Now it is right: ${pet} is ${where}.`,
       hint: "Look at the glowing animal, then at the table.",

@@ -42,7 +42,7 @@ export default {
     },
     sehen: {
       hint: "Vergleich sie oben: Wer reicht am weitesten?",
-      hintLine: "Schieb sie in Gedanken an eine Linie. Jetzt siehst du, welche wirklich weiter reicht.",
+      hintLine: "Schau: Jetzt fangen alle an einer Linie an. Welche reicht am weitesten?",
     },
     machen: {
       ask: (smallest) => `Leg sie der Größe nach! Tipp zuerst auf ${smallest}, dann immer auf die nächste.`,
@@ -75,7 +75,7 @@ export default {
       lookAgain: "Vergleich die Schlangen noch einmal genau.",
       lookStart: "Schau auch, wo die Schlangen anfangen! Nicht alle fangen an derselben Stelle an.",
       isRight: "Schau noch einmal: Keine Schlange ist länger als diese.",
-      fix: "Gut aufgepasst! Welche Schlange ist wirklich am längsten? Tipp darauf.",
+      fix: "Richtig, das stimmt nicht. Welche Schlange ist wirklich am längsten? Tipp darauf.",
       fixMiss: "Die ist nicht am längsten. Schau, wo sie anfängt und wo sie aufhört.",
       fixed: "Jetzt stimmt es: Diese Schlange ist am längsten.",
       hint: "Schau, jetzt fangen alle an einer Linie an.",

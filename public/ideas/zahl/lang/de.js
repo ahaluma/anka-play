@@ -5,8 +5,8 @@ export default {
     intro: {
       sehen: "Schau genau! Wie viele Blumen sind es?",
       machen: "Pflück Blumen in den Korb.",
-      forschen: "Der Frosch hüpft über die Steine.",
-      anwenden: "Mehr oder weniger? Dazu und weg.",
+      forschen: "Welche Zahl kommt als Nächstes?",
+      anwenden: "Wo sind mehr? Was kommt dazu, was geht weg?",
       pruefen: "Die Eule zählt. Stimmt das?",
     },
 
@@ -83,7 +83,7 @@ export default {
     pruefen: {
       ask: (v, h) => `Die Eule sagt: ${v.said === 1 ? "Das ist " + h.thing(v.thing).one : "Das sind " + h.w(v.said) + " " + h.thing(v.thing).many}. Stimmt das?`,
       miss: "Zähl nochmal nach!",
-      fix: "Gut aufgepasst! Wie viele sind es?",
+      fix: "Richtig, das stimmt nicht. Wie viele sind es?",
       fixMiss: "Noch nicht. Zähl nochmal!",
       right: (v, h) => (v.n === 1 ? "Ja! Es ist eins." : `Ja! Es sind ${h.w(v.n)}.`),
       fixed: (v, h) => (v.n === 1 ? "Jetzt stimmt es: Es ist eins." : `Jetzt stimmt es: Es sind ${h.w(v.n)}.`),

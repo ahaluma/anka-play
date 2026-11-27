@@ -48,7 +48,7 @@ export default {
     pruefen: {
       ask: "The owl has shared. Does every animal have the same?",
       lookAgain: "Count for every animal!",
-      fix: "Well spotted! Who has too many? Tap it.",
+      fix: "Right, that is not true. Who has too many? Tap it.",
       fixMiss: "This animal does not have too many. Keep looking!",
       right: (k) => `Yes! Every animal has ${k}.`,
       fixed: (k) => `Now it is fair: every animal has ${k}.`,

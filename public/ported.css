@@ -449,7 +449,7 @@
 
 /* One row of things. --n = how many places; the things shrink so the row fits on one line. */
 .chain {
-  --size: min(34px, calc((min(100vw, 480px) - 54px - var(--k) * 10px) / (var(--n) * 1.24)));
+  --size: min(34px, calc((min(100vw, 480px) - 84px - var(--k) * 12px) / (var(--n) * 1.24))); /* screen margins, card, scene */
   display: flex;
   flex-wrap: nowrap;
   align-items: center;
@@ -513,8 +513,7 @@
 }
 
 /* The things to choose from. */
-.kinds,
-.pieces {
+.kinds {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -528,39 +527,29 @@
   font-size: 40px;
 }
 
-.piece-btn {
-  min-height: 64px;
-  padding: 8px 12px;
-}
-
-.piece-card {
-  display: inline-flex;
-}
-
-.piece-card .pic {
-  font-size: 30px;
-}
-
-.kind.right,
-.piece-btn.right,
-.row-btn.right {
+.kind.right {
   background: #c9efb4;
 }
 
-.rows {
-  display: grid;
-  gap: 10px;
-  width: 100%;
+/* Forschen: clap and stamp. The move that sounds now jumps and glows. */
+.rhythm .chain .pic {
+  transition: transform 0.12s;
 }
 
-.row-btn {
-  width: 100%;
-  min-height: 60px;
-  padding: 8px 0;
+.rhythm .chain .pic.beat {
+  transform: scale(1.35) translateY(-4px);
+  filter: drop-shadow(0 0 6px var(--sun));
 }
 
-.row-btn .chain {
-  --size: min(30px, calc((min(100vw, 480px) - 64px - var(--k) * 10px) / (var(--n) * 1.24)));
+.again-btn {
+  min-height: 52px;
+  padding: 6px 18px;
+  font-size: 26px;
+}
+
+/* Anwenden: the necklace. A string runs through the beads. */
+.necklace .chain {
+  background: linear-gradient(transparent calc(50% - 2px), #8a5a2b calc(50% - 2px), #8a5a2b calc(50% + 2px), transparent calc(50% + 2px));
 }
 
 /* Prüfen: the owl stands above its row. While the wrong thing is searched, the things can be tapped. */
@@ -577,15 +566,11 @@
 }
 
 .board.nudge .kind:not(:disabled),
-.board.nudge .piece-btn:not(:disabled),
-.board.nudge .row-btn:not(:disabled),
 .board.nudge .owl-row.fixing .pic {
   animation: nudge 1.2s ease-in-out infinite;
 }
 
-.board.nudge .kind:nth-child(2n),
-.board.nudge .piece-btn:nth-child(2n),
-.board.nudge .row-btn:nth-child(2n) {
+.board.nudge .kind:nth-child(2n) {
   animation-delay: 0.3s;
 }
 

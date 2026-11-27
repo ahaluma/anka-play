@@ -28,12 +28,36 @@ function tone(freq, start, duration, type = "sine", volume = 0.2) {
   osc.stop(t + duration + 0.05);
 }
 
+/** A short burst of noise through a band filter: a clap (high) or a pat (low). */
+function noise(duration, volume, freq) {
+  const a = audio();
+  if (!a) return;
+  const buffer = a.createBuffer(1, Math.ceil(a.sampleRate * duration), a.sampleRate);
+  const data = buffer.getChannelData(0);
+  for (let i = 0; i < data.length; i++) data[i] = (Math.random() * 2 - 1) * (1 - i / data.length) ** 2;
+  const src = a.createBufferSource();
+  src.buffer = buffer;
+  const filter = a.createBiquadFilter();
+  filter.type = "bandpass";
+  filter.frequency.value = freq;
+  const gain = a.createGain();
+  gain.gain.value = volume;
+  src.connect(filter).connect(gain).connect(a.destination);
+  src.start();
+}
+
 export const sound = {
   tap: () => tone(660, 0, 0.08, "triangle", 0.15),
   right: () => [523, 659, 784].forEach((f, i) => tone(f, i * 0.09, 0.22, "triangle", 0.2)),
   wrong() {
     tone(220, 0, 0.25, "sine", 0.18);
     tone(196, 0.12, 0.3, "sine", 0.15);
+  },
+  /** The sound of a move of the Wald's clapping rhythm (ideas/muster): 👏 a clap, 🦶 a stamp, 🦵 a pat on the knees. */
+  move(icon) {
+    if (icon === "👏") return noise(0.09, 0.5, 1800);
+    if (icon === "🦶") return tone(80, 0, 0.22, "sine", 0.45);
+    if (icon === "🦵") return noise(0.07, 0.35, 500);
   },
   win: () => [523, 659, 784, 1047, 784, 1047].forEach((f, i) => tone(f, i * 0.12, 0.25, "triangle", 0.2)),
 };

@@ -54,7 +54,7 @@ export default {
       right: (a, fact) => `Yes, that is ${a}. ${fact}`,
       lookAgain: (fact) => `${fact} Is it like that here?`,
       isRight: (fact) => `Look again. ${fact}`,
-      fix: "Well spotted! What is the shape called?",
+      fix: "Right, that is not true. What is the shape called?",
       fixMiss: (fact) => `${fact} Does that fit?`,
       fixed: (a) => `Now it is right: That is ${a}.`,
       hint: "Count the corners. Are all sides the same length?",

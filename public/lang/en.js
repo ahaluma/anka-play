@@ -208,7 +208,7 @@ export default {
   // A map's own voice: these sentences take the place of the shared ones above on that map (engine/i18n.js voiceOf).
   voices: {
     tal: {
-      round: { grew: "Look, your new flower! It grows on the map too.", bedName: (station) => `Your flowers: ${station}` },
+      round: { starsOnTop: "Keep playing. Soon you get the star.", grew: "Look, your new flower! It grows on the map too.", bedName: (station) => `Your flowers: ${station}` },
     },
     berg: {
       mapText: {

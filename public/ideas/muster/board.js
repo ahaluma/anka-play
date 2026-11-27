@@ -5,6 +5,7 @@
 // Texts are in welt/lang/<language>.js under "muster". No numbers here: every answer is a picture.
 
 import { port, el, button, shake, wait } from "../../engine/ui/ported.js";
+import { sound } from "../../engine/ui/sound.js";
 import { at } from "./tasks.js";
 
 /**
@@ -37,13 +38,6 @@ function chain(unit, icons, n, open = 0, change = null) {
     }
   }
   return { box, pics, slots, split: (on = true) => box.classList.toggle("split", on) };
-}
-
-/** A piece on its own, as a small card: 🍄🌰🌰 */
-function pieceCard(unit, icons) {
-  const card = el("span", "piece-card");
-  for (const letter of unit) card.append(el("span", "pic", icons[letter]));
-  return card;
 }
 
 // ---------- Sehen: the row stops. What comes next? First round: the pieces stand apart.
@@ -162,22 +156,42 @@ export function machen(host, t, ctx) {
   };
 }
 
-// ---------- Forschen: which piece comes again and again? Tap the piece.
+// ---------- Forschen: clap and stamp. The row plays as a rhythm, beat by beat, each with its sound. What comes next?
+// The same concept as the other boards (a piece comes again and again), heard and done with the body.
 
 export function forschen(host, t, ctx) {
   const M = ctx.T.muster.forschen;
-  const scene = el("div", "scene card forest-scene");
-  const row = chain(t.unit, t.icons, t.shown);
+  const scene = el("div", "scene card forest-scene rhythm");
+  const row = chain(t.unit, t.icons, t.shown, 1);
   scene.append(row.box);
-  let locked = false;
+  let locked = true; // while the rhythm plays
+  let playing = 0;
 
-  const answers = el("div", "pieces");
-  t.choices.forEach((unit, i) => {
-    const b = button("btn piece-btn", "");
-    b.append(pieceCard(unit, t.icons));
-    b.addEventListener("click", () => {
+  /** Play the row: every move lights up with its sound, one after the other. */
+  async function play() {
+    const mine = ++playing;
+    locked = true;
+    const beats = [...row.pics, ...row.slots.filter((s) => !s.classList.contains("slot"))];
+    for (const pic of beats) {
+      if (mine !== playing || !host.isConnected) return;
+      pic.classList.add("beat");
+      sound.move(pic.textContent);
+      await wait(520);
+      pic.classList.remove("beat");
+    }
+    if (mine === playing) locked = false;
+  }
+
+  const again = button("btn again-btn", M.again, "🔁");
+  again.addEventListener("click", () => play());
+
+  const answers = el("div", "kinds");
+  for (const letter of t.choices) {
+    const b = button("btn kind", M.moves[t.icons[letter]], t.icons[letter]);
+    b.addEventListener("click", async () => {
+      sound.move(t.icons[letter]);
       if (locked) return;
-      if (i !== t.answer) {
+      if (letter !== t.answer) {
         shake(b);
         b.disabled = true;
         ctx.miss(M.miss);
@@ -185,65 +199,74 @@ export function forschen(host, t, ctx) {
       }
       locked = true;
       b.classList.add("right");
+      const slot = row.slots[0];
+      slot.textContent = t.icons[letter];
+      slot.classList.remove("slot");
+      slot.classList.add("pop");
       row.split();
       ctx.solved(M.done);
+      await wait(300);
+      play();
     });
     answers.append(b);
-  });
+  }
 
-  host.append(scene, answers);
-  ctx.tell(M.ask);
+  host.append(scene, again, answers);
+  (async () => {
+    await ctx.tell(M.ask);
+    if (host.isConnected) play();
+  })();
 
   return {
     hint() {
-      // Every place where the row starts again gets a mark.
-      row.pics.forEach((pic, i) => i % t.unit.length === 0 && pic.classList.add("start"));
+      row.split();
+      play();
       return M.hint;
     },
   };
 }
 
-// ---------- Anwenden: the same row with other things. Which row goes the same way?
+// ---------- Anwenden: the necklace. One bead in the middle is missing: which one belongs in the gap?
+// Going on with a row is easy at the end; in the middle the child must look before and after the gap.
 
 export function anwenden(host, t, ctx) {
   const M = ctx.T.muster.anwenden;
-  const scene = el("div", "scene card forest-scene");
-  const model = chain(t.unit, t.icons, t.shown);
-  scene.append(model.box);
+  const scene = el("div", "scene card forest-scene necklace");
+  const row = chain(t.unit, t.icons, t.shown);
+  const gap = row.pics[t.gap];
+  gap.textContent = "?";
+  gap.classList.add("slot");
+  scene.append(row.box);
   let locked = false;
 
-  const answers = el("div", "rows");
-  const rows = t.rows.map((r, i) => {
-    const b = button("btn row-btn", "");
-    const row = chain(r.unit, r.icons, t.shown);
-    b.append(row.box);
+  const answers = el("div", "kinds");
+  for (const letter of t.choices) {
+    const b = button("btn kind", "", t.icons[letter]);
     b.addEventListener("click", () => {
       if (locked) return;
-      if (i !== t.answer) {
+      if (letter !== t.answer) {
         shake(b);
         b.disabled = true;
-        row.split(); // the child sees why: this piece looks different
-        model.split();
         ctx.miss(M.miss);
         return;
       }
       locked = true;
       b.classList.add("right");
+      gap.textContent = t.icons[letter];
+      gap.classList.remove("slot");
+      gap.classList.add("pop", "mended");
       row.split();
-      model.split();
       ctx.solved(M.done);
     });
     answers.append(b);
-    return row;
-  });
+  }
 
   host.append(scene, answers);
   ctx.tell(M.ask);
 
   return {
     hint() {
-      model.split();
-      for (const row of rows) row.split();
+      row.split();
       return M.hint;
     },
   };
