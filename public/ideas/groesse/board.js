@@ -9,6 +9,8 @@ import { port, el, button, shake } from "../../engine/ui/ported.js";
 const COLORS = ["#ff5a36", "#3a8dde", "#57b86a", "#e8488a", "#ffc83a"];
 const ITEM_ICONS = { bett: "🛏️", stuhl: "🪑", schuessel: "🥣", pulli: "👕", schuh: "👟" };
 const SCALE = [0.6, 0.9, 1.25];
+/** The family of the task "anwenden", smallest first: a baby, a child, a mother. */
+const PEOPLE = ["👶", "🧒", "👩"];
 
 /** One thing to compare: a snake (lang), a tower (hoch) or a glass of water (wasser). */
 function thing(kind, size, offset, i, label) {
@@ -143,14 +145,23 @@ export function forschen(host, t, ctx) {
   };
 }
 
-// ---------- Anwenden: the small bear needs a bed. Which one fits?
+// ---------- Anwenden: the baby needs shoes. Which ones fit?
+// "Small" only means something next to something bigger, and a bear is big to a small child whatever we call
+// it. So the whole family stands side by side, from the smallest to the biggest: the baby, (the child,) the
+// mother. The one who needs something is lit up, the others wait. Small and big can be seen, not imagined.
 
 export function anwenden(host, t, ctx) {
   const A = ctx.T.groesse.anwenden;
   const scene = el("div", "scene card gr-bears");
-  const bear = el("span", "gr-bear pop", "🐻");
-  bear.style.setProperty("--k", SCALE[t.bear]);
-  scene.append(bear);
+  const family = el("div", "gr-family");
+  const sizes = [...t.sizes].sort((a, b) => a - b); // the family members of this task, smallest first
+  for (const size of sizes) {
+    const who = el("span", "gr-bear pop" + (size === t.bear ? " asks" : ""), PEOPLE[size]);
+    who.style.setProperty("--k", SCALE[size]);
+    who.setAttribute("aria-label", A.people[size]);
+    family.append(who);
+  }
+  scene.append(family);
   const items = el("div", "gr-items");
   let locked = false;
   t.sizes.forEach((size, i) => {
@@ -161,7 +172,7 @@ export function anwenden(host, t, ctx) {
       if (i !== t.answer) {
         shake(b);
         b.disabled = true;
-        ctx.miss(size > t.bear ? A.tooBig : A.tooSmall);
+        ctx.miss(size > t.bear ? A.tooBig(t.bear) : A.tooSmall(t.bear));
         return;
       }
       locked = true;
@@ -171,7 +182,7 @@ export function anwenden(host, t, ctx) {
     items.append(b);
   });
   host.append(scene, items);
-  ctx.tell(A.ask(A.bears[t.bear], A.items[t.item]));
+  ctx.tell(A.ask(t.bear, t.item));
   return {
     hint() {
       return A.hint;

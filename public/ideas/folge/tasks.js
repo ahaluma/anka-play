@@ -23,19 +23,22 @@
 // and the clock are school things: they are in the town's weather station (ideas/zeit/).
 
 /** Little stories, in order. The sentences are in the lang files (folge.stories, folge.ends).
- *  Every picture must make sense to children in Nepal and in Germany. */
+ *  Every picture must make sense to children in Nepal and in Germany, and its place must be clear from the
+ *  picture alone: the board shows no words. So no two pictures that show the same moment (lying in bed and
+ *  sleeping), no gift that could come before the picture, and no stories that go round (sunrise and sunset look
+ *  alike, and night comes before morning as well as after evening). */
 export const STORIES = {
   flower: ["🫘", "🌱", "🌻"],
   chick: ["🥚", "🐣", "🐥"],
   rain: ["☁️", "🌧️", "🌈"],
-  sleep: ["🥱", "🛌", "😴"],
-  drawing: ["🖍️", "🖼️", "👵"],
-  growup: ["👶", "🧒", "🧑", "🧓"],
+  sleep: ["🪥", "🛏️", "😴"],
+  egg: ["🥚", "🍳", "😋"],
+  growup: ["👶", "🧒", "👩", "👵"],
   hen: ["🥚", "🐣", "🐥", "🐔"],
   tree: ["🫘", "🌱", "🪴", "🌳"],
   cake: ["🥚", "🥣", "🎂", "🍰"],
   soup: ["🥕", "🔪", "🍲", "😋"],
-  day: ["🌅", "☀️", "🌇", "🌙"],
+  shoes: ["🦶", "🧦", "👟", "🏃"],
 };
 export const PETS = ["rabbit", "cat", "dog", "bear", "fox", "frog", "duck", "mouse", "pig", "panda", "lion"];
 export const ICONS = { rabbit: "🐰", cat: "🐱", dog: "🐶", bear: "🐻", fox: "🦊", frog: "🐸", duck: "🦆", mouse: "🐭", pig: "🐷", panda: "🐼", lion: "🦁" };

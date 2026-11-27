@@ -7,7 +7,7 @@ export default {
     intro: {
       sehen: "Animals go into the burrow. How many are inside?",
       machen: "Put everything on the two leaves. There are many ways!",
-      forschen: "The tree has a secret. What does it do?",
+      forschen: "Shake the apple tree! How many stay up?",
       anwenden: "Look closely at what happens!",
       pruefen: "The owl says something. Is that right?",
     },
@@ -34,15 +34,17 @@ export default {
       check: "Done",
     },
     forschen: {
-      question: "How many nuts do you put into the tree?",
-      out: (x, y) => `${big(x)} in, ${y} out.`,
+      // Shake the apple tree (board.js): all apples hang in the tree, some fall, the others stay up.
+      question: (total) => `${big(total)} apples hang on the tree. How many shall fall down? Tap a number.`,
+      out: (n, m, wn, wm) => `${n === 1 ? "One falls" : big(wn) + " fall"} down. ${m === 1 ? "One stays" : big(wm) + " stay"} up.`,
       more: "Try another number!",
       know: "I know it!",
-      ready: "Do you know what the tree does? Then tap the lamp.",
-      predict: (x) => `Think first: you put ${x} in. How many come out?`,
-      predictMiss: (x, y) => `Look: ${x} in gives ${y} out.`,
-      rule: (x, y, total) => `Together it is always ${total}: ${x} and ${y} make ${total}.`,
-      hint: "Count both numbers together.",
+      ready: "Do you know now how many stay up? Then tap the lamp.",
+      predict: (x, wx) => `Think first: ${x === 1 ? "one falls" : wx + " fall"} down. How many stay up?`,
+      predictMiss: (y, wy) => `Look: ${y === 1 ? "one stays" : wy + " stay"} up.`,
+      rule: (x, y, total) => `Together it is always ${total}: ${x} down and ${y} up.`,
+      hint: "Tap a number. That many apples fall down.",
+      hintPredict: "The pale apples will fall. Count the others.",
       tried: "You tried these",
     },
     anwenden: {

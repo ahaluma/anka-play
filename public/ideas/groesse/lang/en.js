@@ -2,13 +2,18 @@
 // the board (ideas/groesse/board.js) calls them with number words, as there.
 const big = (text) => text[0].toUpperCase() + text.slice(1);
 
+// The family of "anwenden" (board.js), smallest first: the baby, the child, the mother.
+const WHO = ["the baby", "the child", "mum"];
+const WHO_BIG = ["The baby", "The child", "Mum"];
+const ITEMS = { bett: "a bed", stuhl: "a chair", schuessel: "a bowl", pulli: "a jumper", schuh: "shoes" };
+
 export default {
   groesse: {
     intro: {
       sehen: "What is longer, what is higher? Look closely.",
       machen: "Put the things in order of size.",
       forschen: "The balance: what is heavier? Think first!",
-      anwenden: "What fits the bears?",
+      anwenden: "What fits the baby, what fits mum?",
       pruefen: "The owl compares. Is that right?",
     },
     kinds: {
@@ -54,13 +59,13 @@ export default {
       hint: "Imagine carrying both. Which one is harder to carry?",
     },
     anwenden: {
-      bears: ["the little bear", "the middle bear", "the big bear"],
-      items: { bett: "a bed", stuhl: "a chair", schuessel: "a bowl", pulli: "a jumper", schuh: "a shoe" },
-      ask: (bear, item) => `${big(bear)} needs ${item}. What fits?`,
-      tooBig: "That is too big.",
-      tooSmall: "That is too small.",
-      done: (i) => `That fits ${["the little bear", "the middle bear", "the big bear"][i]} just right.`,
-      hint: "Little bear, little things. Big bear, big things.",
+      people: WHO,
+      items: ITEMS,
+      ask: (who, item) => `${WHO_BIG[who]} needs ${ITEMS[item]}. What fits ${WHO[who]}?`,
+      tooBig: (who) => `That is too big for ${WHO[who]}.`,
+      tooSmall: (who) => `That is too small for ${WHO[who]}.`,
+      done: (who) => `That fits ${WHO[who]} just right.`,
+      hint: "Look who is lit up. Small fits small. Big fits big.",
     },
     pruefen: {
       says: "This one is the longest!",

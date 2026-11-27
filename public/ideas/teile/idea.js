@@ -1,6 +1,6 @@
 // Idea "teile" (station bau, map tal): numbers are made of numbers, a whole and its two parts.
 // Ported from think-lab's welt/ideas/teile: its task code is now the recipes below, its five boards are
-// ideas/teile/board.js (pictures that exist only here: the burrow, two leaves, the hollow tree), its
+// ideas/teile/board.js (pictures that exist only here: the burrow, two leaves, the apple tree), its
 // sentences are lang/<language>.js.
 
 import { BURROW, TO_SHARE, SCENES } from "./data.js";
@@ -19,7 +19,7 @@ export const IDEA = {
   ],
   start: { at: "5" }, // a concept starts at its smallest numbers, whatever the age (only plain calculation starts by age)
   perspectives: ["sehen", "machen", "forschen", "anwenden", "pruefen"],
-  roundTasks: { forschen: 3 }, // the hollow tree takes long: three trees are a round
+  roundTasks: { forschen: 3 }, // the apple tree takes long: three trees are a round
 
   recipes: {
     // See: animals live in the burrow; `outside` are seen, `inside` are hiding: how many?
@@ -38,7 +38,8 @@ export const IDEA = {
       ask: "teile.machen",
       key: ["total"],
     },
-    // Explore: the hollow tree. x nuts in, total − x nuts out (at least 4, so there are three numbers to try).
+    // Explore: shake the apple tree. All `total` apples hang there; x fall, total − x stay up, all in plain sight
+    // (at least 4 apples, so there are three numbers to try).
     forschen: {
       board: "teile",
       vars: { total: ["int", ["max", "$lo", 4], "$hi"] },
