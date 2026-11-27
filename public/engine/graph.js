@@ -4,9 +4,9 @@
 //
 // facts = {
 //   age: 7,
-//   mastered: (station) => boolean,          // all five perspectives starred (engine/learner.js)
+//   mastered: (station) => boolean,          // all the station's perspectives (1 to 5) starred (engine/learner.js)
 //   starred: (station, perspective) => boolean,
-//   flag: (station, group) => boolean,       // all five perspectives starred in that group of the ladder
+//   flag: (station, group) => boolean,       // all the station's perspectives starred in that group of the ladder
 //   rounds: (station) => number,
 //   visited: (station) => boolean,
 //   parent: (key) => boolean,                // a switch on the parents' page

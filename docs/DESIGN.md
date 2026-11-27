@@ -11,14 +11,15 @@ written only as data, and `node tools/check-ideas.mjs` makes 10,000 tasks from i
 
 ## 1. In short
 
-- **One engine, everything else is data.** Maps, stations, paths, portals, conditions, gates, the five
+- **One engine, everything else is data.** Maps, stations, paths, portals, conditions, gates, the
   perspectives, the rules for moving up and down, the tasks and the texts are data. The engine is one set
   of JavaScript modules that reads them. Adding a station is adding data; code is the exception
   (section 6 says exactly where).
 - **The universe** is all maps together plus Home. Every map is a simple natural scene with a few
   memorable landmarks. Four maps: **Tal** (valley, preschool, 3 to 6), **Fluss** (river, school: numbers,
   space, time), **Feld** (field edge, school: calculation), **Berg** (mountain, olympiad, 9 to 12).
-- **A station teaches one idea in five perspectives** and has its own background. 34 stations.
+- **A station teaches one idea in 1 to 5 perspectives,** as many as its idea needs, and has its own
+  background. A concept usually has all five; a station that is just a game (number memory) has one. 35 stations.
 - **A graph** connects stations: paths inside a map, portals between maps, Home from everywhere. Every
   connection has a direction, a condition and a nearness. Related stations sit near each other on the map.
 - **A portal can ask a few questions** on the first visit to its station. It always lets the child in; the
@@ -51,9 +52,9 @@ These are standing decisions. They hold everywhere and are therefore rules of th
 | **Map** | One simple natural scene with 3 to 5 landmarks. Belongs to one band, names one policy. |
 | **Landmark** | A simple, memorable object on a map (the big tree, the stream, the bridge). Stations sit by landmarks, so a child can say "the burrow by the big tree". |
 | **Band** | Who a map is for: `vorschule` (3–6), `schule` (6–10), `olympiade` (9–12). Never mixed. |
-| **Station** | One place on a map. One idea, five perspectives, its own background picture. |
+| **Station** | One place on a map. One idea, 1 to 5 perspectives, its own background picture. |
 | **Idea** | What a station teaches. A folder `ideas/<id>/` with its ladder, recipes and texts. |
-| **Perspective** | One of five ways into an idea: see, make, explore, use, check. |
+| **Perspective** | A way into an idea: see, make, explore, use, check; or play, for a station that is only a game. A station has 1 to 5 of them. |
 | **Ladder, rung, group** | The idea's levels, easy to hard. A rung has a fixed id. Rungs form groups (a number range, or "level 2"). Stars are counted per group. |
 | **Edge** | A directed connection between two stations: `path` (same map), `portal` (other map), `relation` (only nearness, never walked). Home edges are added by the engine. |
 | **Condition** | When an edge or a station's door is open: age, mastered stations, a star, a flag, a parents' switch, combined with all / any / not. |
@@ -72,7 +73,7 @@ station) and the market's stands are now places in nature with the same ideas.
 
 | Map | Band | Scene and landmarks | Stations (idea) | Shown on the map from the start |
 | --- | --- | --- | --- | --- |
-| **Tal** | Vorschule 3–6 | A valley: stream, big tree, pond, hill, cloud | wiese (zahl), bau (teile), teich (zehn), obstbaum (gruppen), wald (muster), himmel (folge), nester (sortieren), pfuetze (schauen), huegel (lage), kiesel (form), ufer (groesse) | wiese, bau, obstbaum, wald, huegel, himmel |
+| **Tal** | Vorschule 3–6 | A valley: stream, big tree, pond, hill, cloud | wiese (zahl), baumstumpf (memory: number memory, one perspective), bau (teile), teich (zehn), obstbaum (gruppen), wald (muster), himmel (folge), nester (sortieren), pfuetze (schauen), huegel (lage), kiesel (form), ufer (groesse) | wiese, baumstumpf, bau, obstbaum, wald, huegel, himmel |
 | **Fluss** | Schule 6–10 | A river: river, footbridge, willow, gravel bank, big rock | steg (reihe: the bridge's planks are the number line), blumenfeld (stellen), kiesbank (formen: mirror in the water, ruler), sonnenfels (zeit: sundial, weather, charts) | all four |
 | **Feld** | Schule 6–10 | A field edge: orchard, hen yard, clearing, field path | apfelbaum (plus), beeren (minus), huehner (mal: eggs in rows), nussbaum (geteilt), lichtung (platz: stories, mixed), hofstand (geld: a farm stand) | all six; lichtung is drawn locked until plus and minus up to 10 have their flag |
 | **Berg** | Olympiade 9–12 | A mountain: foot, waterfall, summit | the 12 camps of think-lab (zaun … mauer) and gipfel | zaun; the others come out of the fog as their paths open |
@@ -91,8 +92,8 @@ Three separate questions, each answered by `engine/graph.js` from the child's fa
   in front of a closed door and see what opens it.
 - **Reachable:** a walk from Home along open edges, stopping at closed doors.
 
-`check-graph` proves on every change: a 3-year-old with nothing played reaches all 11 Tal stations and no
-school station; a 6-year-old reaches 18; every station is reachable for a child who has mastered
+`check-graph` proves on every change: a 3-year-old with nothing played reaches all 12 Tal stations and no
+school station; a 6-year-old reaches 19; every station is reachable for a child who has mastered
 everything; every locked way up has an always-open way back.
 
 ### 4.3 Home
@@ -132,8 +133,10 @@ Condition types: `age`, `mastered` (stations), `perspective` (one star), `flag` 
 station's ladder), `rounds`, `visited`, `reached` (a map), `parent` (a switch on the parents' page), and
 `all` / `any` / `not`. One checker per type in `CONDITIONS`; a new type is one new line.
 
-**Mastered** (for conditions): all five perspectives of the station have their star in the idea's mastery
-group (default: its highest group). **Flag**: all five starred in one named group.
+**Mastered** (for conditions): every perspective the station has (1 to 5) has its star in the idea's
+mastery group (default: its highest group). **Flag**: every perspective of the station starred in one named
+group. Conditions never count stars as a number, so they mean the same for a station with one perspective
+and one with five.
 
 ### 5.2 Nearness
 
@@ -214,7 +217,14 @@ Every board takes the same extras: `hide` (cover part of it after a moment), `ow
 something, the child checks: the whole "check" perspective in one place), `story` (steps shown one after
 the other). Seven answer modes: `choose`, `type`, `tapThings`, `build`, `order`, `place`, `yesNo`.
 
-### 6.4 Where the line is, and why
+### 6.4 Perspectives per idea
+
+An idea lists its perspectives, 1 to 5, in the fixed order (`perspectives` in `idea.js`), and has one recipe
+for each. `zahl` has all five. A station that is only a game has the one perspective `spielen` 🎲, which
+stands alone. `check-ideas` refuses an idea with none, more than five, a wrong order, `spielen` mixed with
+others, or a recipe for a perspective it does not list.
+
+### 6.5 Where the line is, and why
 
 Generalisation stops in three places, on purpose:
 
@@ -222,7 +232,7 @@ Generalisation stops in three places, on purpose:
    exactly one solution; counting camps (haken, socken) enumerate. An expression language that can do
    that is a worse programming language. Such an idea keeps a small `ideas/<id>/tasks.js` with
    `task(level, perspective, r)` that returns **the same task shape** as a recipe, so the rest of the
-   engine cannot tell the difference. My estimate: all 11 Tal ideas, the 4 Fluss ideas and the 6 Feld
+   engine cannot tell the difference. My estimate: the 11 Tal concept ideas, the 4 Fluss ideas and the 6 Feld
    ideas fit recipes; about half of the 13 Berg ideas need code.
 2. **Pictures that exist once.** A cube net folding, the sundial. A board is generic when a third idea
    needs it; the first two uses may be a bespoke board in `ideas/<id>/board.js` with the same interface
@@ -237,23 +247,25 @@ Generalisation stops in three places, on purpose:
 A round is 5 tasks of one station in one perspective (3 for children under 5 in the Tal). Its slots come
 from the policy: `cur` (the child's rung), `easier` (after 3 wrong in a row), `review` (a near mastered
 station, proposed), `inverse` and `bridge` (Feld), `backpack` (Berg), `surprise` (another perspective
-already played, not counted). The help ladder comes from the policy: hint after 2 misses, then picture,
+already played, not counted; only at stations with two or more perspectives). The help ladder comes from the policy: hint after 2 misses, then picture,
 then the way in small steps.
 
 ### 7.2 Stars, groups, moving
 
 - **Star:** 4 of 5 right at the first try in one round of a perspective, in the current group. At once.
-- **Up:** 3 of 5 perspectives starred in a group → the next group (Tal, Fluss, Berg). In the Feld one good
+- **Up:** 60 % of the station's perspectives starred in a group → the next group (Tal, Fluss, Berg): 3 of 5,
+  3 of 4, 2 of 3, 2 of 2, 1 of 1. In the Feld one good
   round moves one rung (its sub-steps), as the market does today.
 - **Down:** 2 weak rounds in a row (2 of 5 or fewer) → one group down, and the age catch-up stops.
-- **Flag:** all five perspectives starred in a group. A flag on a higher group fills the lower ones (Feld).
-- **Mastered station:** all five starred in the mastery group. This is what conditions read.
+- **Flag:** all the station's perspectives starred in a group. A flag on a higher group fills the lower ones (Feld).
+- **Mastered station:** all the station's perspectives starred in the mastery group. This is what
+  conditions read. Number memory is mastered with one star; zahl needs five.
 
 ### 7.3 Policies
 
 | | Tal | Fluss | Feld | Berg |
 | --- | --- | --- | --- | --- |
-| step up | group, 3 stars | group, 3 stars | rung, good round | group, 3 stars |
+| step up | group, 60 % of stars | group, 60 % of stars | rung, good round | group, 60 % of stars |
 | step down | 2 weak in a row | 2 weak in a row | 2 weak in a row | 2 weak in a row |
 | help ladder | hint | hint, picture | hint, picture, way | hint, way |
 | slots | cur, surprise | cur, surprise | cur ×3, review, inverse | cur ×4, backpack |
@@ -291,7 +303,7 @@ One page (`public/index.html`) with routes after `#`. Static files, works offlin
 | --- | --- |
 | `#/` | Home: who plays, then the map doors |
 | `#/map/tal` | a map: scene, landmarks, visible stations, portals, Home |
-| `#/s/wiese` | a station: its background, five perspectives with stars, its paths and portals, the suggestion |
+| `#/s/wiese` | a station: its background, its 1 to 5 perspectives with stars, its paths and portals, the suggestion |
 | `#/s/wiese/sehen` | a round |
 | `#/gate/wiese>steg` | the first-visit questions (only when they are due) |
 | `#/eltern` | parents: children, progress per map and station, switches, backup |
@@ -302,7 +314,7 @@ public/
 ├── index.html, app.css          ← the one page
 ├── content/                     ← DATA: the universe and the rules
 │   ├── universe.js              ← maps, stations, edges, gates, Home doors, bands
-│   ├── perspectives.js          ← the five perspectives, thinking cards
+│   ├── perspectives.js          ← the perspectives, the 1-to-5 rule, thinking cards
 │   ├── policies.js              ← how children move, per map
 │   └── boards.js                ← the board catalogue, answer modes, shared mistake kinds
 ├── engine/                      ← CODE, the same for everything
@@ -318,7 +330,7 @@ public/
 ├── boards/<board>.js            ← the 16 boards
 ├── ideas/<idea>/
 │   ├── idea.js                  ← ladder, start, recipes (DATA)
-│   ├── tasks.js                 ← only where a generator must search (section 6.4)
+│   ├── tasks.js                 ← only where a generator must search (section 6.5)
 │   ├── board.js                 ← only for a picture that exists once
 │   └── lang/de.js, en.js, ne.js
 ├── art/<map>/                   ← scene.svg, landmarks, one background per station
@@ -328,7 +340,7 @@ public/
 tools/check-graph.mjs, check-ideas.mjs
 ```
 
-**To add a station:** write `ideas/<id>/idea.js` (ladder and five recipes), its three language files and
+**To add a station:** write `ideas/<id>/idea.js` (ladder, its 1 to 5 perspectives, one recipe each), its three language files and
 a background picture, and add one station line and its edges to `universe.js`. No engine change.
 **To add a map:** one entry in `MAPS`, a scene picture, its stations, a portal and a Home door.
 
@@ -356,7 +368,8 @@ in Nepal.
    already move the child between ranges; separate stations per range would triple the Feld map. The
    preschool/school split is kept by the ideas themselves (zahl up to 10 in the Tal, reihe and stellen
    from 20 in the Fluss), not by ranges.
-2. **The five perspectives: the same everywhere, or per map?** Recommended: **the same five ids, icons,
+2. **The perspectives: the same everywhere, or per map?** Decided: a station has 1 to 5, as its idea
+   needs. Recommended for the rest: **the same ids, icons,
    order and star rule everywhere; names per map** (the mountain says understand, try out, find the rule,
    transfer, explain why). One record shape, one parents' page, and the mountain keeps its voice.
 3. **Nearness for the next suggestion and for review tasks?** Recommended: **yes, both, same band only;**
@@ -365,7 +378,8 @@ in Nepal.
 5. **Map names and cut:** Tal, Fluss, Feld, Berg. Fluss and Feld could also be one map; I kept two because
    ten stations on one phone screen are too many.
 6. **The mountain loses "how was it?"** (the standing rule for children). Please confirm.
-7. **Zahlen-Memory:** not at launch; later as a "play together" mode of the wiese.
+7. **Zahlen-Memory:** its own station, baumstumpf, next to the wiese, with one perspective (play). Ported
+   with the Tal.
 8. **The mountain portal:** from 9, or earlier by the parents' switch.
 9. **Import from think-lab's backup:** not at launch; think-lab stays online.
 10. **The repository is empty** (no `main` yet), so this design is on its own branch. Say if it should

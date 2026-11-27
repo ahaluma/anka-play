@@ -8,7 +8,7 @@ and everything else (maps, stations, paths, portals, rules, tasks, texts) is dat
 
 What is already here and runs:
 
-- `public/content/universe.js`: the whole universe as data: 4 maps, 34 stations, paths, portals, gates,
+- `public/content/universe.js`: the whole universe as data: 4 maps, 35 stations, paths, portals, gates,
   nearness, Home.
 - `public/engine/graph.js`: conditions, open, visible, reachable, nearness, suggestions.
 - `public/engine/recipe.js` and `public/ideas/zahl/idea.js`: tasks made from data, one complete idea.

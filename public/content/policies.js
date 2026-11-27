@@ -12,12 +12,12 @@ const base = {
   good: 0.8, // share right at the first try that counts as a good round (4 of 5)
   weak: 0.4, // share at or below that counts as a weak round (2 of 5)
   star: { share: 0.8 }, // the star of a perspective in a level group
-  up: { when: "starsInGroup", count: 3 }, // 3 of 5 perspectives starred in the group -> next group
+  up: { when: "starsInGroup", share: 0.6 }, // 60 % of the station's perspectives starred (3 of 5, 2 of 3, 1 of 1) -> next group
   down: { when: "weakInRow", count: 2 }, // 2 weak rounds in a row -> one group down, and it stays
   easierAfter: 3, // 3 wrong in a row -> the next task is one rung easier
   hintAfter: 2, // misses before the hint shows by itself
   help: ["hint"], // the help ladder, one step per miss after hintAfter
-  surprise: true, // one task from another perspective the child already played (not counted)
+  surprise: true, // one task from another perspective the child already played (not counted; only with 2 or more)
   placement: null, // fast moves at the start; the first-visit gate usually does this job
   learningBox: null,
   bridgeAfter: null,
@@ -40,7 +40,7 @@ export const POLICIES = {
     learningBox: { dueDays: [0, 1, 3, 7, 21], fastMs: 4000 },
     bridgeAfter: 3, // the same mistake kind 3 times in 2 rounds -> a short bridge round
     slots: ["cur", "cur", "cur", "review", "inverse"],
-    flag: { stars: 5, fillsBelow: true }, // all five perspectives starred on a range = its flag
+    flag: { stars: "all", fillsBelow: true }, // all the station's perspectives starred on a range = its flag
   },
 
   // Olympiad: every child starts at level 1 (or where the first-visit gate puts them).

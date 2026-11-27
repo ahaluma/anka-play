@@ -4,7 +4,7 @@
 //
 // Words:
 //   map      one simple natural scene with a few memorable landmarks (a big tree, a stream, a bridge)
-//   station  one place on a map that teaches ONE idea in five perspectives; it has its own background
+//   station  one place on a map that teaches ONE idea in 1 to 5 perspectives; it has its own background
 //   edge     a directed connection between two stations:
 //              "path"     inside one map
 //              "portal"   from a station on one map to a station on another map
@@ -44,7 +44,7 @@ export const MAPS = [
       { id: "huegel", pos: { x: 760, y: 220 } },
       { id: "wolke", pos: { x: 330, y: 50 } },
     ],
-    shows: ["wiese", "bau", "obstbaum", "wald", "huegel", "himmel"],
+    shows: ["wiese", "bau", "obstbaum", "wald", "huegel", "himmel", "baumstumpf"],
   },
   {
     id: "fluss",
@@ -96,6 +96,7 @@ export const STATIONS = [
   // Tal (preschool, 3 to 6): concepts with things and pictures, numbers up to 10, no signs.
   { id: "wiese", map: "tal", idea: "zahl", landmark: "bach", pos: { x: 200, y: 430 } }, // a number says how many; more, fewer, the same
   { id: "bau", map: "tal", idea: "teile", landmark: "grosser-baum", pos: { x: 320, y: 320 } }, // numbers are made of numbers
+  { id: "baumstumpf", map: "tal", idea: "memory", landmark: "bach", pos: { x: 90, y: 330 } }, // number memory: one perspective, "spielen"
   { id: "teich", map: "tal", idea: "zehn", landmark: "teich", pos: { x: 460, y: 400 } }, // friends of five and ten
   { id: "obstbaum", map: "tal", idea: "gruppen", pos: { x: 160, y: 230 } }, // groups of the same size, sharing fairly
   { id: "wald", map: "tal", idea: "muster", pos: { x: 90, y: 90 } }, // a row goes on
@@ -155,6 +156,7 @@ export const EDGES = [
   ...both("wiese", "bau", 0.8),
   ...both("bau", "teich", 0.9),
   ...both("wiese", "obstbaum", 0.6),
+  ...both("wiese", "baumstumpf", 0.7), // number memory: how many, matched to the digit
   ...both("obstbaum", "wald", 0.4),
   ...both("wald", "himmel", 0.7), // a row goes on / first and then: both are about order
   ...both("himmel", "nester", 0.5),
