@@ -438,7 +438,11 @@ button.pic { padding: 2px; border: 0; background: none; font-family: inherit; li
 .field .pic, .basket button.pic { font-size: clamp(28px, 8.6vw, 38px); }
 .basket { width: 100%; min-height: 78px; display: flex; align-items: center; gap: 10px; }
 .basket-icon { font-size: 44px; line-height: 1; }
-.basket .pics { min-height: 56px; }
+.basket .pics { min-height: 56px; flex: 1; min-width: 0; }
+.basket { position: relative; padding: 6px 8px 6px 4px; border: 3px solid var(--ink); border-radius: 18px; background: #f6e3c4; }
+.basket > .tally { flex: none; align-self: flex-start; }
+.tally { min-width: 58px; }
+.tally .sign-dots { min-height: 14px; }
 .hint-box { min-height: 42px; display: flex; justify-content: center; }
 .places { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; }
 .places .place { width: 34px; height: 34px; display: grid; place-items: center; border: 3px dashed var(--ink); border-radius: 50%; font-size: 20px; }
