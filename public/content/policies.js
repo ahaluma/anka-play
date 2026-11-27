@@ -4,7 +4,8 @@
 // Standing rules that hold in every policy and are therefore NOT fields:
 //   - a perspective is mastered with 4 of 5 tasks right at the first try in one round: it gets a star,
 //     at once, no waiting days;
-//   - children are never asked "how was it?": weak rounds ease the difficulty by themselves;
+//   - children up to 10 are never asked "how was it?" (Tal, Fluss, Feld): weak rounds ease the difficulty by
+//     themselves; only the Berg (9 to 12) asks, decided to stay;
 //   - the whole question stays visible, and taps are locked while the voice reads it (at most 10 s).
 
 const base = {
@@ -21,7 +22,8 @@ const base = {
   placement: null, // fast moves at the start; the first-visit gate usually does this job
   learningBox: null,
   bridgeAfter: null,
-  review: null, // review tasks from near stations (PROPOSED, open question 3)
+  review: { perRound: 1, nearness: 0.5 }, // one task from a near, mastered station of the same band (engine/graph.js reviewFrom)
+  askFeel: false, // "how was it?" after a round: only the Berg asks
 };
 
 export const POLICIES = {
@@ -48,6 +50,8 @@ export const POLICIES = {
     ...base,
     hintAfter: 1,
     help: ["hint", "way"],
+    askFeel: true, // easy / just right / hard after a round
+    down: { when: "weakInRow", count: 2, orWeakAndHard: true }, // a weak round felt "hard" also moves down
     slots: ["cur", "cur", "cur", "cur", "backpack"], // one task from a camp already mastered
   },
 };

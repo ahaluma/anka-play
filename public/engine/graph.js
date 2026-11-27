@@ -4,9 +4,10 @@
 //
 // facts = {
 //   age: 7,
-//   mastered: (station) => boolean,          // all the station's perspectives (1 to 5) starred (engine/learner.js)
+//   mastered: (station) => boolean,          // every idea of the station mastered (engine/learner.js)
+//   ideaMastered: (idea) => boolean,         // all the idea's perspectives (1 to 5) starred in its mastery group
 //   starred: (station, perspective) => boolean,
-//   flag: (station, group) => boolean,       // all the station's perspectives starred in that group of the ladder
+//   flag: (station, group) => boolean,       // all perspectives of the station's ideas starred in that group
 //   rounds: (station) => number,
 //   visited: (station) => boolean,
 //   parent: (key) => boolean,                // a switch on the parents' page
@@ -25,6 +26,7 @@ export const isMastered = (id, facts) => !!station(id)?.game || facts.mastered(i
 export const CONDITIONS = {
   age: (n, f) => (f.age ?? 0) >= n,
   mastered: (ids, f) => ids.every((s) => isMastered(s, f)),
+  idea: (ids, f) => [ids].flat().every((i) => f.ideaMastered(i)), // ideas mastered, wherever they live
   perspective: ({ station: s, p }, f) => f.starred(s, p),
   flag: ({ station: s, group }, f) => f.flag(s, group),
   rounds: ({ station: s, n }, f) => f.rounds(s) >= n,
@@ -113,11 +115,36 @@ export function near(id, min = 0.5) {
     .sort((a, b) => b.nearness - a.nearness);
 }
 
-/** PROPOSED (docs/DESIGN.md, open question 3): the next station to suggest after `id`: the nearest
- *  station that is reachable and not mastered yet. A suggestion, never a lock. */
-export function suggest(id, facts) {
+/** The journey (decided): nearness guides the child from station to station, the way the Denk-Berg's camps
+ *  lead upwards. next() is the nearest station that is reachable, open and not mastered yet, same band only.
+ *  How a map shows it is its `guide`:
+ *    tour     small children: after a round the guide walks the child along the path to next() (Tal)
+ *    hint     the map marks next() and the station screen points at it; the child may go anywhere (Fluss, Feld)
+ *    glimpse  next() plus glimpse(): near stations still in the fog or locked, with what opens them,
+ *             to wake curiosity (Berg)
+ *  A suggestion, never a lock: conditions alone decide what is open. */
+export function next(id, facts) {
   const can = reachable(facts);
-  return near(id, 0).find((x) => can.has(x.id) && stationOpen(x.id, facts) && !isMastered(x.id, facts))?.id ?? null;
+  const candidates = near(id, 0).filter((x) => can.has(x.id) && stationOpen(x.id, facts) && !isMastered(x.id, facts));
+  if (candidates.length) return candidates[0].id;
+  // Nothing near is left: the nearest unmastered reachable station on the same map, then any in the band.
+  const here = station(id);
+  const rest = STATIONS.filter((s) => s.id !== id && bandOf(s.id) === bandOf(id) && can.has(s.id) &&
+    stationOpen(s.id, facts) && !isMastered(s.id, facts));
+  return (rest.find((s) => s.map === here.map) ?? rest[0])?.id ?? null;
 }
+export const suggest = next;
+
+/** Near stations the child cannot play yet, with the condition that would open the way: what to be curious about. */
+export function glimpse(id, facts, min = 0.4) {
+  const can = reachable(facts);
+  return near(id, min)
+    .filter((x) => !can.has(x.id) || !stationOpen(x.id, facts))
+    .map((x) => ({ ...x, opens: EDGES.find((e) => e.to === x.id && e.requires && !edgeOpen(e, facts))?.requires ?? station(x.id).open ?? null }));
+}
+
+/** PROPOSED and accepted: review tasks. Near stations of the same band the child has mastered: one of their
+ *  ideas gives one task per round (policy `review`). */
+export const reviewFrom = (id, facts, min = 0.5) => near(id, min).filter((x) => isMastered(x.id, facts)).map((x) => x.id);
 
 export { BANDS };

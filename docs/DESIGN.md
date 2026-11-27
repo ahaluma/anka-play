@@ -16,10 +16,10 @@ written only as data, and `node tools/check-ideas.mjs` makes 10,000 tasks from i
   of JavaScript modules that reads them. Adding a station is adding data; code is the exception
   (section 6 says exactly where).
 - **The universe** is all maps together plus Home. Every map is a simple natural scene with a few
-  memorable landmarks. Four maps: **Tal** (valley, preschool, 3 to 6), **Fluss** (river, school: numbers,
+  memorable landmarks. As many maps as the content needs; four to start: **Tal** (valley, preschool, 3 to 6), **Fluss** (river, school: numbers,
   space, time), **Feld** (field edge, school: calculation), **Berg** (mountain, olympiad, 9 to 12).
-- **A station teaches one idea in 1 to 5 perspectives,** as many as its idea needs, and has its own
-  background. A concept usually has all five; a station that is just a game (number memory) has one, is
+- **A station serves one or more ideas, each in 1 to 5 perspectives,** as many as the idea needs, and has
+  its own background. A concept usually has all five; a station that is just a game (number memory) has one, is
   always open and counts as mastered from the start. 35 stations.
 - **A graph** connects stations: paths inside a map, portals between maps, Home from everywhere. Every
   connection has a direction, a condition and a nearness. Related stations sit near each other on the map.
@@ -38,7 +38,7 @@ These are standing decisions. They hold everywhere and are therefore rules of th
 | From the range up to 20, answers are typed on the number pad, not chosen | `BANDS` in `universe.js` and the recipe's `answer.mode` |
 | Tasks whose numbers are all ≤ 20 are read aloud; taps are locked until the voice ends (at most 10 s) | `ui/question.js`, `ui/voice.js` |
 | The whole question stays visible until the next task | `ui/question.js` |
-| No "how was it?" question for children (the mountain loses it too) | not a field anywhere |
+| No "how was it?" question for children up to 10; the Berg (9 to 12) keeps it (decided) | `askFeel` of the map and policy |
 | Difficulty eases by itself: 3 wrong in a row → an easier task; 2 weak rounds → one group down | `content/policies.js` |
 | No points, no clock, no streaks; mistakes explain, they do not punish | boards, texts |
 | German, English, Nepali; Devanagari digits in Nepali; a Hindi voice as fallback | `engine/i18n.js` |
@@ -53,7 +53,7 @@ These are standing decisions. They hold everywhere and are therefore rules of th
 | **Map** | One simple natural scene with 3 to 5 landmarks. Belongs to one band, names one policy. |
 | **Landmark** | A simple, memorable object on a map (the big tree, the stream, the bridge). Stations sit by landmarks, so a child can say "the burrow by the big tree". |
 | **Band** | Who a map is for: `vorschule` (3–6), `schule` (6–10), `olympiade` (9–12). Never mixed. |
-| **Station** | One place on a map. One idea, 1 to 5 perspectives, its own background picture. |
+| **Station** | One place on a map. One or more ideas, each with 1 to 5 perspectives; its own background picture. |
 | **Idea** | What a station teaches. A folder `ideas/<id>/` with its ladder, recipes and texts. |
 | **Perspective** | A way into an idea: see, make, explore, use, check; or play, for a station that is only a game. A station has 1 to 5 of them. |
 | **Ladder, rung, group** | The idea's levels, easy to hard. A rung has a fixed id. Rungs form groups (a number range, or "level 2"). Stars are counted per group. |
@@ -79,8 +79,14 @@ station) and the market's stands are now places in nature with the same ideas.
 | **Feld** | Schule 6–10 | A field edge: orchard, hen yard, clearing, field path | apfelbaum (plus), beeren (minus), huehner (mal: eggs in rows), nussbaum (geteilt), lichtung (platz: stories, mixed), hofstand (geld: a farm stand) | all six; lichtung is drawn locked until plus and minus up to 10 have their flag |
 | **Berg** | Olympiade 9–12 | A mountain: foot, waterfall, summit | the 12 camps of think-lab (zaun … mauer) and gipfel | zaun; the others come out of the fog as their paths open |
 
-Station ids are new; idea ids are think-lab's, so each idea's content can be ported one to one. The
-burrow (two ideas), hill and lake (three) and the sky (three) are split: **one idea per station**.
+Station ids are new; idea ids are think-lab's, so each idea's content can be ported one to one.
+**A station serves one or more ideas** (decided): `ideas: ["teile", "zehn"]`. With more than one, the station
+first shows a choice of ideas, then the perspectives of the chosen one, as think-lab's burrow does. An idea
+lives at one station only, so a child's progress in it has one home. The table starts with one idea per
+station; putting two ideas on one station is a one-line data change wherever a place trains both.
+
+**As many maps as necessary** (decided). Nothing in the engine or the checkers names a map; the checks go
+by band. A new map is an entry in `MAPS`, a scene, its stations, a portal and a Home door.
 
 ### 4.2 Visible, open, reachable
 
@@ -95,7 +101,7 @@ Three separate questions, each answered by `engine/graph.js` from the child's fa
 - **Reachable:** a walk from Home along open edges, stopping at closed doors.
 
 `check-graph` proves on every change: a 3-year-old with nothing played reaches all 12 Tal stations and no
-school station; a 6-year-old reaches 19; every station is reachable for a child who has mastered
+school station; a 6-year-old reaches 22 (all of Tal, Fluss and Feld); every station is reachable for a child who has mastered
 everything; every locked way up has an always-open way back.
 
 ### 4.3 Home
@@ -103,7 +109,7 @@ everything; every locked way up has an always-open way back.
 Home is a node of the graph. The engine adds an always-open edge from every station to Home, so no map
 can forget it and no condition can block it; every screen has the Home button. Home shows who plays, and
 then one door per map the child may open (`HOME_DOORS`): the Tal always, Fluss and Feld from 6 or once
-the child has crossed into them, Berg from 9, by the parents' switch, or once reached.
+the child has crossed into them, Berg by the three ways of 4.4 or once reached.
 
 ### 4.4 Portals and gates
 
@@ -111,7 +117,7 @@ the child has crossed into them, Berg from 9, by the parents' switch, or once re
 | --- | --- | --- |
 | wiese → steg (stepping stones over the stream) | age 6, **or** wiese and teich mastered | three "where is it on the bridge?" tasks at 20, 100, 1000 |
 | steg → apfelbaum (the bridge to the field) | always | three plus tasks of rising difficulty (3 + 6, 8 + 5, 23 + 40) |
-| sonnenfels → zaun (the mountain path) | age 9, **or** the parents' switch "berg" | three fence tasks at levels 1, 2, 3 |
+| sonnenfels → zaun (the mountain path) | three ways (decided): age 9, **or** the parents' switch "berg", **or** the school basics mastered (steg, blumenfeld, apfelbaum, beeren: about grade 3) | three fence tasks at levels 1, 2, 3 |
 | every way back | always | none |
 
 A gate is **the first-visit questions of its target station**: they are asked once, whichever way the
@@ -131,28 +137,39 @@ station welcomes the child either way, and the result is saved, so the parents' 
   gate: { perspective: "sehen", levels: ["20", "100", "1000"] } }
 ```
 
-Condition types: `age`, `mastered` (stations), `perspective` (one star), `flag` (a whole group of a
+Condition types: `age`, `mastered` (stations), `idea` (ideas, wherever they live), `perspective` (one star), `flag` (a whole group of a
 station's ladder), `rounds`, `visited`, `reached` (a map), `parent` (a switch on the parents' page), and
 `all` / `any` / `not`. One checker per type in `CONDITIONS`; a new type is one new line.
 
-**Mastered** (for conditions): every perspective the station has (1 to 5) has its star in the idea's
-mastery group (default: its highest group). **Flag**: every perspective of the station starred in one named
-group. A pure game station counts as mastered from the start, so it never blocks anything that depends on it.
+**Mastered** (for conditions): an idea is mastered when every perspective it has (1 to 5) has its star in
+its mastery group (default: its highest group); a station is mastered when all its ideas are. **Flag**:
+every perspective of the station's ideas starred in one named group. A pure game station counts as mastered from the start, so it never blocks anything that depends on it.
 Conditions never count stars as a number, so they mean the same for a station with one perspective
 and one with five.
 
 ### 5.2 Nearness
 
 Every connection carries a nearness; pairs without a path get a `relation` edge with only a nearness (for
-example wiese and steg: how many / where on the line). Nearness is used three ways:
+example wiese and steg: how many / where on the line). Nearness is used three ways, all decided:
 
-1. **Layout (decided).** Related stations sit near each other. `check-graph` warns when two stations on
+1. **Layout.** Related stations sit near each other. `check-graph` warns when two stations on
    one map with nearness ≥ 0.7 are more than 250 apart (of 1000), or ≥ 0.5 more than 400 apart.
    Counting (wiese) sits between the parts (bau, 0.8) and the sizes (ufer, 0.5).
-2. **The next suggestion (proposed).** After a round, the station screen points at the nearest reachable
-   station that is not mastered yet (`suggest()`). A suggestion, never a lock.
-3. **Review tasks (proposed).** One task per round from a near station the child has already mastered,
-   same band only. This generalises the mountain's backpack and the market's review slot.
+2. **A guided journey.** Nearness leads the child from station to station, the way the Denk-Berg's camps
+   lead upwards today. `next()` is the nearest station that is reachable, open and not mastered yet, in the
+   same band. Each map says how it guides (`guide`):
+
+   | guide | Map | What the child sees |
+   | --- | --- | --- |
+   | `tour` | Tal | a guided tour for small children: after a round the guide (the owl) walks along the path to `next()` and the child only has to follow |
+   | `hint` | Fluss, Feld | the map marks `next()` and the station points at it; the child may go anywhere |
+   | `glimpse` | Berg | `next()` plus `glimpse()`: near stations still in the fog or locked, with what opens them, to wake curiosity |
+
+   It guides, it never locks: conditions alone decide what is open. `check-graph` walks the tour from every
+   map's entry and proves it reaches every station of the band a child of that age can reach.
+3. **Review tasks.** One task per round from a near station (nearness 0.5 or more) the child has already
+   mastered, same band only (`reviewFrom()`, policy `review`). This generalises the mountain's backpack and the
+   market's review slot.
 
 Relations that cross bands (Tal to Fluss/Feld) are shown to parents ("counting leads to the number line")
 and never used to mix tasks.
@@ -250,7 +267,7 @@ Generalisation stops in three places, on purpose:
 
 A round is 5 tasks of one station in one perspective (3 for children under 5 in the Tal). Its slots come
 from the policy: `cur` (the child's rung), `easier` (after 3 wrong in a row), `review` (a near mastered
-station, proposed), `inverse` and `bridge` (Feld), `backpack` (Berg), `surprise` (another perspective
+station), `inverse` and `bridge` (Feld), `backpack` (Berg), `surprise` (another perspective
 already played, not counted; only at stations with two or more perspectives). The help ladder comes from the policy: hint after 2 misses, then picture,
 then the way in small steps.
 
@@ -274,20 +291,23 @@ then the way in small steps.
 | step down | 2 weak in a row | 2 weak in a row | 2 weak in a row | 2 weak in a row |
 | help ladder | hint | hint, picture | hint, picture, way | hint, way |
 | slots | cur, surprise | cur, surprise | cur ×3, review, inverse | cur ×4, backpack |
+| review task | 1 per round | 1 per round | 1 per round | backpack |
 | learning box | no | no | yes | no |
+| "how was it?" | no | no | no | yes; a weak round felt hard also steps down |
 
 Because these are fields, giving the Fluss the learning box or the Tal the help ladder is a one-line change.
 
 ## 8. Storage
 
-New address, new storage, no compatibility with think-lab. Keys:
+New address, new storage, no compatibility with think-lab, and no import of think-lab's backup (decided).
+Progress is kept per idea, because a station can serve several. Keys:
 
 - `anka:profiles`: the children on this device (name, age with the day it was entered, animal, settings).
 - `anka:learner:<child>`: one record per child, `v: 1`:
 
 ```js
 { v: 1, kid: "k1",
-  stations: { wiese: { level: "10", lowered: false, weakInRow: 0, rounds: 12, visited: "2026-11-27",
+  ideas: { zahl: { level: "10", lowered: false, weakInRow: 0, rounds: 12, visited: "2026-11-27",
                        gate: { day: "2026-11-27", answers: [...], start: "10" },
                        cells: { "sehen@10": { n: 10, first: 8, recent: [1,1,0,1,1], star: "2026-11-27" } },
                        mistakes: [{ kind: "oneOff", round: 12 }] } },
@@ -366,26 +386,19 @@ in Nepal.
 5. Berg: recipes where they fit, `tasks.js` for the camps that need a solver.
 6. Parents' page, backup, privacy page, service worker, Cloudflare.
 
-## 12. Decisions for you
+## 12. Decisions
 
-1. **Number ranges: levels or stations?** Recommended: **levels inside one idea** (rungs and groups of one
-   ladder, as drafted). One station per idea keeps the map small and memorable; the gate and the policy
-   already move the child between ranges; separate stations per range would triple the Feld map. The
-   preschool/school split is kept by the ideas themselves (zahl up to 10 in the Tal, reihe and stellen
-   from 20 in the Fluss), not by ranges.
-2. **The perspectives: the same everywhere, or per map?** Decided: a station has 1 to 5, as its idea
-   needs. Recommended for the rest: **the same ids, icons,
-   order and star rule everywhere; names per map** (the mountain says understand, try out, find the rule,
-   transfer, explain why). One record shape, one parents' page, and the mountain keeps its voice.
-3. **Nearness for the next suggestion and for review tasks?** Recommended: **yes, both, same band only;**
-   review takes one task per round, only from stations already mastered.
-4. **One idea per station:** this design splits the burrow, hill and lake, and the sky. Please confirm.
-5. **Map names and cut:** Tal, Fluss, Feld, Berg. Fluss and Feld could also be one map; I kept two because
-   ten stations on one phone screen are too many.
-6. **The mountain loses "how was it?"** (the standing rule for children). Please confirm.
-7. **Zahlen-Memory:** decided: its own station, baumstumpf, next to the wiese, a pure game with one
-   perspective (play), always open and mastered from the start. Ported with the Tal.
-8. **The mountain portal:** from 9, or earlier by the parents' switch.
-9. **Import from think-lab's backup:** not at launch; think-lab stays online.
-10. **The repository is empty** (no `main` yet), so this design is on its own branch. Say if it should
-    become the first commit of `main`.
+All open questions are answered (27 November 2026):
+
+| # | Question | Decision |
+| --- | --- | --- |
+| 1 | Number ranges: levels or stations? | **Levels** inside one idea: rungs and groups of one ladder. |
+| 2 | Perspectives: the same everywhere? | **One shared set:** the same ids, icons, order and star rule everywhere, names per map. A station has 1 to 5 of them, as its idea needs. |
+| 3 | What is nearness for? | **A guided, controlled journey** (section 5.2): a tour for small children, curiosity for older ones; plus one review task per round from a near mastered station. |
+| 4 | One idea per station? | **No:** a station can serve several ideas when they are trained at the same place. |
+| 5 | How many maps? | **As many as necessary.** Tal, Fluss, Feld, Berg to start. |
+| 6 | "How was it?" on the Berg? | **It stays** on the Berg; never asked on the other maps. |
+| 7 | Zahlen-Memory? | Its own station, baumstumpf, a pure game: always open, mastered from the start. |
+| 8 | Into the Berg? | **Three ways:** age 9, the parents' switch, or the school basics mastered. |
+| 9 | Import think-lab's progress? | **No.** |
+| 10 | The repository | The design is the first commit of `main`; changes go in as pull requests. |
