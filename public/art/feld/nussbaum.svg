@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 800" preserveAspectRatio="xMidYMax slice">
+  <!-- The nut tree: a broad tree, nuts on the ground. -->
+  <rect width="400" height="800" fill="#cfeaff"/>
+  <path d="M0 430 Q140 390 260 420 T400 410 V800 H0Z" fill="#b9e5a0"/>
+  <rect x="60" y="300" width="40" height="160" rx="8" fill="#8a5a33" stroke="#1b2140" stroke-width="4"/>
+  <circle cx="80" cy="250" r="110" fill="#5f9e52" stroke="#1b2140" stroke-width="4"/>
+  <g fill="#a86b3c" stroke="#1b2140" stroke-width="2"><circle cx="160" cy="680" r="8"/><circle cx="190" cy="700" r="8"/><circle cx="240" cy="690" r="8"/></g>
+</svg>

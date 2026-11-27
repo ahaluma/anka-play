@@ -1,19 +1,25 @@
 // A number pad for typed answers (from the range up to 20 in school, docs/DESIGN.md section 2). No phone
 // keyboard pops up: big keys 1-9, 0, delete and check, in the digits of the language. A real keyboard works too.
 //
-//   const pad = numpad(container, { digits: 3, onCheck: (n) => right?, labels });
+//   const pad = numpad(container, { digits: 3, onCheck: (n) => right?, labels, display });
 //   pad.clear() · pad.lock(true) · pad.show(n) · pad.remove()
+//   display: an element of the board that shows the typed number (the "?" in "38 + 27 = ?"); without it the pad
+//            shows its own box above the keys. onCheck may return false: the number shakes.
 
 import { num } from "../i18n.js";
 import { icons } from "./parts.js";
 
-export function numpad(container, { digits = 2, onCheck, labels = {} }) {
+export function numpad(container, { digits = 2, onCheck, labels = {}, display = null }) {
   let typed = "";
   let locked = false;
   container.replaceChildren();
   container.classList.add("numpad-box");
-  const display = document.createElement("output");
-  display.className = "numpad-display";
+  const own = !display;
+  if (own) {
+    display = document.createElement("output");
+    display.className = "numpad-display";
+  }
+  const baseClass = display.className;
   display.setAttribute("aria-label", labels.yourAnswer ?? "");
   display.setAttribute("aria-live", "polite");
   const keys = document.createElement("div");
@@ -35,7 +41,7 @@ export function numpad(container, { digits = 2, onCheck, labels = {} }) {
 
   function draw(state = "") {
     display.textContent = typed ? num(Number(typed)) : "?";
-    display.className = `numpad-display ${typed ? "typed" : ""} ${state}`;
+    display.className = `${baseClass} ${typed ? "typed" : ""} ${state}`;
     check.disabled = !typed || locked;
     erase.disabled = !typed || locked;
   }
@@ -44,13 +50,18 @@ export function numpad(container, { digits = 2, onCheck, labels = {} }) {
     if (locked) return;
     if (k === "back") typed = typed.slice(0, -1);
     else if (k === "enter") {
-      if (typed) onCheck(Number(typed));
+      if (typed && onCheck(Number(typed)) === false) {
+        display.classList.remove("shake");
+        void display.offsetWidth; // restart the animation
+        display.classList.add("shake");
+      }
       return;
     } else if (typed.length < digits) typed = typed === "0" ? k : typed + k;
     draw();
   }
 
   function onKey(e) {
+    if (!container.isConnected) return void document.removeEventListener("keydown", onKey); // its board is gone
     if (e.key >= "0" && e.key <= "9") press(e.key);
     else if (e.key === "Backspace") press("back");
     else if (e.key === "Enter") press("enter");
@@ -58,7 +69,8 @@ export function numpad(container, { digits = 2, onCheck, labels = {} }) {
     e.preventDefault();
   }
   document.addEventListener("keydown", onKey);
-  container.append(display, keys);
+  if (own) container.append(display);
+  container.append(keys);
   draw();
 
   return {

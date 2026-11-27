@@ -31,6 +31,7 @@ for (const e of EDGES) {
   if (e.kind === "portal" && a.map === b.map) problems.push(`portal ${e.from}>${e.to} stays on one map: make it a path`);
   if (!(e.nearness >= 0 && e.nearness <= 1)) problems.push(`edge ${e.from}>${e.to}: nearness must be 0 to 1`);
   if (e.gate && e.kind !== "portal") problems.push(`edge ${e.from}>${e.to}: only portals have gates`);
+  if (e.kind === "portal" && !(e.pos?.x >= 0 && e.pos.x <= 1000 && e.pos.y >= 0 && e.pos.y <= 600)) problems.push(`portal ${e.from}>${e.to}: no place on its map (pos)`);
 }
 for (const d of dup(EDGES.map((e) => `${e.kind}:${e.from}>${e.to}`))) problems.push(`edge twice: ${d}`);
 

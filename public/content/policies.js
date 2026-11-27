@@ -36,12 +36,19 @@ export const POLICIES = {
   // School, calculation (what was the market): sub-steps inside a range, learning box, typical mistakes.
   feld: {
     ...base,
-    move: "rung", // one step up = the next rung (sub-step), not the next group
+    move: "rung", // one step up = the next rung (sub-step), not the next group; from "gemischt" on with 60 % of the stars
     up: { when: "goodRound" },
-    help: ["hint", "picture", "way"],
-    learningBox: { dueDays: [0, 1, 3, 7, 21], fastMs: 4000 },
-    bridgeAfter: 3, // the same mistake kind 3 times in 2 rounds -> a short bridge round
+    star: { share: 0.8, atTop: true }, // stars only on the top rung of a range ("gemischt"), as at the market
+    // The help ladder: the miss itself says what to look at (the kind of mistake), the 2nd miss shows the
+    // picture, the 3rd the way in small steps.
+    help: ["picture", "way"],
+    learningBox: { dueDays: [0, 1, 3, 7, 21], fastMs: 4000, among: 8 }, // the most due of 8 tasks comes
+    bridgeAfter: 3, // the same mistake kind 3 times in 2 rounds -> the next round starts with 3 tasks of a bridge
+    // review: one task from the range below (the market's backpack), counted like the others.
+    // inverse: in "use" the same numbers the other way round (the idea's inverseIn); else one more "cur".
     slots: ["cur", "cur", "cur", "review", "inverse"],
+    review: { perRound: 1, from: "below" },
+    surprise: false, // five tasks, as at the market
     flag: { stars: "all", fillsBelow: true }, // all the station's perspectives starred on a range = its flag
   },
 

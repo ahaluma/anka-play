@@ -9,6 +9,9 @@ import * as gate from "../public/engine/gate.js";
 import { next, isMastered } from "../public/engine/graph.js";
 import { POLICIES } from "../public/content/policies.js";
 import { random } from "../public/engine/random.js";
+import * as box from "../public/engine/box.js";
+import { taskOf } from "../public/engine/recipe.js";
+import { allowed } from "../public/ideas/platz/idea.js";
 import { READY } from "../public/ideas/index.js";
 
 const problems = [];
@@ -119,6 +122,81 @@ function play(rec, def, p, right, { age = 4, size = 5 } = {}) {
   const f = L.facts(L.blank(), { age: 4, defs });
   const n = next("wiese", f);
   check(n === null || f.ready(n), "the owl only leads to stations that can be played");
+}
+
+// ---------- The Feld (docs/DESIGN.md 7.2, 7.3): sub-steps, stars on "gemischt", learning box, bridges
+{
+  const plus = defs.plus;
+  const feld = policyFor("feld", plus);
+  const round = (rec, p, right, size = 5) => {
+    const rung = L.level(rec, plus, 6);
+    for (let i = 0; i < size; i++) L.task(rec, "plus", p, rung, i < right);
+    const res = afterRound(rec, plus, feld, { p, rung, first: right, tasks: size, age: 6 });
+    L.roundDone(rec, "plus", null);
+    return res;
+  };
+  const rec = L.blank();
+  check(L.level(rec, plus, 6) === "10/bilder", "plus starts at 10, with pictures");
+  let r = round(rec, "sehen", 5);
+  check(r.moved === 1 && r.level === "10/luecke" && !r.star, "a good round moves one sub-step up, without a star");
+  round(rec, "sehen", 4);
+  check(L.level(rec, plus, 6) === "10/gemischt", "the next good round reaches gemischt");
+  r = round(rec, "sehen", 4);
+  check(r.newStar && r.moved === 0 && r.level === "10/gemischt", "on gemischt a good round gives the star; 1 of 5 stars stays at 10");
+  round(rec, "machen", 5);
+  r = round(rec, "forschen", 5);
+  check(r.moved === 1 && r.level === "20/verdoppeln", "with 3 of 5 stars at 10 the child goes on to 20");
+  check(!L.facts(rec, { age: 6, defs }).flag("apfelbaum", "10"), "3 stars are no flag yet");
+  round(rec, "sehen", 1);
+  r = round(rec, "sehen", 2);
+  check(r.moved === -1 && L.level(rec, plus, 6) === "10/gemischt", "two weak rounds go one sub-step down");
+
+  // the slots: three of the rung, one from the range below (counted), in "use" one the other way round
+  const slots = plan({ def: plus, p: "anwenden", rung: "20/uebergang", pol: feld, size: 5, below: L.belowTop(plus, "20/uebergang"), r: random(1) });
+  check(slots.map((s) => s.kind).join() === "cur,cur,cur,review,inverse" && slots[3].rung === "10/gemischt" && slots.every((s) => s.counted), "a Feld round: 3 cur, the range below, the inverse; all counted");
+  const s2 = plan({ def: plus, p: "sehen", rung: "10/luecke", pol: feld, size: 5, below: null, r: random(1) });
+  check(s2.every((s) => s.kind === "cur") && s2.length === 5, "no range below and not in use: five of the rung, no surprise");
+  const t = taskOf(plus, "anwenden", { ...L.rung(plus, "20/uebergang").params }, { r: random(3) });
+  const u = taskOf(plus, "anwenden", { ...L.rung(plus, "20/uebergang").params, inverseOf: t.vars }, { r: random(3) });
+  check(t.vars.gap !== "c" || (u.vars.op === "minus" && u.vars.a === t.vars.c && u.vars.c === t.vars.a), "the inverse task turns the task before round");
+
+  // bridges: the same kind of mistake 3 times in the last two rounds
+  const b = L.blank();
+  for (let i = 0; i < 3; i++) L.mistake(b, "plus", "zehner");
+  check(L.oftenWrong(b, "plus", 3) === "zehner" && L.bridgeRung(plus, "20/gemischt", "zehner") === "20/uebergang", "forgetting the ten 3 times brings the bridge over the ten");
+  const bs = plan({ def: plus, p: "sehen", rung: "20/gemischt", pol: feld, size: 5, below: "10/gemischt", bridge: "20/uebergang", r: random(1) });
+  check(bs.slice(0, 3).every((s) => s.kind === "bridge" && s.rung === "20/uebergang") && bs[3].kind === "review", "the bridge takes the first three tasks");
+  b.ideas.plus.rounds += 3;
+  check(L.oftenWrong(b, "plus", 3) === null, "after two more rounds the old mistakes no longer count");
+
+  // the learning box
+  const lb = feld.learningBox;
+  const x = L.blank();
+  box.record(x, "plus:8,5", { first: true, ms: 9000, fact: true }, lb);
+  box.record(x, "plus:8,5", { first: true, ms: 9000, fact: true }, lb);
+  box.record(x, "plus:8,5", { first: true, ms: 9000, fact: true }, lb);
+  check(x.box["plus:8,5"].box === 3, "from box 3 on a fact must be fast to move up");
+  box.record(x, "plus:8,5", { first: true, ms: 2000, fact: true }, lb);
+  check(x.box["plus:8,5"].box === 4, "fast and right moves it to box 4");
+  box.record(x, "plus:8,5", { first: false }, lb);
+  check(x.box["plus:8,5"].box === 2, "a wrong answer drops it two boxes");
+  box.record(x, "plus:3,4", { first: false }, lb);
+  check(box.score(x, "plus:3,4", lb) > box.score(x, "plus:9,9", lb) && box.score(x, "plus:9,9", lb) > box.score(x, "plus:8,5", lb) - 9, "a card that went wrong comes before a new one");
+
+  // the clearing: opens with the flags of plus and minus at 10, its stories use the finished operations
+  const c = L.blank();
+  const f0 = L.facts(c, { age: 6, defs });
+  check(JSON.stringify(allowed(f0)) === JSON.stringify({ plus: 10, minus: 10 }), "before any flag the stories use plus and minus up to 10");
+  for (const id of ["plus", "minus"]) for (const p of defs[id].perspectives) c.ideas[id] = c.ideas[id] ?? L.slot(c, id), (L.slot(c, id).cells[L.cellKey(p, "20/gemischt")] = { n: 5, first: 5, recent: [], star: "2026-11-27" });
+  const f1 = L.facts(c, { age: 6, defs });
+  check(f1.flag("apfelbaum", "10") && f1.flag("beeren", "10"), "five stars at 20 also set the flag at 10");
+  check(allowed(f1).plus === 20 && allowed(f1).minus === 20 && !allowed(f1).mal, "the stories use plus and minus up to 20, no times yet");
+}
+
+// ---------- The gates of the Fluss and the Feld ask the written ideas
+{
+  check(gate.questions("steg", defs.reihe).map((q) => q.rung).join() === "20,100,1000", "the stepping stones ask reihe at 20, 100, 1000");
+  check(gate.questions("apfelbaum", defs.plus).map((q) => q.rung).join() === "10/luecke,20/uebergang,100/zehner", "the bridge to the field asks plus at 10, 20, 100");
 }
 
 console.log(`${checks} checks.`);

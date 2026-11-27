@@ -5,7 +5,7 @@
 import { station as stationOf, map as mapOf, stationOpen, reachable } from "../graph.js";
 import { PERSPECTIVES } from "../../content/perspectives.js";
 import { shared as T, num } from "../i18n.js";
-import { state, facts, idea as loadIdea, age } from "../app.js";
+import { state, facts, idea as loadIdea, texts as loadTexts, age } from "../app.js";
 import * as L from "../learner.js";
 import * as gate from "../gate.js";
 import * as profiles from "../profiles.js";
@@ -60,11 +60,13 @@ export async function render(root, route) {
     panel.append(tabs);
   }
 
-  const g = L.groupOf(def, L.level(state.rec, def, age()));
+  const lv = L.level(state.rec, def, age());
+  const g = L.groupOf(def, lv);
+  const step = def.rungName?.(L.rung(def, lv), await loadTexts(ideaId)); // a sub-step of the range (Feld)
   const head = el("div", "station-head");
   head.append(el("span", "station-icon", s.icon ?? ""), el("div", "", ""));
   head.lastChild.append(el("strong", "", T.ideas[ideaId]?.about ?? ""));
-  if (!L.isGame(def) && L.groups(def).length > 1) head.lastChild.append(el("small", "", groupName(g, def)));
+  if (!L.isGame(def) && L.groups(def).length > 1) head.lastChild.append(el("small", "", groupName(g, def) + (step ? ` · ${step}` : "")));
   panel.append(head);
 
   const names = T.perspectives[m.perspectiveNames] ?? T.perspectives.standard;

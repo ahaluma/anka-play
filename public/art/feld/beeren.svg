@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 800" preserveAspectRatio="xMidYMax slice">
+  <!-- The berry bushes at the edge of the orchard. -->
+  <rect width="400" height="800" fill="#cfeaff"/>
+  <path d="M0 430 Q140 390 260 420 T400 410 V800 H0Z" fill="#b9e5a0"/>
+  <g stroke="#1b2140" stroke-width="4"><ellipse cx="80" cy="440" rx="90" ry="55" fill="#3f9b57"/><ellipse cx="330" cy="450" rx="100" ry="60" fill="#4ea862"/></g>
+  <g fill="#3a5bd6"><circle cx="60" cy="425" r="8"/><circle cx="100" cy="445" r="8"/><circle cx="300" cy="440" r="8"/><circle cx="340" cy="460" r="8"/><circle cx="370" cy="430" r="8"/></g>
+</svg>

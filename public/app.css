@@ -212,8 +212,8 @@ body.listening .board .answers { pointer-events: none; }
 
 .door.soon { opacity: 0.55; box-shadow: none; }
 .map-tal .door-art { background-image: url("art/tal/scene.svg"); background-color: var(--grass); }
-.map-fluss .door-art { background: linear-gradient(var(--sky) 0 40%, var(--water) 40% 70%, var(--grass) 70%); }
-.map-feld .door-art { background: linear-gradient(var(--sky) 0 40%, #f3d77a 40%); }
+.map-fluss .door-art { background-image: url("art/fluss/scene.svg"); background-color: var(--water); }
+.map-feld .door-art { background-image: url("art/feld/scene.svg"); background-color: #f3d77a; }
 .map-berg .door-art { background: linear-gradient(160deg, var(--sky) 0 35%, #b8c0cc 35% 70%, var(--grass) 70%); }
 .foot { margin: auto 0 0; color: var(--muted); font-size: 14px; text-align: center; }
 
@@ -280,6 +280,27 @@ body.listening .board .answers { pointer-events: none; }
 .spot.asleep .spot-icon { width: 50px; height: 50px; font-size: 26px; background: rgba(251, 252, 254, 0.7); filter: grayscale(0.7); box-shadow: none; }
 .spot.locked .spot-icon { filter: grayscale(1); opacity: 0.6; }
 .spot.next .spot-icon { background: var(--sun); animation: pulse 1.4s ease-in-out infinite; }
+
+/* A way to another map (a portal): the stepping stones, the bridge, the mountain path. */
+.portal-sign {
+  position: absolute;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transform: translate(-50%, -50%);
+  padding: 3px 10px 3px 4px;
+  border: 3px solid var(--ink);
+  border-radius: 999px;
+  background: #fff3c4;
+  box-shadow: 0 3px 0 var(--ink);
+  font-size: 14px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+.portal-icon { font-size: 24px; line-height: 1; }
+.portal-sign:active { transform: translate(-50%, calc(-50% + 2px)); box-shadow: 0 1px 0 var(--ink); }
+.portal-sign.locked { background: rgba(255, 255, 255, 0.75); box-shadow: none; filter: grayscale(0.8); }
 
 .owl-guide {
   position: absolute;

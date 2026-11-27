@@ -120,6 +120,9 @@ the child has crossed into them, Berg by the three ways of 4.4 or once reached.
 | sonnenfels → zaun (the mountain path) | three ways (decided): age 9, **or** the parents' switch "berg", **or** the school basics mastered (steg, blumenfeld, apfelbaum, beeren: about grade 3) | three fence tasks at levels 1, 2, 3 |
 | every way back | always | none |
 
+A portal is drawn on its map at its own place (`pos`: the stepping stones in the stream, the bridge at the
+edge of the river): open, it takes the child across; closed, it shows a lock, like a closed door.
+
 A gate is **the first-visit questions of its target station**: they are asked once, whichever way the
 child comes in first (also straight from the map). The gate never blocks. The highest rung answered right
 at the first try becomes the starting rung; with none right the child starts on the first rung. The
@@ -264,7 +267,10 @@ Generalisation stops in three places, on purpose:
    a row that must not go the same way as the model, things of one colour that are not in the basket yet).
    The recipe language has no filter, and adding one would start the worse programming language. So those
    keep think-lab's tested `tasks.js` with its `check()`, handed to the engine in `idea.js` as
-   `tasks: { make, check }`; `tools/check-ideas.mjs` runs `check()` on 1000 tasks per level.
+   `tasks: { make, check }`; `tools/check-ideas.mjs` runs `check()` on 1000 tasks per level. The Fluss ideas,
+   the money stand and the four operations of the Feld do the same: their generators search (a sum that crosses
+   the ten, but not a round number; a mistake the owl would really make), so all of them keep think-lab's task
+   code. The four operations share one: `boards/rechnung/tasks.js`, from think-lab's market.
 2. **Pictures that exist once.** A cube net folding, the sundial. A board is generic when a third idea
    needs it; the first two uses may be a bespoke board in `ideas/<id>/board.js` with the same interface
    (`draw(host, task, ctx)` returning `{ hint, help, way }`).
@@ -286,7 +292,8 @@ then the way in small steps.
 - **Star:** 4 of 5 right at the first try in one round of a perspective, in the current group. At once.
 - **Up:** 60 % of the station's perspectives starred in a group → the next group (Tal, Fluss, Berg): 3 of 5,
   3 of 4, 2 of 3, 2 of 2, 1 of 1. In the Feld one good
-  round moves one rung (its sub-steps), as the market does today.
+  round moves one rung (its sub-steps), as the market does today; from "gemischt", the top rung of a range,
+  it goes on to the next range with 60 % of the stars, like everywhere else.
 - **Down:** 2 weak rounds in a row (2 of 5 or fewer) → one group down, and the age catch-up stops.
 - **Flag:** all the station's perspectives starred in a group. A flag on a higher group fills the lower ones (Feld).
 - **Mastered station:** all the station's perspectives starred in the mastery group. This is what
@@ -299,9 +306,10 @@ then the way in small steps.
 | --- | --- | --- | --- | --- |
 | step up | group, 60 % of stars | group, 60 % of stars | rung, good round | group, 60 % of stars |
 | step down | 2 weak in a row | 2 weak in a row | 2 weak in a row | 2 weak in a row |
-| help ladder | hint | hint, picture | hint, picture, way | hint, way |
-| slots | cur, surprise | cur, surprise | cur ×3, review, inverse | cur ×4, backpack |
+| help ladder | hint | hint, picture | the miss says what to look at; then picture, way | hint, way |
+| slots | cur, surprise | cur, surprise | cur ×3, review (the range below), inverse (in "use") | cur ×4, backpack |
 | review task | 1 per round | 1 per round | 1 per round | backpack |
+| stars | any rung of a group | any rung of a group | only on "gemischt", the top rung of a range | any rung of a group |
 | learning box | no | no | yes | no |
 | "how was it?" | no | no | no | yes; a weak round felt hard also steps down |
 
@@ -321,9 +329,9 @@ Progress is kept per idea, because a station can serve several. Keys:
                        gate: { day: "2026-11-27", answers: [...], start: "10" },
                        cells: { "sehen@10": { n: 10, first: 8, recent: [1,1,0,1,1], star: "2026-11-27" } },
                        mistakes: [{ kind: "oneOff", round: 12 }] } },
-  cards: { "plus:8,5": { box: 3, seen: "2026-11-27" } },   // learning box (Feld)
+  box: { "plus:8,5": { box: 3, seen: "2026-11-27", n: 6, wrong: 1 } },   // learning box (Feld, engine/box.js)
   daily: { "2026-11-27": { right: 14, wrong: 3, rounds: 3 } },
-  thinkingCards: { vergleichen: 4 }, parent: { berg: false } }
+  cards: { vergleichen: 4 }, parent: { berg: false } }                  // the thinking cards a child got
 ```
 
 Only facts are saved. Stars, mastered, open, visible, reachable and suggestions are computed, so a rule
@@ -396,7 +404,15 @@ in Nepal.
    `ideas/<id>/tasks.js` (they pick from tables with rules, see 6.5). Every Tal board exists once, so each idea
    has its own `board.js`, think-lab's boards with only their imports changed (`engine/ui/ported.js`), and
    their sentences as they were. Number memory is the game at the tree stump.
-4. Fluss and Feld; the Feld policy (learning box, bridges).
+4. Fluss and Feld; the Feld policy (learning box, bridges). **Done.** The Fluss has reihe (the footbridge:
+   think-lab's railway track and train are now the bridge's planks, a frog and a row of ducklings), stellen,
+   formen and zeit; the Feld has plus, minus, mal and geteilt (think-lab's market: its sub-steps are the rungs,
+   "20/uebergang"), geld at the farm stand and the market square's stories at the clearing. All keep
+   think-lab's task code (6.5). The Feld policy runs in the engine: stars on "gemischt", one rung per good
+   round, the round of five (three of the rung, one from the range below, one the other way round in "use"),
+   the learning box (`engine/box.js`: the most due of 8 tasks comes) and bridges (the same kind of mistake 3
+   times in two rounds → the next round starts with three tasks of the rung that trains it). Portals are drawn
+   on the maps.
 5. Berg: recipes where they fit, `tasks.js` for the camps that need a solver.
 6. Parents' page, backup, privacy page, service worker, Cloudflare.
 

@@ -1,0 +1,75 @@
+// Sentences of the idea "reihe", English. Ported from think-lab (welt/lang/en.js) as they were:
+// the board (ideas/reihe/board.js) calls them with number words, as there.
+const big = (text) => text[0].toUpperCase() + text.slice(1);
+
+export default {
+  reihe: {
+    intro: {
+      sehen: "The frog sits on the footbridge. At which number?",
+      machen: "Let the frog hop to the right place.",
+      forschen: "The ducklings carry numbers. How does the row go?",
+      anwenden: "Bigger, smaller, before, after, which one?",
+      pruefen: "The owl compares. Is that right?",
+    },
+    sehen: {
+      ask: "At which number does the frog sit?",
+      miss: "Look at the lines again.",
+      missLeft: (n) => `The frog sits further right than ${n}.`,
+      missRight: (n) => `The frog sits further left than ${n}.`,
+      done: (n) => `The frog sits at ${n}.`,
+      hint: (long, tick) => (long === tick ? "Each line is one more. Count on from a number." : `The long lines go in steps of ${long}, the short ones are right in the middle.`),
+    },
+    machen: {
+      question: (n) => `The frog must hop to ${n}. Tap the place on the footbridge!`,
+      tooSmall: (at, n) => `The frog is at ${at}. ${n} is further right.`,
+      tooBig: (at, n) => `The frog is at ${at}. ${n} is further left.`,
+      done: (n) => `Yes, this is ${n}.`,
+      hint: (long, tick) => (long === tick ? "Each line is one more." : `The long lines go in steps of ${long}. A short line is in the middle.`),
+      check: "Here!",
+    },
+    forschen: {
+      question: "Which number is missing in the row?",
+      questionDown: "The numbers get smaller. Which one is missing?",
+      miss: "Look how it goes on from duckling to duckling.",
+      doneUp: (step) => `Always ${step} more. You found the rule.`,
+      doneDown: (step) => `Always ${step} less. You found the rule.`,
+      hint: "Compare two ducklings side by side: how much is added or taken away?",
+    },
+    anwenden: {
+      compare: "Which sign goes in the middle?",
+      compareMiss: (a, b) => `First compare the biggest place of ${a} and ${b}.`,
+      compareMissSmall: "Count: which number comes first? That one is smaller.",
+      compareMissSame: "Look closely: maybe both numbers are the same?",
+      compareDone: {
+        "<": (a, b) => `${big(a)} is less than ${b}.`,
+        ">": (a, b) => `${big(a)} is greater than ${b}.`,
+        "=": (a) => `Both are ${a}: equal.`,
+      },
+      compareHint: "On the footbridge the smaller number is further left. The point of < and > always shows to the smaller number.",
+      before: (n) => `Which number comes just before ${n}?`,
+      after: (n) => `Which number comes just after ${n}?`,
+      beforeMiss: "Before means: one less.",
+      afterMiss: "After means: one more.",
+      beforeDone: (n, x) => `Before ${n} comes ${x}.`,
+      afterDone: (n, x) => `After ${n} comes ${x}.`,
+      beforeHint: "Count backwards: which number do you say first?",
+      afterHint: "Count on: which number do you say next?",
+      ordinals: ["first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth"],
+      ordinal: (w, n) => `Tap the ${w} duckling! (${n}.)`,
+      ordinalMiss: (w) => `That is the ${w} duckling. Count from the mother duck.`,
+      ordinalDone: (w) => `Yes, that is the ${w} duckling.`,
+      ordinalHint: "Count from the mother duck: first, second, third …",
+      wagonName: (i) => `Duckling ${i}`,
+    },
+    pruefen: {
+      question: (a, said, b) => `The owl says: ${a} ${said === "<" ? "is less than" : said === ">" ? "is greater than" : "equals"} ${b}. Is that right?`,
+      lookAgain: "Look at the biggest place first.",
+      fix: "Well spotted! Which sign is right?",
+      fixMiss: "Which number is smaller?",
+      right: (text) => text,
+      fixed: (a, b, text) => `Now it is right: ${text}`,
+      hint: "The owl only looks at the last digit. On the footbridge you see which number is further left.",
+    },
+    signName: { "<": "less than", "=": "equal", ">": "greater than" },
+  },
+};

@@ -4,9 +4,12 @@
 // The owl stands at the station the journey leads to next (graph next(), the map's `guide`):
 //   tour     the Tal: after a round the owl walks the child there (#/map/tal?walk=wiese,bau)
 //   hint     the station is marked, the child may go anywhere
+// A portal is drawn where it leaves this map (its `pos`): the stepping stones to the river, the bridge to the
+// field. Open, it takes the child to the station on the other side (its first-visit questions come first);
+// closed, it shows a lock, like a closed door.
 
 import { STATIONS, EDGES } from "../../content/universe.js";
-import { map as mapOf, station as stationOf, visible, stationOpen, reachable, next as nextOf } from "../graph.js";
+import { map as mapOf, station as stationOf, visible, stationOpen, reachable, edgeOpen, next as nextOf } from "../graph.js";
 import { shared as T } from "../i18n.js";
 import { state, facts } from "../app.js";
 import { store } from "../store.js";
@@ -97,6 +100,25 @@ export async function render(root, route) {
     });
     scene.append(b);
     nodes[s.id] = b;
+  }
+
+  // The ways to other maps.
+  const PORTAL = { "stepping-stones": "🪨", bridge: "🌉", "mountain-path": "🥾" };
+  for (const e of EDGES) {
+    if (e.kind !== "portal" || !shown.has(e.from) || !e.pos || !f.ready(e.to)) continue;
+    const to = stationOf(e.to);
+    const open = edgeOpen(e, f) && stationOpen(e.to, f);
+    const b = button("portal-sign" + (open ? "" : " locked"), `${T.maps[to.map].name}: ${T.stations[to.id] ?? to.id}`);
+    b.style.left = `${(e.pos.x / W) * 100}%`;
+    b.style.top = `${(e.pos.y / H) * 100}%`;
+    b.append(el("span", "portal-icon", PORTAL[e.icon] ?? "➜"), el("span", "portal-name", open ? T.maps[to.map].name : "🔒"));
+    b.addEventListener("click", () => {
+      sound.tap();
+      if (!open) return void voice.tell(T.mapText.locked);
+      store.set("last", to.id);
+      go(href.station(to.id));
+    });
+    scene.append(b);
   }
 
   // The owl: where the journey goes on. From the station played last (or the map's entry).

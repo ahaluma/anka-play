@@ -9,6 +9,13 @@
 //   surprise  at the end, one task from another perspective the child has already played (policy surprise;
 //             only for ideas with 2 or more perspectives). Not counted.
 //   backpack  (Berg) a task from a camp below. Counted with the round, as the mountain did.
+//
+// A policy with `slots` (Feld) lays the round out itself, every slot counted:
+//   cur       as above
+//   review    with review.from "below": a task from the top rung of the group below (the market's backpack);
+//             without a group below, one more cur
+//   inverse   in a perspective of the idea's inverseIn: the task before, the other way round (8 + 5, then 13 - 5)
+//   bridge    the first three cur slots, when a kind of mistake came often: the rung that trains it (bridge())
 
 import { pick } from "./random.js";
 
@@ -19,9 +26,20 @@ import { pick } from "./random.js";
  *   played   (p) => has the child played this perspective before?
  *   review   { idea, p, rung } from a near mastered station, or null
  */
-export function plan({ def, p, rung, pol, size, played = () => false, review = null, r = Math.random }) {
-  const slots = Array.from({ length: size }, () => ({ kind: "cur", idea: def.id, p, rung, counted: true }));
-  if (review && pol.review?.perRound) slots.splice(Math.max(1, size - 1), 0, { kind: "review", ...review, counted: false });
+export function plan({ def, p, rung, pol, size, played = () => false, review = null, below = null, bridge = null, r = Math.random }) {
+  const cur = { kind: "cur", idea: def.id, p, rung, counted: true };
+  let slots;
+  if (pol.slots) {
+    slots = pol.slots.slice(0, size).map((kind) => {
+      if (kind === "review" && pol.review?.from === "below" && below) return { ...cur, kind: "review", rung: below };
+      if (kind === "inverse" && def.inverseIn?.includes(p)) return { ...cur, kind: "inverse" };
+      return { ...cur };
+    });
+    if (bridge) for (const s of slots.filter((x) => x.kind === "cur").slice(0, 3)) Object.assign(s, { kind: "bridge", rung: bridge });
+  } else {
+    slots = Array.from({ length: size }, () => ({ ...cur }));
+    if (review && pol.review?.perRound) slots.splice(Math.max(1, size - 1), 0, { kind: "review", ...review, counted: false });
+  }
   const others = def.perspectives.filter((x) => x !== p && x !== "spielen" && played(x));
   if (pol.surprise && def.perspectives.length >= 2 && others.length) {
     slots.push({ kind: "surprise", idea: def.id, p: pick(others, r), rung, counted: false });

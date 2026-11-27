@@ -13,7 +13,9 @@
 //                      gate: { day, answers: [...], start: "10" },
 //                      cells: { "sehen@10": { n: 10, first: 8, recent: [1,1,0,1,1], last: "2026-11-27", star: "2026-11-27" } },
 //                      mistakes: [{ kind: "oneOff", day: "2026-11-27" }] } },
-//     cards: { vergleichen: 4 }, daily: { "2026-11-27": { right: 14, wrong: 3, rounds: 3 } }, parent: { berg: false } }
+//     cards: { vergleichen: 4 },                                   the thinking cards a child got
+//     box: { "plus:8,5": { box: 3, seen: "2026-11-27", n: 6, wrong: 1 } },   the learning box (Feld, engine/box.js)
+//     daily: { "2026-11-27": { right: 14, wrong: 3, rounds: 3 } }, parent: { berg: false } }
 
 import { station, STATIONS_BY_ID } from "./graph.js";
 
@@ -26,7 +28,7 @@ export function today(date = new Date()) {
   return `${date.getFullYear()}-${z(date.getMonth() + 1)}-${z(date.getDate())}`;
 }
 
-export const blank = (kid = "guest") => ({ v: 1, kid, ideas: {}, cards: {}, daily: {}, parent: {} });
+export const blank = (kid = "guest") => ({ v: 1, kid, ideas: {}, cards: {}, box: {}, daily: {}, parent: {} });
 
 /** A record read from storage: a fresh one when it is missing or of another version. */
 export const valid = (rec, kid) => (rec && rec.v === 1 && rec.ideas ? rec : blank(kid));
@@ -130,7 +132,35 @@ export function task(rec, idea, p, rungId, firstTry, { counted = true, day = tod
 /** A typical mistake (content/boards.js MISTAKES, or an idea's own kind), for the parents' page. */
 export function mistake(rec, idea, kind, day = today()) {
   const s = slot(rec, idea);
-  s.mistakes = [...s.mistakes, { kind, day }].slice(-MISTAKES_KEPT);
+  s.mistakes = [...s.mistakes, { kind, day, round: s.rounds }].slice(-MISTAKES_KEPT);
+}
+
+/**
+ * A kind of mistake that came `after` times or more in the last two rounds of an idea (and the round being
+ * played), or null. The Feld answers it with a short bridge (policy bridgeAfter, round.js plan).
+ */
+export function oftenWrong(rec, idea, after) {
+  const s = rec.ideas[idea];
+  if (!s || !after) return null;
+  const counts = {};
+  for (const m of s.mistakes) if ((m.round ?? -9) >= s.rounds - 2) counts[m.kind] = (counts[m.kind] ?? 0) + 1;
+  const [kind, n] = Object.entries(counts).sort((a, b) => b[1] - a[1])[0] ?? [];
+  return n >= after ? kind : null;
+}
+
+/** The rung of the bridge for a kind of mistake: the rung of the child's group the idea names for it (idea.bridges). */
+export function bridgeRung(def, level, kind) {
+  const want = def.bridges?.[kind];
+  if (!want) return null;
+  const g = groupOf(def, level);
+  return def.ladder.find((r) => r.group === g && want.includes(r.params?.stepId))?.id ?? null;
+}
+
+/** The top rung of the group below the child's, or null (the Feld's review slot: the market's backpack). */
+export function belowTop(def, level) {
+  const gs = groups(def);
+  const g = gs[gs.indexOf(groupOf(def, level)) - 1];
+  return g ? def.ladder.filter((r) => r.group === g).at(-1).id : null;
 }
 
 export function visit(rec, idea, day = today()) {

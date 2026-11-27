@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 800" preserveAspectRatio="xMidYMax slice">
+  <!-- The background of a Feld station without its own picture: sky, a strip of wheat, grass. -->
+  <rect width="400" height="800" fill="#cfeaff"/>
+  <path d="M0 390 Q200 360 400 385 V450 H0Z" fill="#f3d77a"/>
+  <path d="M0 440 Q200 420 400 440 V800 H0Z" fill="#b9e5a0"/>
+  <g fill="#fff"><ellipse cx="290" cy="110" rx="56" ry="20"/><ellipse cx="322" cy="96" rx="34" ry="20"/></g>
+</svg>
