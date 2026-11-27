@@ -21,8 +21,8 @@ export function backdrop(s) {
   document.body.style.backgroundImage = `url("art/${s.map}/${s.id}.svg"), url("art/${s.map}/station.svg")`;
 }
 
-/** How a group is named: a number range ("Zahlen bis 10") or a level. */
-export const groupName = (g) => (/^\d+$/.test(g) ? T.stationText.level(num(g)) : T.stationText.levelPlain(num(g)));
+/** How a group is named: a number range ("Zahlen bis 10"), or a level ("Stufe 2") when the idea says `levels`. */
+export const groupName = (g, def) => (def?.levels ? T.stationText.levelPlain(num(g)) : T.stationText.level(num(g)));
 
 export async function render(root, route) {
   const s = stationOf(route.station);
@@ -64,7 +64,7 @@ export async function render(root, route) {
   const head = el("div", "station-head");
   head.append(el("span", "station-icon", s.icon ?? ""), el("div", "", ""));
   head.lastChild.append(el("strong", "", T.ideas[ideaId]?.about ?? ""));
-  if (!L.isGame(def) && L.groups(def).length > 1) head.lastChild.append(el("small", "", groupName(g)));
+  if (!L.isGame(def) && L.groups(def).length > 1) head.lastChild.append(el("small", "", groupName(g, def)));
   panel.append(head);
 
   const names = T.perspectives[m.perspectiveNames] ?? T.perspectives.standard;

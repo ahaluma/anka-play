@@ -4,9 +4,9 @@ Small maths and thinking games for children from 3 to 12 („अङ्क“ / *
 and Nepali. The new, generalised version of [think-lab](https://github.com/ahaluma/think-lab): one engine,
 and everything else (maps, stations, paths, portals, rules, tasks, texts) is data.
 
-**Status:** the engine runs, and the Tal (the valley, ages 3 to 6) can be played on a phone. Its first station,
-the meadow (*wiese*: how many?), is complete in all five ways of playing. The other Tal stations sleep on
-the map until their ideas are ported. The design is in [docs/DESIGN.md](docs/DESIGN.md); section 11 is the
+**Status:** the engine runs, and the whole Tal (the valley, ages 3 to 6) can be played on a phone: twelve
+stations, eleven ideas in all five ways of playing each, and number memory at the tree stump. Fluss, Feld
+and Berg are on the way. The design is in [docs/DESIGN.md](docs/DESIGN.md); section 11 is the
 order of work.
 
 ## Try it
@@ -28,8 +28,10 @@ node tools/serve.mjs        # then open http://localhost:8080 (Node 22 or newer,
   - `ui/`: the screens (Home, map, station, round) and the shared parts (question box and voice, answer
     buttons, number pad, sounds).
 - `public/boards/`: the reusable pictures a task is drawn with (`menge`, `vergleich`, `reihe` so far).
-- `public/ideas/<id>/`: one idea as data: `idea.js` (ladder and recipes) and `lang/de.js`, `en.js`, `ne.js`.
-  `ideas/index.js` lists the ideas that are written.
+- `public/ideas/<id>/`: one idea: `idea.js` (ladder and recipes) and `lang/de.js`, `en.js`, `ne.js`; where a
+  picture exists only there, its `board.js`; where tasks are picked from tables with rules, `tasks.js`.
+  The Tal ideas other than *zahl* are think-lab's, ported with `engine/ui/ported.js` (their pictures are
+  in `public/ported.css`). `ideas/index.js` lists the ideas that are written.
 - `public/lang/`: shared words: numbers, praise, buttons, names of maps, stations and things.
 - `public/art/<map>/`: the map's scene and the stations' backgrounds.
 

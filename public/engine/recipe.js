@@ -146,3 +146,31 @@ export function make(recipe, params, { r = Math.random, things = ["ladybird"], r
   }
   throw new Error(`recipe ${rec.ask}: no task keeps its rules at ${JSON.stringify(params)}`);
 }
+
+/** The `r` a think-lab task generator expects: r.int, r.pick, r.shuffle, r.sample, r.chance. */
+function rng(r) {
+  return {
+    int: (lo, hi) => lo + Math.floor(r() * (hi - lo + 1)),
+    pick: (list) => list[Math.floor(r() * list.length)],
+    shuffle: (list) => shuffled(list, r),
+    sample: (list, n) => shuffled(list, r).slice(0, n),
+    chance: (p) => r() < p,
+  };
+}
+
+/**
+ * One task of an idea in a perspective at a level: from its recipe, or (where a generator must search or
+ * filter tables, docs/DESIGN.md 6.5) from its code: `tasks: { make(level, r), check(task, level) }` in idea.js,
+ * think-lab's task(level, r) with level = { p, ...params }. Both give the same shape.
+ */
+export function taskOf(def, p, params, { r = Math.random, things, recent = [] } = {}) {
+  if (def.recipes?.[p]) return make(def.recipes[p], params, { r, things, recent });
+  if (!def.tasks) throw new Error(`${def.id}: no recipe and no task code for ${p}`);
+  const R = rng(r);
+  for (let i = 0; ; i++) {
+    const t = def.tasks.make({ p, ...params }, R);
+    const key = `${def.id}.${p}:${t.key ?? JSON.stringify(t)}`;
+    if (recent.includes(key) && i < 40) continue;
+    return { board: def.board, show: {}, answer: { mode: "own", value: null, options: null }, ask: `${def.id}.${p}`, vars: { ...params, ...t, p }, key };
+  }
+}

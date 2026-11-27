@@ -9,6 +9,8 @@
 //   ctx.tell(key, extra)    a sentence into the caption
 //   ctx.give(given, node, extra) -> Promise<boolean>   the board's own answer (build, order, its own buttons)
 //   ctx.miss(extra)         a wrong step inside a board's own answer (a stone out of order)
+//   ctx.solved(extra)       the board's own answer is right (the board checked it itself)
+//   ctx.say(sentence, ask)  a sentence the board made itself; extra.say does the same for miss, solved, hint
 //   ctx.icon, ctx.num, ctx.word, ctx.label(key), ctx.fresh(), ctx.tap(), ctx.ready()
 
 import { station as stationOf, map as mapOf, stationOpen, reachable, reviewFrom, next as nextOf } from "../graph.js";
@@ -18,7 +20,7 @@ import { state, facts, idea as loadIdea, texts as loadTexts, age, save } from ".
 import * as L from "../learner.js";
 import * as gate from "../gate.js";
 import * as profiles from "../profiles.js";
-import { make, value } from "../recipe.js";
+import { taskOf, value } from "../recipe.js";
 import { random, pick } from "../random.js";
 import { policyFor, roundSize, afterRound, afterFeel } from "../policy.js";
 import { plan, Round } from "../round.js";
@@ -130,7 +132,8 @@ export async function render(root, route) {
   let gateAnswers = [];
   let level = null;
 
-  const text = (key, extra = {}) => say(texts[key], { ...task.vars, ...extra });
+  // extra.say: a sentence a board made itself (boards ported from think-lab, engine/ui/ported.js)
+  const text = (key, extra = {}) => (typeof extra.say === "string" ? extra.say : say(texts[key], { ...task.vars, ...extra }));
 
   function drawSteps() {
     steps.replaceChildren(
@@ -158,7 +161,7 @@ export async function render(root, route) {
     level = L.level(state.rec, def, kidAge);
     const slots = isGate
       ? questions.map((q) => ({ kind: "gate", idea: ideaId, p: q.p, rung: q.rung, counted: false }))
-      : plan({ def, p, rung: level, pol, size: roundSize(pol, kidAge), played: (x) => L.played(state.rec, ideaId, x), review: pickReview(), r });
+      : plan({ def, p, rung: level, pol, size: Math.min(roundSize(pol, kidAge), def.roundTasks?.[p] ?? Infinity), played: (x) => L.played(state.rec, ideaId, x), review: pickReview(), r });
     const below = def.ladder[L.rungIndex(def, level) - 1]?.id ?? null;
     round = new Round(slots, pol, isGate ? null : below);
     fresh = !L.played(state.rec, ideaId, p);
@@ -193,7 +196,7 @@ export async function render(root, route) {
     if (!board.isConnected) return;
     const key = `${slot.idea}/${slot.p}`;
     const recent = (recentKeys[key] ??= []);
-    task = make(sdef.recipes[slot.p], L.rung(sdef, slot.rung).params, { r, things: THING_IDS, recent });
+    task = taskOf(sdef, slot.p, L.rung(sdef, slot.rung).params, { r, things: THING_IDS, recent });
     recent.unshift(task.key);
     recent.length = Math.min(recent.length, RECENT);
     texts = lookup(stexts, task.ask);
@@ -203,6 +206,8 @@ export async function render(root, route) {
     board.className = `screen board board-${task.board} p-${slot.p}`;
     const mod = sdef.board === task.board ? await import(`../../ideas/${slot.idea}/board.js`) : await import(`../../boards/${task.board}.js`);
     if (!board.isConnected) return;
+    ctx.words = stexts;
+    ctx.idea = slot.idea;
     b = mod.draw(board, task, ctx) ?? {};
     if (!b.ownAnswer && FRAME_MODES.includes(task.answer.mode)) widget = frameAnswers(task.answer);
     restNudge();
@@ -234,6 +239,9 @@ export async function render(root, route) {
     tell: (k, extra) => voice.tell(text(k, extra)),
     give: (given, node, extra) => check(given, extra),
     miss: (extra) => wrong(extra?.given, extra),
+    solved: (extra) => check(stage.value, extra),
+    say: (sentence, asking) => (asking ? voice.ask(sentence) : voice.tell(sentence)),
+    words: {}, // the texts of the idea of this task (set before each board is drawn)
     fresh: () => fresh && (slot?.kind === "cur" || slot?.kind === "easier"),
     tap: () => sound.tap(),
     ready: () => restNudge(),
@@ -335,7 +343,7 @@ export async function render(root, route) {
       done.append(on);
       show("done");
       sound.win();
-      await voice.tell(T.gate.done(groupName(L.groupOf(def, at))));
+      await voice.tell(T.gate.done(groupName(L.groupOf(def, at), def)));
       return;
     }
     const { first, tasks } = round.result;

@@ -5,7 +5,7 @@
 // Run: node tools/check-ideas.mjs
 
 import { readdirSync, existsSync } from "node:fs";
-import { make, variants } from "../public/engine/recipe.js";
+import { make, variants, taskOf } from "../public/engine/recipe.js";
 import { BOARDS, ANSWERS } from "../public/content/boards.js";
 import { PERSPECTIVES, checkPerspectives } from "../public/content/perspectives.js";
 import { THING_IDS } from "../public/engine/things.js";
@@ -38,7 +38,30 @@ for (const name of folders) {
   for (const p of PERSPECTIVES.filter((x) => IDEA.perspectives?.includes(x.id))) {
     const recipe = IDEA.recipes?.[p.id];
     if (!recipe && !IDEA.tasks) { problems.push(`${name}: no recipe for ${p.id}`); continue; }
-    if (!recipe) continue;
+    if (!recipe) {
+      // task code (docs/DESIGN.md 6.5): 1000 tasks per rung, each checked by the idea's own check()
+      const words = `${name}.${p.id}`.split(".").reduce((o, k) => o?.[k], de);
+      if (!words) problems.push(`${name}/${p.id}: no German sentences for ${name}.${p.id}`);
+      if (!IDEA.board) problems.push(`${name}: task code needs its own board (IDEA.board)`);
+      for (const rung of IDEA.ladder) {
+        const r = random(7);
+        for (let i = 0; i < 1000; i++) {
+          try {
+            const t = taskOf(IDEA, p.id, rung.params, { r, things: THING_IDS });
+            made++;
+            const bad = IDEA.tasks.check?.(t.vars, { p: p.id, ...rung.params }) ?? [];
+            if (bad.length) {
+              problems.push(`${name}/${p.id}@${rung.id}: ${bad.join(", ")} in ${JSON.stringify(t.vars)}`);
+              break;
+            }
+          } catch (e) {
+            problems.push(`${name}/${p.id}@${rung.id}: ${e.message}`);
+            break;
+          }
+        }
+      }
+      continue;
+    }
     for (const rung of IDEA.ladder) {
       const kinds = variants(recipe, rung.params);
       if (!kinds.length) { problems.push(`${name}/${p.id}@${rung.id}: no kind of task fits this rung`); continue; }
@@ -68,7 +91,8 @@ for (const name of folders) {
               break;
             }
             // every sentence of the task can be made (German), with an answer given
-            for (const [key, entry] of Object.entries(words ?? {})) {
+            // (a board ported from think-lab makes its sentences itself, with number words: engine/ui/ported.js)
+            if (!IDEA.ported) for (const [key, entry] of Object.entries(words ?? {})) {
               if (typeof entry === "function") entry({ ...t.vars, given: t.answer.value, seen: true, first: true, prev: 1, chosen: 2, next: 0 }, H);
             }
           } catch (e) {

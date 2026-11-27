@@ -2,4 +2,4 @@
 // here can be played; the others sleep on the map until their idea is written.
 // tools/check-ideas.mjs checks that this list and the folders agree.
 
-export const READY = ["zahl"];
+export const READY = ["zahl", "teile", "zehn", "gruppen", "muster", "folge", "sortieren", "schauen", "lage", "form", "groesse", "memory"];
