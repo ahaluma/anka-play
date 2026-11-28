@@ -195,7 +195,7 @@ export function facts(rec, { age = null, defs = {} } = {}) {
   };
 }
 
-/** The perspective to play next: one never played (in the fixed order), then one without its star in the
+/** The perspective to play next: one never played (in the idea's order), then one without its star in the
  *  child's group, then the one played longest ago. */
 export function suggest(rec, def, age) {
   const g = groupOf(def, level(rec, def, age));

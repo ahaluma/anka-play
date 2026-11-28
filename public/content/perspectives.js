@@ -3,7 +3,8 @@
 // perspectives.<names>.<id>). See docs/DESIGN.md, section 7.
 //
 // A station has 1 to 5 perspectives: its idea lists the ones it has (`perspectives` in ideas/<id>/idea.js),
-// always in this order. A concept idea usually has all five; a station that is only a game (number memory)
+// in this order, unless the idea needs another one: the Teich starts with Machen, the hands before the picture.
+// The list's order is the order the station shows them and the owl leads through them. A concept idea usually has all five; a station that is only a game (number memory)
 // has the one perspective "spielen". Stars, flags, "mastered" and moving up count the station's OWN
 // perspectives, never a fixed five. A pure game ("spielen") has no stars to earn: its station is always
 // open and counts as mastered from the start (`game: true` in universe.js).
@@ -23,7 +24,7 @@ export function checkPerspectives(list) {
   if (!Array.isArray(list) || list.length < 1 || list.length > 5) return "an idea has 1 to 5 perspectives";
   if (list.some((p) => !ids.includes(p))) return `unknown perspective in ${list}`;
   if (list.includes("spielen") && list.length > 1) return '"spielen" stands alone';
-  if (list.some((p, i) => i > 0 && ids.indexOf(p) < ids.indexOf(list[i - 1]))) return "perspectives keep the fixed order";
+  if (new Set(list).size !== list.length) return `a perspective comes twice in ${list}`;
   return null;
 }
 

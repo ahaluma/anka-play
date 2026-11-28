@@ -1,5 +1,5 @@
 // Makes 1000 tasks per rung and perspective (and per kind of task) of every idea written as data
-// (public/ideas/*/idea.js) and checks them: the idea has 1 to 5 perspectives in the fixed order and a recipe
+// (public/ideas/*/idea.js) and checks them: the idea has 1 to 5 perspectives, none twice, and a recipe
 // for each, every board and answer mode exists, the right answer is among the options, numbers stay in
 // range, no task fails to draw, and every `ask` has its sentences in German.
 // Run: node tools/check-ideas.mjs

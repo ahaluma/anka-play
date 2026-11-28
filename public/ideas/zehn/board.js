@@ -1,253 +1,270 @@
-// Ported from think-lab (welt/ideas/zehn/boards.js) with only its imports changed: engine/ui/ported.js gives it
-// the round it knew there. The task is the `vars` of the recipe in idea.js.
-// The five boards of the idea "Zehn" (friends of ten): one per perspective.
-// A board draws one task (plain data from tasks.js) into `host` and takes the child's answer.
-// It never counts or saves anything: it tells the round (welt/spiel/spiel.js) through ctx (see
-// ideas/teile/boards.js for what ctx holds).
+// The boards of the idea "zehn" (station teich): one picture for all five ways of playing, frogs on two
+// lily pads. The whole is all the frogs, the parts are the two pads. The task is the `vars` of the recipe
+// in idea.js; engine/ui/ported.js gives the board the round (ctx.tell, ctx.miss, ctx.solved, …).
 //
-// Everything is laid out in rows of five, as in a ten-frame: 5 and 10 are seen at a glance, and
-// the empty places are seen as well as the full ones. Up to twenty there are two frames of ten.
+// Frogs sit in rows of five, as in a ten-frame: 5 is seen at a glance, and 10 is two rows.
 
 import { port, el, button, strip, shake, wait } from "../../engine/ui/ported.js";
-import { MOST } from "./data.js";
+
+const FROG = "🐸";
+
+/** The number buttons: 1 to the rung's most. */
+const answers = (ctx, t, onPick) => strip(ctx, 1, t.most, onPick);
 
 /**
- * A frame of places in rows of five. parts: [{ n, cls, icon }] fill the places in order; the rest
- * stay empty. Up to 20 places: one ten-frame per ten, with a little gap between them.
+ * One lily pad with n frogs in rows of five.
+ *   jumper  the place of the frog that will hop off it (-1: none); tap: (i) => … makes every frog a button
+ *   ghost   a dashed frog where one will land
  */
-function frame(whole, parts, className = "") {
-  const box = el("div", `ten-frames ${className}`);
-  const fill = parts.flatMap((p) => Array.from({ length: p.n }, () => p));
-  for (let f = 0; f < Math.ceil(whole / 10); f++) {
-    const one = el("div", "ten-frame" + (whole === 5 ? " five" : ""));
-    for (let i = f * 10; i < Math.min(whole, f * 10 + 10); i++) {
-      const p = fill[i];
-      one.append(el("span", `tf-spot ${p ? `full ${p.cls || ""}` : "empty"}`, p?.icon ?? ""));
-    }
-    box.append(one);
+function pad(ctx, n, { jumper = -1, ghost = false, tap = null, label = "" } = {}) {
+  const leaf = el("div", "hop-leaf");
+  const frogs = el("div", "hop-frogs");
+  for (let i = 0; i < n; i++) {
+    const cls = "hop-frog" + (i === jumper ? " jumper" : "");
+    if (tap) {
+      const f = button(cls + " tap", label, FROG);
+      f.addEventListener("click", () => tap(i));
+      frogs.append(f);
+    } else frogs.append(el("span", cls, FROG));
   }
+  if (ghost) frogs.append(el("span", "hop-frog ghost", FROG));
+  leaf.append(frogs);
+  return leaf;
+}
+
+/** The pond: left pad, something in the middle, right pad. */
+function pond(left, middle, right) {
+  const box = el("div", "scene card zehn-hop");
+  box.append(left, middle ?? el("span", "hop-arrow"), right);
   return box;
 }
 
-/** "7 + ? = 10" as big text: the numbers in the digits of the language, the gap as a box. */
-function sum(ctx, parts) {
-  const line = el("div", "sum-line");
-  for (const part of parts) {
-    if (part === "?") line.append(el("b", "gap", "?"));
-    else if (typeof part === "number") line.append(el("b", "", ctx.num(part)));
-    else line.append(el("span", "op", part));
+/** The whole as places in rows of five: `a` red, `b` blue, the rest empty; what is over, as dots beside. */
+function places(whole, a, b = 0) {
+  const box = el("div", "ten-frames");
+  const all = Math.max(whole, a + b);
+  for (let f = 0; f < Math.ceil(whole / 5); f++) {
+    const row = el("div", "ten-frame five");
+    for (let i = f * 5; i < Math.min(whole, f * 5 + 5); i++) row.append(el("span", `tf-spot ${i < a ? "full" : i < a + b ? "full b" : "empty"}`));
+    box.append(row);
   }
-  return line;
+  if (all > whole) box.append(el("span", "over pop", "●".repeat(all - whole)));
+  return box;
 }
 
-const answers = (ctx, t, onPick) => strip(ctx, 1, MOST[t.whole], onPick);
+// ---------- Machen: the child makes the frogs hop. To a given number on one pad, or every way there is.
 
-// ---------- Sehen: the pond. Frogs sit on lily pads: how many pads are free?
-
-export function sehen(host, t, ctx) {
+export function machen(host, t, ctx) {
   const { T } = ctx;
-  const Z = T.zehn;
-  const pond = el("div", "scene card zehn-pond");
-  const pads = frame(t.whole, [{ n: t.n, icon: "🐸" }], "pads");
-  const fog = button("fog-cover", Z.sehen.look, "🌿");
-  fog.hidden = true;
-  pond.append(pads, fog);
-  const hintBox = el("div", "hint-box");
-  let locked = true;
+  const M = T.zehn.machen;
+  let left = t.whole; // all start on the left pad
+  let locked = false;
+  const found = []; // the ways found (left counts), for the kind "all"
 
-  // From the second round on the pond is seen only for a moment: the child sees "a full row and two
-  // more" instead of counting one by one. A tap on the leaves shows it again for a moment.
-  const peek = async () => {
-    fog.hidden = true;
-    await wait(1500);
-    if (host.isConnected && !locked) fog.hidden = false;
-  };
-  fog.addEventListener("click", () => {
-    ctx.tap();
-    peek();
-  });
-
-  const pick = answers(ctx, t, (n, b) => {
+  const box = el("div", "zehn-make");
+  const shelf = el("div", "hop-ways");
+  const hop = (fromLeft) => {
     if (locked) return;
-    if (n !== t.answer) {
-      shake(b);
-      b.disabled = true;
-      ctx.miss(Z.sehen.miss(ctx.word(n), ctx.word(t.n), ctx.word(t.n + n), ctx.word(t.whole)));
-      return;
-    }
-    locked = true;
-    fog.hidden = true;
-    b.classList.add("right");
-    for (const spot of pads.querySelectorAll(".tf-spot.empty")) spot.classList.add("free");
-    ctx.solved(Z.friends(ctx.word(t.n), ctx.word(t.answer), ctx.word(t.whole)));
-  });
-  pick.classList.add("waiting");
-  host.append(pond, hintBox, pick);
+    left += fromLeft ? -1 : 1;
+    ctx.tap();
+    draw();
+  };
+  const draw = () => {
+    box.innerHTML = "";
+    box.append(
+      pond(
+        pad(ctx, left, { tap: () => hop(true), label: M.hop }),
+        el("span", "hop-arrow", "⇄"),
+        pad(ctx, t.whole - left, { tap: () => hop(false), label: M.hop }),
+      ),
+    );
+  };
+  draw();
 
-  (async () => {
-    await ctx.tell(Z.sehen.story(ctx.word(t.whole), t.n, ctx.word(t.n)));
-    if (!host.isConnected) return;
-    locked = false;
-    pick.classList.remove("waiting");
-    ctx.ready();
-    ctx.tell(Z.sehen.ask);
-    if (!ctx.fresh()) {
-      await wait(2500);
-      if (host.isConnected && !locked) fog.hidden = false;
+  const check = button("btn ok check-btn", T.labels?.check ?? "✓", "✓");
+  check.addEventListener("click", () => {
+    if (locked) return;
+    const right = t.whole - left;
+    if (!t.all) {
+      const has = t.left ? left : right;
+      if (has === t.target) {
+        locked = true;
+        return void ctx.solved(T.zehn.friends(ctx.word(left), ctx.word(right), ctx.word(t.whole)));
+      }
+      shake(box);
+      return void ctx.miss(M.miss(t.left ? "left" : "right", ctx.word(has), ctx.word(t.target), has, t.target));
     }
+    // every way: both pads keep a frog, and a way counts once
+    if (left === 0 || right === 0) return void (shake(box), ctx.tell(M.both, undefined, true));
+    const seen = shelf.querySelector(`[data-left="${left}"]`);
+    if (seen) return void (shake(seen), ctx.tell(M.again, undefined, true));
+    found.push(left);
+    const way = el("div", "hop-way pop");
+    way.dataset.left = left;
+    way.append(places(t.whole, left, right));
+    shelf.append(way);
+    ctx.tap();
+    if (found.length >= t.ways) {
+      locked = true;
+      ctx.solved(M.allDone(ctx.word(t.whole)));
+    } else ctx.tell(M.more(ctx.word(t.ways - found.length), t.ways - found.length), undefined, true);
+  });
+  const tools = el("div", "zehn-tools");
+  tools.append(check);
+
+  host.append(box, shelf, tools);
+  (async () => {
+    await ctx.tell(t.all ? M.allQuestion(ctx.word(t.whole), ctx.word(t.ways)) : M.question(ctx.word(t.whole), t.left ? "left" : "right", ctx.word(t.target), t.target));
+    if (host.isConnected) ctx.tell(M.how);
   })();
 
   return {
     hint() {
-      fog.hidden = true;
-      pads.classList.add("show-empty");
-      if (!hintBox.firstChild) hintBox.append(el("p", "hint-text pop", Z.sehen.rows(ctx.word(t.whole > 5 ? 5 : t.whole))));
-      return Z.sehen.hint;
+      if (t.all) return M.hintAll;
+      box.querySelector(".zehn-hop").children[t.left ? 0 : 2].classList.add("asked");
+      return M.hint(t.left ? "left" : "right", ctx.word(t.target), t.target);
     },
   };
 }
 
-// ---------- Machen: the nut box. Take as many nuts as still fit, then pour them in.
+// ---------- Sehen: all frogs are seen, then a leaf covers the right pad. How many hide under it?
 
-export function machen(host, t, ctx) {
+export function sehen(host, t, ctx) {
   const { T } = ctx;
-  const Z = T.zehn;
-  const NUT = "🌰";
-  let taken = 0;
-  let locked = false;
+  const S = T.zehn.sehen;
+  const right = pad(ctx, t.answer);
+  const lid = el("div", "hop-lid", "?");
+  right.append(lid);
+  const scene = pond(pad(ctx, t.n), null, right);
+  const hintBox = el("div", "hint-box");
+  let locked = true;
 
-  const scene = el("div", "scene card zehn-box-scene");
-  const boxArt = el("div", "nut-box");
-  const drawBox = (extra = 0) => {
-    boxArt.innerHTML = "";
-    boxArt.append(frame(t.whole, [{ n: t.n, icon: NUT }, { n: Math.min(extra, t.answer), icon: NUT, cls: "b" }], "holes"));
-  };
-  drawBox();
-  scene.append(boxArt);
-
-  const hand = el("div", "paw");
-  hand.setAttribute("aria-label", Z.machen.paw);
-  const basket = button("btn take-btn", Z.machen.take, "🧺 ➜ " + NUT);
-  const pour = button("btn ok check-btn", Z.machen.pour, "✓");
-  const tools = el("div", "zehn-tools");
-  tools.append(basket, pour);
-
-  function drawHand() {
-    hand.innerHTML = "";
-    const pics = el("span", "pics");
-    for (let i = 0; i < taken; i++) {
-      const nut = button("pic thing", Z.machen.back, NUT);
-      nut.addEventListener("click", () => {
-        if (locked) return;
-        taken--;
-        ctx.tap();
-        drawHand();
-      });
-      pics.append(nut);
-    }
-    hand.append(el("span", "paw-icon", "🐿️"), pics);
-    pour.disabled = taken === 0;
-  }
-
-  basket.addEventListener("click", () => {
-    if (locked || taken >= 10) return;
-    taken++;
-    ctx.tap();
-    drawHand();
-  });
-
-  pour.addEventListener("click", async () => {
-    if (locked || !taken) return;
-    locked = true;
-    drawBox(taken);
-    if (taken === t.answer) {
-      hand.innerHTML = "";
-      ctx.solved(Z.friends(ctx.word(t.n), ctx.word(t.answer), ctx.word(t.whole)));
+  const pick = answers(ctx, t, (n, b) => {
+    if (locked) return;
+    if (n !== t.answer) {
+      shake(b);
+      b.disabled = true;
+      ctx.miss(S.miss(ctx.word(t.n), ctx.word(n), ctx.word(t.n + n), ctx.word(t.whole)));
       return;
     }
-    const off = Math.abs(taken - t.answer);
-    if (taken > t.answer) boxArt.append(el("span", "rolled pop", NUT.repeat(off)));
-    await ctx.miss(taken < t.answer ? Z.machen.tooFew(off, ctx.word(off)) : Z.machen.tooMany(off, ctx.word(off)));
-    // The nuts come back to the paw: the child changes how many and pours again.
-    drawBox();
-    locked = false;
+    locked = true;
+    b.classList.add("right");
+    right.classList.remove("covered");
+    ctx.solved(T.zehn.friends(ctx.word(t.n), ctx.word(t.answer), ctx.word(t.whole)));
   });
+  pick.classList.add("waiting");
+  host.append(scene, hintBox, pick);
 
-  host.append(scene, hand, tools);
-  drawHand();
-  ctx.tell(Z.machen.question(ctx.word(t.whole), ctx.word(t.n)));
+  (async () => {
+    await ctx.tell(S.story(ctx.word(t.whole)));
+    if (!host.isConnected) return;
+    await wait(ctx.fresh() ? 1200 : 600);
+    if (!host.isConnected) return;
+    right.classList.add("covered"); // the leaf comes down over the right pad
+    await ctx.tell(S.dive);
+    if (!host.isConnected) return;
+    locked = false;
+    pick.classList.remove("waiting");
+    ctx.ready();
+    ctx.tell(S.ask(ctx.word(t.n), t.n));
+  })();
 
   return {
     hint() {
-      boxArt.querySelector(".holes")?.classList.add("show-empty");
-      return Z.machen.hint;
+      // all places of the whole, the frogs that are seen in them: the empty ones are the hidden frogs
+      if (!hintBox.firstChild) hintBox.append(places(t.whole, t.n));
+      return S.hint(ctx.word(t.whole));
     },
   };
 }
 
-// ---------- Forschen: the staircase of friends. One goes up, the other goes down.
+// ---------- Forschen: a frog hops across. How many sit on one pad then? One more where it lands, one fewer
+// where it left: together it stays the same.
 
 export function forschen(host, t, ctx) {
   const { T } = ctx;
-  const Z = T.zehn;
-  const table = el("div", "scene card zehn-stairs");
+  const H = T.zehn.forschen;
+  const side = t.left ? "left" : "right"; // where the frog lands
+  const box = el("div", "zehn-make");
   const hintBox = el("div", "hint-box");
-  let locked = false;
+  let locked = true;
 
-  if (t.whole === 20) {
-    // The friend of ten, then the same friend one ten higher.
-    const small = el("div", "stair-row");
-    small.append(frame(10, [{ n: t.a, icon: "" }, { n: t.b, icon: "", cls: "b" }], "mini"), sum(ctx, [t.a, "+", t.b, "=", 10]));
-    const big = el("div", "stair-row ask");
-    big.append(frame(20, [{ n: t.n, icon: "" }], "mini"), sum(ctx, [t.n, "+", "?", "=", 20]));
-    table.append(small, big);
-  } else {
-    t.rows.forEach(([a, b], i) => {
-      const row = el("div", "stair-row" + (i === t.gap ? " ask" : ""));
-      const shown = i === t.gap ? [{ n: a, icon: "" }] : [{ n: a, icon: "" }, { n: b, icon: "", cls: "b" }];
-      row.append(frame(t.whole, shown, "mini"), sum(ctx, [a, "+", i === t.gap ? "?" : b, "=", t.whole]));
-      table.append(row);
-    });
-  }
+  const draw = (after = false, ghost = false) => {
+    box.innerHTML = "";
+    const a = after ? t.a + (t.left ? 1 : -1) : t.a;
+    const b = t.whole - a;
+    // the frog that hops sits nearest to the other pad
+    const L = pad(ctx, a, { jumper: !after && !t.left ? Math.min(a, 5) - 1 : -1, ghost: ghost && t.left });
+    const R = pad(ctx, b, { jumper: !after && t.left ? 0 : -1, ghost: ghost && !t.left });
+    ((t.more ? t.left : !t.left) ? L : R).classList.add("asked");
+    if (after) {
+      L.append(el("b", "hop-count pop", ctx.num(a)));
+      R.append(el("b", "hop-count pop", ctx.num(b)));
+    }
+    box.append(pond(L, el("span", "hop-arrow" + (after ? " done" : ""), t.left ? "←" : "→"), R));
+  };
+  draw();
 
   const pick = answers(ctx, t, (n, b) => {
     if (locked) return;
     if (n !== t.answer) {
       shake(b);
       b.disabled = true;
-      ctx.miss(t.whole === 20 ? Z.forschen.missTwenty(ctx.word(t.n), ctx.word(n), ctx.word(t.n + n)) : Z.forschen.miss(ctx.word(n)));
+      const now = t.more ? (t.left ? t.a : t.b) : t.left ? t.b : t.a; // on the asked pad before the hop
+      if (t.more) ctx.miss(n <= now ? H.more : H.onlyOneIn);
+      else ctx.miss(n >= now ? H.fewer : H.onlyOneOut);
       return;
     }
     locked = true;
     b.classList.add("right");
-    const ask = table.querySelector(".ask");
-    ask.querySelector(".gap").textContent = ctx.num(t.answer);
-    ask.querySelector(".gap").classList.add("found");
-    if (t.whole === 20) ctx.solved(Z.forschen.doneTwenty(ctx.word(t.a), ctx.word(t.b), ctx.word(t.n)));
-    else ctx.solved(Z.forschen.done(ctx.word(t.whole)));
+    draw(true);
+    ctx.solved(H.done(ctx.word(t.whole)));
   });
+  pick.classList.add("waiting");
+  host.append(box, hintBox, pick);
 
-  host.append(table, hintBox, pick);
-  ctx.tell(t.whole === 20 ? Z.forschen.questionTwenty : Z.forschen.question);
+  (async () => {
+    await ctx.tell(H.story(ctx.word(t.whole)));
+    if (!host.isConnected) return;
+    await ctx.tell(H.jump[side]);
+    if (!host.isConnected) return;
+    locked = false;
+    pick.classList.remove("waiting");
+    ctx.ready();
+    ctx.tell(H.ask[t.more ? side : side === "left" ? "right" : "left"]);
+  })();
 
   return {
     hint() {
-      if (t.whole === 20) table.firstChild.classList.add("glow");
-      else table.classList.add("show-stairs");
-      if (!hintBox.firstChild) hintBox.append(el("p", "hint-text pop", t.whole === 20 ? Z.forschen.hintTwenty(ctx.num(t.a), ctx.num(t.n)) : Z.forschen.hintRows));
-      return t.whole === 20 ? Z.forschen.hintTwenty(ctx.word(t.a), ctx.word(t.n)) : Z.forschen.hint;
+      // the frog is seen on both pads at once: where it sits now, and dashed where it lands
+      draw(false, true);
+      if (!hintBox.firstChild) hintBox.append(el("p", "hint-text pop", H.hintShown));
+      return H.hint;
     },
   };
 }
 
-// ---------- Anwenden: just the numbers. 7 + ? = 10, ? + 4 = 10, 13 + ? = 20.
+// ---------- Anwenden: no frogs any more. "3 and ? are 5": dots, then dots with the digit, then the digit.
+
+/** A number in a box, as the rung shows it. */
+function mark(ctx, n, how) {
+  const box = el("div", "part-box");
+  if (how !== "digits") {
+    const dots = el("div", "part-dots");
+    dots.style.gridTemplateColumns = `repeat(${Math.min(n, 5)}, 10px)`;
+    for (let i = 0; i < n; i++) dots.append(el("i"));
+    box.append(dots);
+  }
+  if (how !== "dots") box.append(el("b", "part-digit", ctx.num(n)));
+  return box;
+}
 
 export function anwenden(host, t, ctx) {
   const { T } = ctx;
-  const Z = T.zehn;
-  const box = el("div", "scene card zehn-sum");
-  const line = sum(ctx, t.gap === "b" ? [t.n, "+", "?", "=", t.whole] : ["?", "+", t.n, "=", t.whole]);
-  box.append(line);
+  const A = T.zehn.anwenden;
+  const line = el("div", "scene card part-line");
+  const gap = el("div", "part-box gap", "?");
+  line.append(mark(ctx, t.n, t.marks), el("span", "part-word", A.and), gap, el("span", "part-word", A.are), mark(ctx, t.whole, t.marks));
   const hintBox = el("div", "hint-box");
   let locked = false;
 
@@ -256,100 +273,92 @@ export function anwenden(host, t, ctx) {
     if (n !== t.answer) {
       shake(b);
       b.disabled = true;
-      ctx.miss(Z.anwenden.miss(ctx.word(t.n), ctx.word(n), ctx.word(t.n + n), ctx.word(t.whole)));
+      ctx.miss(A.miss(ctx.word(t.n), ctx.word(n), ctx.word(t.n + n), ctx.word(t.whole)));
       return;
     }
     locked = true;
     b.classList.add("right");
-    line.querySelector(".gap").textContent = ctx.num(n);
-    line.querySelector(".gap").classList.add("found");
-    ctx.solved(Z.friends(ctx.word(t.n), ctx.word(t.answer), ctx.word(t.whole)));
+    gap.replaceWith(mark(ctx, n, t.marks));
+    line.children[2].classList.add("found");
+    ctx.solved(T.zehn.friends(ctx.word(t.n), ctx.word(t.answer), ctx.word(t.whole)));
   });
 
-  host.append(box, hintBox, pick);
-  ctx.tell(Z.anwenden.question(ctx.word(t.n), ctx.word(t.whole)));
+  host.append(line, hintBox, pick);
+  ctx.tell(A.question(ctx.word(t.n), ctx.word(t.whole)));
 
   return {
     hint() {
-      if (!hintBox.firstChild) hintBox.append(frame(t.whole, [{ n: t.n, icon: "" }], "mini show-empty pop"));
-      return Z.anwenden.hint;
+      if (!hintBox.firstChild) hintBox.append(places(t.whole, t.n));
+      hintBox.firstChild.classList.add("show-empty");
+      return A.hint;
     },
   };
 }
 
-// ---------- Prüfen: the owl says "a and b are friends". Is that right? If not: find the friend.
+// ---------- Prüfen: the owl has put frogs on the pads and says they are all. Right? If not: how many on the right?
 
 export function pruefen(host, t, ctx) {
   const { T } = ctx;
-  const Z = T.zehn;
+  const P = T.zehn.pruefen;
   let locked = false;
+  let b = t.b;
 
-  const scene = el("div", "scene card owl-scene");
+  const box = el("div", "zehn-make");
   const talk = el("div", "talk");
-  const bubble = el("div", "bubble");
-  const said = el("b", "said", ctx.num(t.b));
-  bubble.append(el("span", "", `${ctx.num(t.a)}\u00a0+\u00a0`), said);
-  talk.append(el("span", "owl", "🦉"), bubble);
-  const art = el("div", "owl-frame");
-  const draw = (b) => {
-    art.innerHTML = "";
-    art.append(frame(t.whole, [{ n: t.a, icon: "" }, { n: Math.min(b, t.whole - t.a), icon: "", cls: "b" }], "mini"));
-    const over = t.a + b - t.whole;
-    if (over > 0) art.append(el("span", "over pop", "●".repeat(over)));
+  talk.append(el("span", "owl", "🦉"), el("div", "bubble", P.says(ctx.word(t.whole))));
+  const draw = () => {
+    box.innerHTML = "";
+    box.append(pond(pad(ctx, t.a), null, pad(ctx, b)));
   };
-  draw(t.b);
-  scene.append(talk, art);
+  draw();
+  const hintBox = el("div", "hint-box");
 
   const judge = el("div", "judge");
   const yes = button("btn ok judge-btn", T.pruefen.yes, "✓");
   const no = button("btn go judge-btn", T.pruefen.no, "✗");
   judge.append(yes, no);
 
-  const fixer = answers(ctx, t, (n, b) => {
+  const fixer = answers(ctx, t, (n, btn) => {
     if (locked) return;
-    said.textContent = ctx.num(n);
-    draw(n);
-    if (n !== t.whole - t.a) {
-      shake(b);
-      b.disabled = true;
-      ctx.miss(Z.pruefen.fixMiss(ctx.word(t.whole)));
+    b = n;
+    draw();
+    if (n !== t.answer) {
+      shake(btn);
+      btn.disabled = true;
+      ctx.miss(P.fixMiss(ctx.word(t.a), ctx.word(n), ctx.word(t.a + n), ctx.word(t.whole)));
       return;
     }
     locked = true;
-    b.classList.add("right");
-    said.classList.remove("wrong");
-    said.classList.add("right");
-    ctx.solved(Z.friends(ctx.word(t.a), ctx.word(n), ctx.word(t.whole)));
+    btn.classList.add("right");
+    ctx.solved(T.zehn.friends(ctx.word(t.a), ctx.word(n), ctx.word(t.whole)));
   });
   fixer.hidden = true;
 
   yes.addEventListener("click", () => {
     if (locked) return;
-    if (!t.right) return void (shake(yes), ctx.miss(Z.pruefen.look));
+    if (!t.right) return void (shake(yes), ctx.miss(P.look(t.b > t.answer)));
     locked = true;
-    said.classList.add("right");
-    ctx.solved(Z.friends(ctx.word(t.a), ctx.word(t.b), ctx.word(t.whole)));
+    ctx.solved(T.zehn.friends(ctx.word(t.a), ctx.word(t.b), ctx.word(t.whole)));
   });
-
   no.addEventListener("click", () => {
     if (locked) return;
-    if (t.right) return void (shake(no), ctx.miss(Z.pruefen.look));
+    if (t.right) return void (shake(no), ctx.miss(P.isRight(ctx.word(t.whole))));
     judge.hidden = true;
     fixer.hidden = false;
-    said.classList.add("wrong");
     ctx.tap();
-    ctx.tell(Z.pruefen.fix(ctx.word(t.a), ctx.word(t.whole)));
+    ctx.tell(P.fix(ctx.word(t.whole)), undefined, true);
   });
 
-  host.append(scene, judge, fixer);
-  ctx.tell(Z.pruefen.question(ctx.word(t.a), ctx.word(t.b), ctx.word(t.whole)));
+  host.append(talk, box, hintBox, judge, fixer);
+  ctx.tell(P.question(ctx.word(t.a), ctx.word(t.b), ctx.word(t.whole)));
 
   return {
     hint() {
-      art.querySelector(".ten-frames")?.classList.add("show-empty");
-      return Z.pruefen.hint(ctx.word(t.whole));
+      // the whole as places: the owl's frogs in them, what is over beside
+      if (!hintBox.firstChild) hintBox.append(places(t.whole, t.a, b));
+      return P.hint(ctx.word(t.whole));
     },
   };
 }
 
-export const draw = port({ sehen, machen, forschen, anwenden, pruefen });
+export const draw = port({ machen, sehen, forschen, anwenden, pruefen });

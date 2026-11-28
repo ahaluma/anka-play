@@ -74,7 +74,7 @@ export async function render(root, route) {
   const names = T.perspectives[m.perspectiveNames] ?? T.perspectives.standard;
   const next = L.suggest(state.rec, def, age());
   const list = el("ul", "persp");
-  for (const p of PERSPECTIVES.filter((x) => def.perspectives.includes(x.id))) {
+  for (const p of def.perspectives.map((id) => PERSPECTIVES.find((x) => x.id === id))) { // in the idea's order
     const star = L.starred(state.rec, def, p.id, g);
     const played = L.played(state.rec, def.id, p.id);
     const a = link(`persp-item${star ? " star" : played ? " played" : ""}${p.id === next ? " next" : ""}`, href.play(s.id, ideaId, p.id, many));
