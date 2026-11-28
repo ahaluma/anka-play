@@ -31,6 +31,7 @@ function play(events, skill, seed = 1) {
   const blocks = [];
   const sureAt = {};
   let sharedOnce = false;
+  const lengths = [];
   let sharedAt;
   for (let e = 0; e < events; e++) {
     const plan = Owl.placement(rec, rnd, now);
@@ -54,6 +55,8 @@ function play(events, skill, seed = 1) {
     const firstShare = plan.kind === "share" && sharedAt === undefined ? (sharedAt = e + 1) : 0;
     const steps = Owl.steps(rec, red, green, rnd, now);
     check(steps.length > 0, "an event without a question");
+    check(steps.length <= Owl.MAX_STEPS, `an event with ${steps.length} questions`);
+    lengths.push(steps.length);
     const block = (blocks[Math.floor(e / 20)] ??= { events: 0, withCount: 0, questions: 0 });
     block.events++;
     if (steps.some((s) => s.kind === "count")) block.withCount++;
@@ -74,7 +77,7 @@ function play(events, skill, seed = 1) {
     }
     for (const { id } of S.SKILLS) if (S.isSure(rec, id, now) && sureAt[id] === undefined) sureAt[id] = e + 1;
   }
-  return { rec, blocks, sureAt, sharedAt };
+  return { rec, blocks, sureAt, sharedAt, lengths };
 }
 
 // The stand rule.
@@ -99,6 +102,9 @@ console.log("A child with 95 % right, 600 events at the pond:");
 console.log("  sicher after event: " + S.SKILLS.map(({ id }) => `${id} ${good.sureAt[id] ?? "–"}`).join(", "));
 console.log("  events with \"Wie viele?\" per block of 20: " + good.blocks.map((b) => b.withCount).join(" "));
 console.log("  first \"Verteil gerecht\" at event " + good.sharedAt);
+const short = good.lengths.filter((n) => n < Owl.MIN_STEPS).length;
+console.log(`  questions per event: ${Math.min(...good.lengths)} to ${Math.max(...good.lengths)}, fewer than ${Owl.MIN_STEPS} in ${short} of ${good.lengths.length}`);
+check(short < good.lengths.length / 20, "too many short events");
 for (const { id } of S.SKILLS) check(good.sureAt[id] !== undefined, `${id} never became sicher`);
 const firstPlay = play(5, 0.95, 3);
 const first = firstPlay.blocks[0].withCount / firstPlay.blocks[0].events;

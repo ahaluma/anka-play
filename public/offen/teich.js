@@ -585,6 +585,11 @@ export async function render(root) {
     draw();
     await wait(400);
 
+    // The questions start with fresh signs: what was shown while placing is not given away.
+    for (const p of ["rot", "gruen"]) {
+      signs[p].textContent = "?";
+      signs[p].classList.remove("known");
+    }
     const steps = Owl.steps(rec, at.rot, at.gruen);
     for (const step of steps) {
       voice.newTask();

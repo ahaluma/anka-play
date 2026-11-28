@@ -71,6 +71,11 @@ export function placement(rec, rnd = Math.random, now = Date.now()) {
   return { kind, n: frogs(rec, rnd, now) };
 }
 
+export const MIN_STEPS = 3;
+export const MAX_STEPS = 6;
+/** The order of the questions in an event: look, count, compare, change, share, hide. */
+const ORDER = ["count", "total", "same", "more", "less", "plus", "minus", "share", "partner"];
+
 /** A difference a child sees without counting, while the comparing words are still practised. */
 export const clear = (a, b) => Math.abs(a - b) >= 2;
 export const partnerSkill = (n) => (n === 5 ? "fuenfer" : n === 10 ? "zehner" : null);
@@ -113,24 +118,34 @@ export function steps(rec, a, b, rnd = Math.random, now = Date.now()) {
     if (a !== b && n % 2 === 0 && want("umverteilen")) out.push({ kind: "share" });
     if (want(partnerSkill(n))) out.push({ kind: "partner", shown: rnd() < 0.5 ? "rot" : "gruen" });
   }
-  // Never an event without a question: a skill that is being practised, otherwise any open one, so "Wie viele?"
-  // still comes now and then but no more often than the others.
-  if (!out.length) {
-    const can = [
-      ["count", { kind: "count", pad: a >= b ? "rot" : "gruen" }, countSkill(Math.max(a, b))],
-      ["same", { kind: "same" }, "gleich"],
-      ["total", { kind: "total" }, all],
-      ["plus", { kind: "plus", pad: onto[0] }, !easy && onto.length && "dazu"],
-      ["minus", { kind: "minus", pad: off[0] }, !easy && off.length && "weg"],
-      ["more", { kind: "more" }, pointable("mehr") && "mehr"],
-      ["less", { kind: "less" }, pointable("weniger") && "weniger"],
-      ["share", { kind: "share" }, !easy && a !== b && n % 2 === 0 && "umverteilen"],
-      ["partner", { kind: "partner", shown: rnd() < 0.5 ? "rot" : "gruen" }, !easy && partnerSkill(n)],
-    ].filter(([, , id]) => id && isOpen(rec, id, now));
-    const needed = can.filter(([, , id]) => dran(rec, id, now));
-    const from = needed.length ? needed : can;
+  // Long sequences (decided 28.11.): every event carries at least MIN_STEPS questions in a row, at most MAX_STEPS.
+  // Missing ones come first from skills being practised, then from any open one; "Wie viele?" only when
+  // nothing else fits, so it still gets rarer.
+  const can = [
+    ["same", { kind: "same" }, "gleich"],
+    ["total", { kind: "total" }, all],
+    ["plus", { kind: "plus", pad: onto[0] }, !easy && onto.length && "dazu"],
+    ["minus", { kind: "minus", pad: off[0] }, !easy && off.length && "weg"],
+    ["more", { kind: "more" }, pointable("mehr") && "mehr"],
+    ["less", { kind: "less" }, pointable("weniger") && "weniger"],
+    ["share", { kind: "share" }, !easy && a !== b && n % 2 === 0 && "umverteilen"],
+    ["partner", { kind: "partner", shown: rnd() < 0.5 ? "rot" : "gruen" }, !easy && partnerSkill(n)],
+  ].filter(([kind, , id]) => id && isOpen(rec, id, now) && !out.some((s) => s.kind === kind));
+  const used = (kind) => out.some((s) => s.kind === kind);
+  const exclusive = { plus: "minus", minus: "plus" };
+  while (out.length < MIN_STEPS) {
+    const left = can.filter(([kind]) => !used(kind) && !used(exclusive[kind]));
+    const needed = left.filter(([, , id]) => dran(rec, id, now));
+    const from = needed.length ? needed : left;
+    if (!from.length) {
+      if (used("count")) break;
+      out.push({ kind: "count", pad: a >= b ? "rot" : "gruen" });
+      continue;
+    }
     out.push(from[Math.floor(rnd() * from.length)][1]);
   }
+  out.sort((x, y) => ORDER.indexOf(x.kind) - ORDER.indexOf(y.kind));
+  out.splice(MAX_STEPS);
   return out;
 }
 
