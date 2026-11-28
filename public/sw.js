@@ -7,7 +7,7 @@
 //
 // VERSION and FILES are written by tools/check-offline.mjs --write (run it after changing any file).
 
-const VERSION = "a5102d814cc1";
+const VERSION = "10bc5b93e716";
 const CACHE = `anka-${VERSION}`;
 
 const FILES = [
@@ -150,6 +150,7 @@ const FILES = [
   "/ideas/flaeche/board.js",
   "/ideas/flaeche/idea.js",
   "/ideas/flaeche/lang/de.js",
+  "/ideas/flaeche/lang/ne.js",
   "/ideas/flaeche/tasks.js",
   "/ideas/folge/board.js",
   "/ideas/folge/idea.js",
@@ -225,6 +226,7 @@ const FILES = [
   "/ideas/masse/board.js",
   "/ideas/masse/idea.js",
   "/ideas/masse/lang/de.js",
+  "/ideas/masse/lang/ne.js",
   "/ideas/masse/tasks.js",
   "/ideas/mauer/board.js",
   "/ideas/mauer/idea.js",
@@ -251,6 +253,7 @@ const FILES = [
   "/ideas/plan/board.js",
   "/ideas/plan/idea.js",
   "/ideas/plan/lang/de.js",
+  "/ideas/plan/lang/ne.js",
   "/ideas/plan/tasks.js",
   "/ideas/platz/board.js",
   "/ideas/platz/idea.js",
@@ -271,6 +274,7 @@ const FILES = [
   "/ideas/runden/board.js",
   "/ideas/runden/idea.js",
   "/ideas/runden/lang/de.js",
+  "/ideas/runden/lang/ne.js",
   "/ideas/runden/tasks.js",
   "/ideas/schauen/board.js",
   "/ideas/schauen/idea.js",
@@ -281,6 +285,7 @@ const FILES = [
   "/ideas/schriftlich/board.js",
   "/ideas/schriftlich/idea.js",
   "/ideas/schriftlich/lang/de.js",
+  "/ideas/schriftlich/lang/ne.js",
   "/ideas/schriftlich/tasks.js",
   "/ideas/socken/board.js",
   "/ideas/socken/idea.js",
@@ -321,6 +326,7 @@ const FILES = [
   "/ideas/tausend/board.js",
   "/ideas/tausend/idea.js",
   "/ideas/tausend/lang/de.js",
+  "/ideas/tausend/lang/ne.js",
   "/ideas/tausend/tasks.js",
   "/ideas/teile/board.js",
   "/ideas/teile/data.js",
@@ -343,6 +349,7 @@ const FILES = [
   "/ideas/wuerfel/board.js",
   "/ideas/wuerfel/idea.js",
   "/ideas/wuerfel/lang/de.js",
+  "/ideas/wuerfel/lang/ne.js",
   "/ideas/wuerfel/tasks.js",
   "/ideas/zahl/idea.js",
   "/ideas/zahl/lang/de.js",

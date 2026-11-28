@@ -13,6 +13,8 @@ function pad(box, ctx, digits, onCheck) {
 }
 
 const SIGN = { plus: "+", minus: "−", mal: "·", geteilt: ":" };
+/** The sign of an operation as the language writes it (Nepali: × and ÷). */
+const sign = (ctx, op) => ctx.T.schriftlich.signs?.[op] ?? SIGN[op];
 const len = (n) => String(n).length;
 
 /**
@@ -58,7 +60,7 @@ function sheet(ctx, t, { width, shiftB = 0, result = null } = {}) {
     row("res", "line");
   } else {
     const B = row("b");
-    B.lead.textContent = SIGN[t.op];
+    B.lead.textContent = sign(ctx, t.op);
     if (t.op === "mal") {
       // times one digit: the digit stands at the end of the first row, as in school (234 · 3)
       node.removeChild(B.r);
@@ -136,7 +138,7 @@ export function sehen(host, t, ctx) {
       row.append(b);
     });
     host.append(row);
-    ctx.tell(S.sehen.alignAsk(ctx.num(t.a), SIGN[t.op], ctx.num(t.b)));
+    ctx.tell(S.sehen.alignAsk(ctx.num(t.a), sign(ctx, t.op), ctx.num(t.b)));
     return { hint: () => S.sehen.alignHint };
   }
 
@@ -305,7 +307,7 @@ export function machen(host, t, ctx) {
     p?.lock(true);
     trade.hidden = true;
     say.textContent = "";
-    const r = t.op === "geteilt" && t.rest ? S.machen.doneRest(ctx.num(t.a), ctx.num(t.b), ctx.num(t.result), ctx.num(t.rest)) : S.machen.done(ctx.num(t.a), SIGN[t.op], ctx.num(t.b), ctx.num(t.result));
+    const r = t.op === "geteilt" && t.rest ? S.machen.doneRest(ctx.num(t.a), ctx.num(t.b), ctx.num(t.result), ctx.num(t.rest)) : S.machen.done(ctx.num(t.a), sign(ctx, t.op), ctx.num(t.b), ctx.num(t.result));
     if (t.op === "geteilt" && t.rest) say.textContent = S.restWord(ctx.num(t.rest));
     ctx.solved(r);
   };
@@ -386,7 +388,7 @@ export function forschen(host, t, ctx) {
     p.show(n);
     p.lock(true);
     s.set(t.hide.row, t.hide.col, ctx.num(n), "found");
-    ctx.solved(S.forschen.done(ctx.num(t.a), SIGN[t.op], ctx.num(t.b), ctx.num(t.result)));
+    ctx.solved(S.forschen.done(ctx.num(t.a), sign(ctx, t.op), ctx.num(t.b), ctx.num(t.result)));
     return true;
   });
   host.append(scene, padBox);
@@ -440,7 +442,7 @@ export function pruefen(host, t, ctx) {
   const s = sheet(ctx, t, { result: t.said });
   const scene = el("div", "scene card owl-scene sheet-scene");
   const talk = el("div", "talk");
-  const bubble = el("div", "bubble", S.pruefen.said(ctx.num(t.a), SIGN[t.op], ctx.num(t.b), ctx.num(t.said)));
+  const bubble = el("div", "bubble", S.pruefen.said(ctx.num(t.a), sign(ctx, t.op), ctx.num(t.b), ctx.num(t.said)));
   talk.append(el("span", "owl", "🦉"), bubble);
   scene.append(talk, s.node);
   let locked = false;
@@ -478,7 +480,7 @@ export function pruefen(host, t, ctx) {
     });
   });
   host.append(scene, box, padBox);
-  ctx.tell(S.pruefen.ask(ctx.num(t.a), SIGN[t.op], ctx.num(t.b), ctx.num(t.said)));
+  ctx.tell(S.pruefen.ask(ctx.num(t.a), sign(ctx, t.op), ctx.num(t.b), ctx.num(t.said)));
   return {
     hint() {
       return S.pruefen.hint[t.op];
