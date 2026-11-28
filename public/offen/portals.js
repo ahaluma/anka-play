@@ -20,6 +20,34 @@ const MINI = {
   bau: `<path d="M2 38Q30 2 58 38Z" class="m-hill"/>
     <ellipse cx="30" cy="31" rx="9" ry="7" class="m-hole"/>
     <ellipse cx="27" cy="24" rx="1.8" ry="5" class="m-ear"/><ellipse cx="33" cy="24" rx="1.8" ry="5" class="m-ear"/>`,
+  // A path of number stones in the grass, a butterfly above.
+  wiese: `<rect x="0" y="22" width="60" height="18" rx="4" class="m-grass"/>
+    <circle cx="10" cy="31" r="5" class="m-stone"/><circle cx="23" cy="31" r="5" class="m-stone"/><circle cx="36" cy="31" r="5" class="m-stone"/><circle cx="49" cy="31" r="5" class="m-stone"/>
+    <ellipse cx="27" cy="11" rx="5" ry="6" class="m-wing"/><ellipse cx="35" cy="11" rx="5" ry="6" class="m-wing"/>`,
+  // Two fir trees and a row: mushroom, leaf, mushroom, leaf.
+  waldrand: `<path d="M8 30 16 4 24 30Z" class="m-fir"/><path d="M36 30 44 6 52 30Z" class="m-fir"/>
+    <path d="M4 37a5 5 0 0 1 10 0Z" class="m-apple"/><ellipse cx="22" cy="35" rx="4" ry="2.5" class="m-pad"/>
+    <path d="M30 37a5 5 0 0 1 10 0Z" class="m-apple"/><ellipse cx="48" cy="35" rx="4" ry="2.5" class="m-pad"/>`,
+  // Sky with a sun and three birds flying in a row.
+  himmel: `<rect x="0" y="0" width="60" height="40" rx="6" class="m-sky"/><circle cx="48" cy="11" r="6" class="m-sun"/>
+    <path d="M8 26q4-4 8 0q4-4 8 0M22 18q4-4 8 0q4-4 8 0M36 28q4-4 8 0q4-4 8 0" class="m-flight"/>`,
+  // Three nests on a branch, blue, yellow and red eggs.
+  nester: `<path d="M2 18h56" class="m-branch"/>
+    <path d="M4 26a8 6 0 0 0 16 0Z" class="m-nest"/><ellipse cx="12" cy="24" rx="3" ry="4" class="m-blue"/>
+    <path d="M22 34a8 6 0 0 0 16 0Z" class="m-nest"/><ellipse cx="30" cy="32" rx="3" ry="4" class="m-yellow"/>
+    <path d="M40 26a8 6 0 0 0 16 0Z" class="m-nest"/><ellipse cx="48" cy="24" rx="3" ry="4" class="m-apple"/>`,
+  // A puddle with a leaf on it and a flower mirrored in it.
+  pfuetze: `<ellipse cx="30" cy="27" rx="27" ry="11" class="m-water"/>
+    <path d="M18 4v12" class="m-stalk"/><circle cx="18" cy="5" r="4" class="m-yellow"/>
+    <path d="M18 22v8" class="m-stalk m-faint"/><circle cx="18" cy="32" r="3.5" class="m-yellow m-faint"/>
+    <path d="M36 28c-1-6 4-10 11-9c0 6-5 10-11 9Z" class="m-pad"/>`,
+  // A hill with a bench, a hare on it.
+  huegel: `<path d="M0 38Q30 6 60 38Z" class="m-grass"/>
+    <rect x="17" y="23" width="26" height="4" rx="1.5" class="m-trunk"/><rect x="19" y="27" width="3" height="7" class="m-trunk"/><rect x="38" y="27" width="3" height="7" class="m-trunk"/>
+    <ellipse cx="28" cy="12" rx="1.6" ry="4.5" class="m-ear"/><ellipse cx="32" cy="12" rx="1.6" ry="4.5" class="m-ear"/><circle cx="30" cy="19" r="4.5" class="m-ear"/>`,
+  // A stream with stones of different shapes on the bank.
+  bach: `<path d="M0 6Q30 16 60 6V18Q30 28 0 18Z" class="m-water"/>
+    <circle cx="12" cy="31" r="5" class="m-stone"/><path d="M24 36 30 25 36 36Z" class="m-stone"/><rect x="42" y="27" width="10" height="10" rx="1" class="m-stone"/>`,
   // The memory tables: two cards each, showing what is paired there.
   "memory-zahlen": `<rect x="6" y="5" width="21" height="30" rx="4" class="m-card"/><text x="16.5" y="27" class="m-num">3</text>
     <rect x="33" y="5" width="21" height="30" rx="4" class="m-card"/>

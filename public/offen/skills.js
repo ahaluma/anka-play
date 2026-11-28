@@ -31,6 +31,25 @@ export const SKILLS = [
   // Taught at the apple tree (apfelbaum.js): sharing apples among two or three hares, then what is left over.
   { id: "teilen", strand: "zahlen", after: ["verteilen"], places: ["apfelbaum"] },
   { id: "rest", strand: "zahlen", after: ["teilen"], places: ["apfelbaum"] },
+  // The seven newer places (tal.js). Inside a place the next skill opens once the one before was sicher; across
+  // places nothing locks, so the child can wander freely. Counting also comes at the meadow.
+  { id: "reihe10", strand: "zahlen", after: ["zaehlen5"], places: ["wiese"] },
+  { id: "zaehlen20", strand: "zahlen", after: ["zaehlen10"], places: ["wiese"] },
+  { id: "muster2", strand: "ordnen", after: [], places: ["waldrand"] },
+  { id: "muster3", strand: "ordnen", after: ["muster2"], places: ["waldrand"] },
+  { id: "erster", strand: "ordnen", after: [], places: ["himmel"] },
+  { id: "vorher", strand: "ordnen", after: ["erster"], places: ["himmel"] },
+  { id: "sortieren", strand: "ordnen", after: [], places: ["nester"] },
+  { id: "regel", strand: "ordnen", after: ["sortieren"], places: ["nester"] },
+  { id: "vergleichen", strand: "raum", after: [], places: ["pfuetze"] },
+  { id: "bildmerken", strand: "raum", after: ["vergleichen"], places: ["pfuetze"] },
+  { id: "lage1", strand: "raum", after: [], places: ["huegel"] },
+  { id: "lage2", strand: "raum", after: ["lage1"], places: ["huegel"] },
+  { id: "formen", strand: "raum", after: [], places: ["bach"] },
+  { id: "formen2", strand: "raum", after: ["formen"], places: ["bach"] },
+  { id: "laenger", strand: "groessen", after: [], places: ["bach"] },
+  { id: "schwerer", strand: "groessen", after: ["laenger"], places: ["bach"] },
+  { id: "ordnen3", strand: "groessen", after: ["laenger"], places: ["bach"] },
 ];
 /** The skills a place practises: the pond's are the ones without `places`. Counting, comparing and laying an
  *  amount come back everywhere, so a skill is the same skill at every place. */

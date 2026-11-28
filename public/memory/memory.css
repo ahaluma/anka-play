@@ -17,4 +17,6 @@
 .mem-dots { display: grid; grid-template-columns: repeat(3, auto); gap: 5px; }
 .mem-dots.two { grid-template-columns: repeat(5, auto); gap: 3px; }
 .mem-dots i { display: block; width: clamp(10px, 3vw, 15px); height: clamp(10px, 3vw, 15px); border-radius: 50%; background: var(--ink); }
+.mem-dots.big { gap: 2px; }
+.mem-dots.big i, .mem-grid.many .mem-dots.big i { width: clamp(7px, 2vw, 10px); height: clamp(7px, 2vw, 10px); }
 .mem-grid.many .mem-dots i { width: clamp(8px, 2.3vw, 12px); height: clamp(8px, 2.3vw, 12px); }

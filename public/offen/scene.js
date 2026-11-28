@@ -101,13 +101,14 @@ export function setup(root, { place, X, title, skills }) {
   };
 
   /** Number buttons 0 to top, each with its digit and dots. */
-  const choose = (top) =>
+  const choose = (top, from = 0) =>
     new Promise((resolve) => {
       below.replaceChildren();
       const box = el("div", "answers strip");
-      for (let o = 0; o <= top; o++) {
+      for (let o = from; o <= top; o++) {
         const b = button("btn num-btn", w(o));
-        b.append(el("b", "", num(o)), dots(o));
+        b.append(el("b", "", num(o)));
+        if (top <= 10) b.append(dots(o));
         b.addEventListener("click", () => resolve({ value: o, node: b }));
         box.append(b);
       }
@@ -115,9 +116,9 @@ export function setup(root, { place, X, title, skills }) {
     });
 
   /** Ask a number; counts the answer for the skill. Returns whether it was right. */
-  async function askNumber(text, skill, truth, top = topFor(truth)) {
+  async function askNumber(text, skill, truth, top = topFor(truth), from = 0) {
     await voice.ask(text, true, true);
-    const { value, node } = await choose(top);
+    const { value, node } = await choose(top, from);
     below.replaceChildren();
     const right = value === truth;
     if (right) sound.right();
@@ -129,6 +130,80 @@ export function setup(root, { place, X, title, skills }) {
     await voice.tell(right ? X.right : X.wrong);
     return right;
   }
+
+  /**
+   * Ask by tapping: one of `nodes` (things in the scene, or picture cards below it) is the answer. Counts the
+   * first tap for the skill. On a miss the right one lights up for a moment. Returns whether it was right.
+   */
+  async function askTap(text, skill, nodes, isRight) {
+    await voice.ask(text, true, true);
+    const node = await new Promise((resolve) => {
+      const offs = nodes.map((n) => {
+        const f = (e) => {
+          e.stopPropagation();
+          if (document.body.classList.contains("listening")) return;
+          offs.forEach((off) => off());
+          resolve(n);
+        };
+        n.classList.add("choosable");
+        n.addEventListener("click", f);
+        return () => {
+          n.removeEventListener("click", f);
+          n.classList.remove("choosable");
+        };
+      });
+    });
+    const right = isRight(node);
+    if (right) sound.right();
+    else {
+      sound.wrong();
+      shake(node);
+    }
+    count(skill, right);
+    await voice.tell(right ? X.right : X.wrong);
+    if (!right) {
+      const show = nodes.filter((n) => isRight(n));
+      show.forEach((n) => n.classList.add("answer"));
+      await wait(1100);
+      show.forEach((n) => n.classList.remove("answer"));
+    }
+    return right;
+  }
+
+  /** Picture cards below the scene to choose from (askTap); `make(item)` draws one card's picture. */
+  const cards = (items, make, label) => {
+    const box = el("div", "answers tal-cards");
+    const nodes = items.map((it) => {
+      const b = button("btn tal-card", label(it));
+      b.append(make(it));
+      b.dataset.item = typeof it === "string" ? it : JSON.stringify(it);
+      box.append(b);
+      return b;
+    });
+    below.replaceChildren(box);
+    return nodes;
+  };
+
+  /** A free first action: tap `target` `n` times (pale buds in `buds` show how many still come). */
+  const tapTimes = async (text, target, n, onTap) => {
+    target.classList.add("offer");
+    await voice.ask(text, true, true);
+    await new Promise((resolve) => {
+      let k = 0;
+      const f = (e) => {
+        if (document.body.classList.contains("listening")) return;
+        sound.tap();
+        onTap(k++, e);
+        if (k >= n) {
+          target.removeEventListener("click", f);
+          target.classList.remove("offer");
+          resolve();
+        }
+      };
+      target.addEventListener("click", f);
+    });
+    voice.newTask();
+  };
 
   /** The Fertig button (a tick); resolves when tapped. */
   const done = () =>
@@ -161,5 +236,5 @@ export function setup(root, { place, X, title, skills }) {
     }
   }
 
-  return { rec, count, scene, below, caption, askNumber, done, onward, countAlong, signButton };
+  return { rec, count, scene, below, caption, askNumber, askTap, cards, tapTimes, done, onward, countAlong, signButton };
 }

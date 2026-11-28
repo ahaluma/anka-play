@@ -46,7 +46,10 @@ export default {
   partner: (n, pad, k, w, other) => `${n === 5 ? "Fünf" : "Zehn"} Frösche. Auf der ${PAD[pad]} ${k === 1 ? "einer" : k === 0 ? "keiner" : w}. Wie viele auf der ${PAD[other]}?`,
 
   // Die Orte und ihre Portale (places.js): jeder Ort führt direkt zu zwei anderen.
-  places: { teich: "Teich", apfelbaum: "Apfelbaum", bau: "Bau" },
+  places: {
+    teich: "Teich", apfelbaum: "Apfelbaum", bau: "Bau", wiese: "Wiese", waldrand: "Waldrand", himmel: "Himmel",
+    nester: "Nester", pfuetze: "Pfütze", huegel: "Hügel", bach: "Bach",
+  },
   portals: "Wege zu anderen Orten",
 
   apfel: {
@@ -74,6 +77,86 @@ export default {
     now: "Wie viele sind jetzt draußen?",
   },
 
+  wiese: {
+    title: "Wiese",
+    lay: "Tipp auf die Wiese! Dann liegt der Weg.",
+    stone: (n) => `Stein ${n}`,
+    nach: (w) => `Welche Zahl kommt nach ${w}?`,
+    vor: (w) => `Welche Zahl kommt vor ${w}?`,
+    falter: "Wie viele Schmetterlinge?",
+  },
+
+  waldrand: {
+    title: "Waldrand",
+    grow: "Tipp auf den Waldrand! Dann wächst die Reihe.",
+    next: "Was wächst als Nächstes?",
+    fehler: "Wo stimmt die Reihe nicht?",
+    things: { pilz: "Pilz", blatt: "Blatt", beere: "Beere", zapfen: "Zapfen" },
+  },
+
+  himmel: {
+    title: "Himmel",
+    fly: "Tipp auf die Vögel! Dann fliegen sie los.",
+    rang: ["Wer fliegt als Erster?", "Wer fliegt als Zweiter?", "Wer fliegt als Dritter?", "Wer fliegt als Vierter?"],
+    last: "Wer fliegt als Letzter?",
+    vorher: "Was war vorher?",
+    danach: "Was kommt danach?",
+    bird: "Vogel",
+    pics: {
+      wolke: "Wolke", regen: "Regen", regenbogen: "Regenbogen", ei: "Ei", riss: "Das Ei bricht auf", kueken: "Küken",
+      samen: "Samen in der Erde", keim: "Keim", bluete: "Blume",
+    },
+  },
+
+  nester: {
+    title: "Nester",
+    call: "Tipp in den Himmel! Dann kommen Vögel.",
+    nest: "In welches Nest gehört der Vogel?",
+    anders: "Welcher Vogel passt hier nicht?",
+    bird: "Vogel",
+    nests: { blau: "blaues Nest", gelb: "gelbes Nest", rot: "rotes Nest", gross: "großes Nest", klein: "kleines Nest" },
+  },
+
+  pfuetze: {
+    title: "Pfütze",
+    drop: "Tipp ins Wasser!",
+    blatt: "Wo lag das Blatt?",
+    blaetter: "Wo lagen die Blätter?",
+    spiegel: "Was ist im Spiegelbild anders?",
+    spot: "Stelle auf dem Wasser",
+    things: { blume: "Blume", stein: "Stein", schnecke: "Schnecke", pilz: "Pilz", gras: "Gras" },
+  },
+
+  huegel: {
+    title: "Hügel",
+    sit: "Tipp auf einen Platz! Dann setzt sich ein Tier dorthin.",
+    animals: { hase: ["der Hase", "den Hasen"], frosch: ["der Frosch", "den Frosch"], maus: ["die Maus", "die Maus"], vogel: ["der Vogel", "den Vogel"] },
+    // wo es sitzt (Dativ) und wohin es soll (Akkusativ)
+    at: { auf: "auf der Bank", unter: "unter der Bank", neben: "neben der Bank", vor: "vor der Bank", hinter: "hinter dem Stein", zwischen: "zwischen der Bank und dem Stein" },
+    to: { auf: "auf die Bank", unter: "unter die Bank", neben: "neben die Bank", vor: "vor die Bank", hinter: "hinter den Stein", zwischen: "zwischen die Bank und den Stein" },
+    wer: (at) => `Wer sitzt ${at}?`,
+    setz: (animal, to) => `Setz ${animal} ${to}!`,
+    spot: "Platz",
+  },
+
+  bach: {
+    title: "Bach",
+    wash: "Tipp ins Wasser! Dann bringt der Bach Steine.",
+    form: { kreis: "Zeig mir den runden Stein!", dreieck: "Zeig mir das Dreieck!", quadrat: "Zeig mir das Quadrat!", rechteck: "Zeig mir das Rechteck!" },
+    noch: { kreis: "Wo ist noch ein Kreis?", dreieck: "Wo ist noch ein Dreieck?", quadrat: "Wo ist noch ein Quadrat?", rechteck: "Wo ist noch ein Rechteck?" },
+    names: { kreis: "Kreis", dreieck: "Dreieck", quadrat: "Quadrat", rechteck: "Rechteck" },
+    laenger: "Welcher Stock ist länger?",
+    kuerzer: "Welcher Stock ist kürzer?",
+    schwerer: "Was ist schwerer?",
+    leichter: "Was ist leichter?",
+    hoeher: "Welcher Turm ist höher?",
+    niedriger: "Welcher Turm ist niedriger?",
+    ordnen: "Leg die Stöcke vom kurzen zum langen!",
+    stick: "Stock",
+    tower: "Turm",
+    things: { kuerbis: "Kürbis", kiesel: "Kiesel" },
+  },
+
   next: "Weiter",
 
   parents: {
@@ -99,6 +182,23 @@ export default {
       zerlegen10: "zerlegen bis 10",
       teilen: "gerecht teilen",
       rest: "teilen mit Rest",
+      reihe10: "Zahlenreihe bis 10, vor und zurück",
+      zaehlen20: "zählen bis 20",
+      muster2: "Muster mit zwei Dingen fortsetzen",
+      muster3: "Muster mit drei Dingen, Fehler finden",
+      erster: "Erster, Zweiter, Letzter",
+      vorher: "vorher und nachher",
+      sortieren: "nach einem Merkmal sortieren",
+      regel: "eine Regel finden: was passt nicht",
+      vergleichen: "genau vergleichen",
+      bildmerken: "ein Bild merken",
+      lage1: "auf, unter, neben",
+      lage2: "vor, hinter, zwischen",
+      formen: "Formen erkennen",
+      formen2: "Formen gedreht, groß und klein",
+      laenger: "länger und kürzer",
+      schwerer: "höher und schwerer",
+      ordnen3: "drei Dinge der Größe nach ordnen",
     },
     stands: { zu: "noch nicht dran", neu: "neu", uebt: "übt", sicher: "sicher", lange: "lange sicher", wackelt: "wackelt" },
   },
