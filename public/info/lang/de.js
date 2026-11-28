@@ -237,6 +237,18 @@ export default {
       },
       steps: "Zahlen bis 20, bis 100, bis 1000.",
       learns: "Zahlen auf dem Zahlenstrahl finden und einordnen, Zahlen vergleichen, Vorgänger und Nachfolger, in Schritten zählen.",
+      second: {
+        idea: "Runden heißt: Welcher runde Nachbar ist näher? Genau in der Mitte rundet man auf. Mit gerundeten Zahlen rechnet man schnell ungefähr und sieht, ob ein Ergebnis stimmen kann.",
+        ways: {
+          sehen: "Der Frosch sitzt bei 37. Ist 30 oder 40 näher?",
+          machen: "Den Frosch zum nächsten runden Nachbarn hüpfen lassen.",
+          forschen: "3☐ wird zu 40 gerundet: Welche Ziffern passen ins Kästchen?",
+          anwenden: "Überschlagen: 38 + 47 ist ungefähr 40 + 50.",
+          pruefen: "Die Eule rundet oder hat gerechnet. Ihre Fehler: In der Mitte abgerundet, auf Zehner statt Hunderter gerundet, ein Ergebnis, das weit weg vom Überschlag liegt.",
+        },
+        steps: "Stufe 1: zweistellige Zahlen auf Zehner. Stufe 2: dreistellige auf Zehner oder Hunderter. Stufe 3: Überschlagen mit Plus, Minus und Mal, Ergebnisse prüfen.",
+        learns: "Runden, überschlagen und Ergebnisse auf Plausibilität prüfen.",
+      },
     },
     blumenfeld: {
       idea: "Zehn Einer sind ein Zehner, zehn Zehner sind ein Hunderter. Zehn Blumen werden ein Strauß, zehn Sträuße kommen in einen Korb.",
@@ -249,6 +261,18 @@ export default {
       },
       steps: "Bis 20 (aus 3 wird 13: ein Zehner kommt dazu), bis 100, bis 1000 (jetzt mit Hundertern).",
       learns: "Den Stellenwert verstehen: was eine Ziffer an welcher Stelle bedeutet, und warum die Null wichtig ist.",
+      second: {
+        idea: "Große Zahlen in der Stellentafel, wie in der Schule: Zehn Hunderter sind ein Tausender, zehn Tausender ein Zehntausender. Eine leere Stelle schreibt man als 0.",
+        ways: {
+          sehen: "Plättchen in der Stellentafel. Welche Zahl ist das?",
+          machen: "Eine Zahl mit Plättchen legen. Zehn Plättchen in einer Spalte werden zu einem in der nächsten.",
+          forschen: "Ein Plättchen kommt in eine Spalte dazu oder geht weg. Welche Zahl entsteht? Auch über eine volle Spalte (2 950 und ein Hunderter mehr).",
+          anwenden: "Nur Zahlen: Was kommt nach 9 999? Was ist 45 300 + 1 000? Welche Zahl ist größer?",
+          pruefen: "Die Eule liest die Tafel. Ihr Fehler: Sie vergisst die leere Spalte (35 statt 3 050) oder vertauscht zwei Ziffern.",
+        },
+        steps: "Bis 10 000 (der Tausender ist neu), bis 1 000 000 (Zehntausender und Hunderttausender).",
+        learns: "Den Stellenwert auf große Zahlen übertragen, große Zahlen lesen, schreiben und vergleichen.",
+      },
     },
     kiesbank: {
       idea: "Formen und Körper, Spiegeln, Messen.",
@@ -263,16 +287,76 @@ export default {
       learns: "Formen und Körper unterscheiden, Symmetrie, richtig messen mit dem Lineal.",
     },
     sonnenfels: {
-      idea: "Uhr, Kalender, Diagramme, Zufall.",
+      idea: "Uhr und Kalender. Der kurze Zeiger zeigt die Stunde, der lange die Minuten.",
       ways: {
         sehen: "Wie spät ist es auf der Uhr?",
         machen: "Die Uhr auf eine Zeit stellen.",
-        forschen: "Kugeln in einem Beutel: Welche Farbe kommt wohl am häufigsten? Ist es sicher, möglich oder unmöglich?",
-        anwenden: "Das Wetter von zwei Wochen in einem Diagramm: Wie oft? Wie viel mehr? Dazu: Wie spät ist es in 3 Stunden? Welcher Tag ist in 4 Tagen?",
-        pruefen: "Die Eule liest die Uhr. Stimmt das?",
+        forschen: "Zeitspannen: zwei Uhren, Anfang und Ende. Wie lange dauert es, in Stunden oder Minuten?",
+        anwenden: "Wie spät ist es in 3 Stunden? Welcher Tag ist in 4 Tagen? Welcher Monat in 5 Monaten? Wie viele Tage hat der April?",
+        pruefen: "Die Eule liest die Uhr. Ihr Fehler: Sie vertauscht die Zeiger.",
       },
-      steps: "Stufe 1: volle Stunden, ein Bild pro Tag. Stufe 2: halbe und Viertelstunden, Balken mit Skala. Stufe 3: alle fünf Minuten, Zeitspannen und Wochentage.",
-      learns: "Die Uhr lesen und stellen, mit Zeit und Kalender rechnen, Diagramme lesen, über Wahrscheinlichkeit nachdenken.",
+      steps: "Stufe 1: volle Stunden, Wochentage. Stufe 2: halbe und Viertelstunden, Monate. Stufe 3: alle fünf Minuten, Tage im Monat.",
+      learns: "Die Uhr lesen und stellen, Zeitspannen bestimmen, mit Tagen und Monaten rechnen.",
+    },
+    muehle: {
+      idea: "Größen und Einheiten: Man misst mit gleichen Stücken, den Einheiten. Eine große Einheit besteht aus vielen kleinen: 1 m = 100 cm, 1 kg = 1 000 g, 1 l = 1 000 ml. Jedes Ding hat eine Einheit, die am besten passt.",
+      ways: {
+        sehen: "Welche Einheit passt? Ein Bleistift ist 15 … cm oder m lang?",
+        machen: "Stücke zusammenlegen, bis es genau so viel ist.",
+        forschen: "Eine Umrechnungstabelle weiterführen: 1 m = 100 cm, 2 m = 200 cm, 3 m 40 cm = ? cm.",
+        anwenden: "Schätzen mit Stützpunkten (Wie schwer ist ein Apfel? 15 g, 150 g oder 1 500 g?) und kleine Sachaufgaben mit zwei Einheiten.",
+        pruefen: "Die Eule rechnet um. Ihre Fehler: mit der falschen Zahl gerechnet (1 kg = 100 g), Zahlen nur nebeneinander geschrieben (3 m 5 cm = 35 cm), einfach zusammengezählt.",
+      },
+      steps: "Stufe 1: Länge (cm, m). Stufe 2: Gewicht (g, kg) und Hohlmaß (ml, l). Stufe 3: alles, auch mm und km, halbe und viertel (½ kg = 500 g).",
+      learns: "Größenvorstellungen aufbauen, die passende Einheit wählen, umrechnen.",
+    },
+    garten: {
+      idea: "Fläche und Umfang: Die Fläche ist, wie viele Platten im Beet liegen. Der Umfang ist, wie lang der Zaun rundherum ist. Gleich viele Platten brauchen nicht gleich viel Zaun.",
+      ways: {
+        sehen: "Wie viele Platten hat das Beet? Wie viele Zaunstücke?",
+        machen: "Ein Beet legen: so viele Platten (später auch so viel Zaun, oder ein Rechteck).",
+        forschen: "Zwei Beete: Welches hat mehr Platten, welches braucht mehr Zaun? Oder gleich viel?",
+        anwenden: "Rechtecke: Länge mal Breite statt Zählen, zuerst noch mit Kästchen, dann nur mit Maßen.",
+        pruefen: "Die Eule hat gezählt. Ihre Fehler: Platten und Zaun verwechselt, an der Ecke nur ein Zaunstück gezählt, eine Platte doppelt.",
+      },
+      steps: "Stufe 1: Fläche durch Zählen. Stufe 2: auch den Zaun zählen, und beides. Stufe 3: Rechtecke mit Maßen, Fläche = Länge mal Breite.",
+      learns: "Flächeninhalt und Umfang unterscheiden und bestimmen.",
+      second: {
+        idea: "Pläne: Ein Plan zeigt von oben, wo etwas ist. Ein Feld hat einen Namen aus Buchstabe und Zahl (B3: Spalte B, Reihe 3). Ein Weg ist eine Reihe von Schritten (→ → ↑). Auf dem Plan steht ein Kästchen für eine echte Länge.",
+        ways: {
+          sehen: "Wo ist die Ente? In welchem Feld?",
+          machen: "Einen Weg aus Pfeilen bauen, von der Ente zum Nest, um die Steine herum.",
+          forschen: "Ein Weg aus Pfeilen: Wo kommt die Ente an? Erst tippen, dann läuft sie.",
+          anwenden: "Der Maßstab: Ein Kästchen sind 10 m. Wie weit ist es vom Baum zum Haus? Und zurück: Wie viele Kästchen sind 50 m?",
+          pruefen: "Die Eule nennt ein Feld. Ihr Fehler: Sie vertauscht Spalte und Reihe oder nimmt das Nachbarfeld.",
+        },
+        steps: "Stufe 1: Felder benennen, kurze Wege. Stufe 2: längere Wege um Steine, 1 Kästchen = 10 m. Stufe 3: 1 Kästchen = 5 m oder 100 m, von Metern zurück zu Kästchen.",
+        learns: "Sich auf Plänen orientieren, Wege beschreiben, mit dem Maßstab rechnen.",
+      },
+    },
+    kisten: {
+      idea: "Würfelgebäude: Kisten stehen übereinander. Ein Bauplan von oben sagt in jedem Feld, wie viele Kisten dort stehen. Die Kisten, die man nicht sieht, tragen die oberen. Ein Würfelnetz sind sechs Quadrate, die sich zu einem Würfel falten lassen.",
+      ways: {
+        sehen: "Wie viele Kisten sind es?",
+        machen: "Den Bauplan schreiben: In jedes Feld tippen, bis die Zahl stimmt. Daneben wächst das Gebäude mit.",
+        forschen: "Sechs Quadrate: Kann man daraus einen Würfel falten? Danach zeigt das Spiel, welche Seiten gegenüberliegen, oder wo es klemmt.",
+        anwenden: "Welcher Bauplan von oben passt zu dem Gebäude?",
+        pruefen: "Die Eule zählt Kisten. Ihr Fehler: Sie zählt nur, was sie sieht, oder nur die oberen.",
+      },
+      steps: "Stufe 1: eine Reihe, bis 6 Kisten. Stufe 2: zwei Reihen, bis 2 hoch. Stufe 3: bis 3 Reihen und 3 hoch, schwierigere Netze.",
+      learns: "Räumliches Vorstellen: Gebäude aus Würfeln lesen, in Baupläne übersetzen, Würfelnetze erkennen.",
+    },
+    weide: {
+      idea: "Daten und Zufall. Man zählt mit Strichen, je fünf als Bündel. Ein Diagramm zeigt die Anzahlen als Balken. Beim Zufall weiß man nicht, was herauskommt, aber was sicher, möglich oder unmöglich ist.",
+      ways: {
+        sehen: "Eine Strichliste: Wie viele Vögel waren es?",
+        machen: "Aus einer Strichliste ein Diagramm bauen: jeden Balken so lang machen, wie es Striche sind.",
+        forschen: "Kugeln im Beutel: Welche Farbe kommt wohl am öftesten? Sicher, möglich, unmöglich?",
+        anwenden: "Ein Diagramm lesen: Wie oft? Wie viel mehr? Später mit dem Würfel: Was ist wahrscheinlicher?",
+        pruefen: "Die Eule liest ein Diagramm. Ihr Fehler: Sie liest den Nachbarbalken oder zählt die Kästchen falsch.",
+      },
+      steps: "Stufe 1: Bilder und Striche bis 10. Stufe 2: Balken mit Skala bis 20. Stufe 3: Skala in Zweierschritten, Würfel.",
+      learns: "Daten erfassen und darstellen, Diagramme lesen, Wahrscheinlichkeiten vergleichen.",
     },
 
     // Feld: die Spielarten stehen einmal oben bei der Welt
@@ -304,6 +388,11 @@ export default {
       steps: "Stufe 1: ein Rechenschritt. Stufe 2: Welche Rechenart passt? Stufe 3: zwei Schritte. Stufe 4: zwei Schritte und eine Zahl, die man nicht braucht. Stufe 5: rückwärts denken.",
       learns: "Aus einem Text die Rechnung finden, mehrere Schritte planen, unwichtige Angaben weglassen.",
     },
+    scheune: {
+      idea: "Schriftlich rechnen: Die Zahlen stehen genau untereinander, Einer unter Einern. Man rechnet Stelle für Stelle von rechts. Zehn an einer Stelle werden ein Übertrag; fehlt etwas, tauscht man einen Zehner in zehn Einer. Die Scheune öffnet sich mit 8 Jahren oder wenn Plus und Minus bis 100 geschafft sind.",
+      steps: "Plus und Minus: zwei, drei Stellen, dann viele. Mal: mit einer Ziffer, dann mit zwei Ziffern. Geteilt: ohne Rest, dann mit Rest.",
+      learns: "Die schriftlichen Rechenverfahren verstehen statt nur ausführen: warum der Übertrag, warum das Entbündeln, warum die Stellen untereinander stehen.",
+    },
     hofstand: {
       idea: "Geld: Euro-Münzen und -Scheine zählen, bezahlen, Wechselgeld.",
       ways: {
@@ -313,7 +402,7 @@ export default {
         anwenden: "Einkaufen: Was kostet beides zusammen? Wie viel gibt es zurück? Reicht das Geld?",
         pruefen: "Die Eule zählt das Geld. Ihr typischer Fehler: Sie zählt die Münzen statt ihren Wert.",
       },
-      steps: "Bis 10 € (1- und 2-Euro-Münzen, 5-Euro-Schein), bis 20 € (auch 10 €), bis 100 € (auch 20 € und 50 €). Nur ganze Euro.",
+      steps: "Bis 10 € (1- und 2-Euro-Münzen, 5-Euro-Schein), bis 20 € (auch 10 €), bis 100 € (auch 20 € und 50 €). Dann Cent: alle Münzen bis 5 €, geschrieben mit Komma. Die Eule schreibt 2 € und 5 ct als 2,5 € statt 2,05 €.",
       learns: "Mit Geld umgehen, in Schritten verschiedener Größe zählen, Wechselgeld als Ergänzen.",
     },
 

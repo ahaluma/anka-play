@@ -89,14 +89,17 @@ for (const m of MAPS) {
     const st = el("details", "station");
     st.id = s.id;
     const sum = el("summary");
-    sum.append(el("span", "st-icon", s.icon), el("span", "st-name", S.stations[s.id] ?? s.id), el("span", "st-idea", S.ideas[s.ideas[0]]?.name ?? ""));
-    st.append(sum, el("p", "", t.idea));
-    if (t.ways) {
-      st.append(el("h4", "", T.labels.ways), waysList(t.ways, names));
+    sum.append(el("span", "st-icon", s.icon), el("span", "st-name", S.stations[s.id] ?? s.id), el("span", "st-idea", s.ideas.map((i) => S.ideas[i]?.name ?? "").join(" · ")));
+    st.append(sum);
+    // a station with two ideas explains the second one below the first, in the same way
+    for (const [i, part] of [t, t.second].filter(Boolean).entries()) {
+      if (i > 0) st.append(el("h3", "second-idea", S.ideas[s.ideas[i]]?.name ?? ""));
+      st.append(el("p", "", part.idea));
+      if (part.ways) st.append(el("h4", "", T.labels.ways), waysList(part.ways, names));
+      if (part.example) st.append(el("p", "example", part.example));
+      if (part.steps) st.append(el("h4", "", T.labels.steps), el("p", "", part.steps));
+      st.append(el("h4", "", T.labels.learns), el("p", "learns", part.learns));
     }
-    if (t.example) st.append(el("p", "example", t.example));
-    if (t.steps) st.append(el("h4", "", T.labels.steps), el("p", "", t.steps));
-    st.append(el("h4", "", T.labels.learns), el("p", "learns", t.learns));
     sec.append(st);
   }
   page.append(sec);
