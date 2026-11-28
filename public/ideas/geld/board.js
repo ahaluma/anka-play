@@ -16,13 +16,47 @@ function pad(box, ctx, digits, onCheck) {
 
 const ICON = { bread: "🍞", cheese: "🧀", honey: "🍯", melon: "🍉", pumpkin: "🎃", cake: "🎂", ball: "⚽", book: "📖" };
 const sum = (list) => list.reduce((a, b) => a + b, 0);
-const euro = (ctx, n) => `${ctx.num(n)} €`;
+
+// The level "cent" (range 500) counts in cents: 250 is 2,50 €. CENT is set for the board being drawn (see draw below).
+let CENT = false;
+/** An amount: 7 € in whole euros; 2,50 € with cents (short: 2,5 €, the owl's way of writing it). */
+function euro(ctx, n, short = false) {
+  if (!CENT) return `${ctx.num(n)} €`;
+  const sep = ctx.T.geld.sep ?? ",";
+  const c = String(n % 100).padStart(2, "0");
+  return `${ctx.num(Math.floor(n / 100))}${sep}${ctx.num(short ? c.replace(/0$/, "") : c)} €`;
+}
+/** What is written on a coin: 50 ct, 2 €. */
+const face = (ctx, v) => (CENT ? (v >= 100 ? `${ctx.num(v / 100)} €` : `${ctx.num(v)} ${ctx.T.geld.cent ?? "ct"}`) : `${ctx.num(v)} €`);
+const kind = (v) => (CENT ? (v >= 500 ? "note v5" : v >= 100 ? `coin v${v / 100}` : `coin cent c${v}`) : `${v >= 5 ? "note" : "coin"} v${v}`);
 
 /** One coin or note. */
 function piece(ctx, v, tag = "span", label = "") {
-  const p = tag === "button" ? button(`money ${v >= 5 ? "note" : "coin"} v${v}`, label, "") : el("span", `money ${v >= 5 ? "note" : "coin"} v${v}`);
-  p.append(el("b", "", `${ctx.num(v)} €`));
+  const p = tag === "button" ? button(`money ${kind(v)}`, label, "") : el("span", `money ${kind(v)}`);
+  p.append(el("b", "", face(ctx, v)));
   return p;
+}
+
+/** Where the child gives an amount: the number pad, or with cents three amounts to choose from (the comma matters). */
+function entry(box, ctx, t, digits, options, onCheck) {
+  if (!CENT) return pad(box, ctx, digits, onCheck);
+  current?.remove();
+  const row = el("div", "name-row money-choice");
+  const buttons = options.map((v) => {
+    const b = button("btn name-btn", euro(ctx, v), euro(ctx, v));
+    b.addEventListener("click", () => {
+      if (b.disabled) return;
+      if (onCheck(v) === false) {
+        shake(b);
+        b.disabled = true;
+      } else b.classList.add("right");
+    });
+    row.append(b);
+    return b;
+  });
+  box.replaceChildren(row);
+  current = row;
+  return { clear() {}, show() {}, lock: (on) => buttons.forEach((b) => (b.disabled = on || b.disabled)), remove: () => row.remove() };
 }
 
 function counter(ctx, money) {
@@ -47,11 +81,11 @@ export function sehen(host, t, ctx) {
   const hintBox = el("div", "hint-box");
   const padBox = el("div");
   let locked = false;
-  const p = pad(padBox, ctx, t.range === 100 ? 3 : 2, (n) => {
+  const p = entry(padBox, ctx, t, t.range === 100 ? 3 : 2, t.options, (n) => {
     if (locked) return false;
     if (n !== t.answer) {
       p.clear();
-      ctx.miss(n === t.money.length ? G.pieces : G.miss);
+      ctx.miss(CENT ? G.missCent : n === t.money.length ? G.pieces : G.miss);
       return false;
     }
     locked = true;
@@ -70,12 +104,12 @@ export function sehen(host, t, ctx) {
         let run = 0;
         for (const v of t.money) {
           run += v;
-          row.append(el("span", "chip", ctx.num(run)));
+          row.append(el("span", "chip", CENT ? euro(ctx, run) : ctx.num(run)));
         }
         row.lastChild.textContent = "?";
         hintBox.append(row);
       }
-      return G.hint;
+      return CENT ? G.hintCent : G.hint;
     },
   };
 }
@@ -204,7 +238,7 @@ export function forschen(host, t, ctx) {
       return;
     }
     found.push(key);
-    const chip = el("span", "chip pop", on.map((v) => ctx.num(v)).join(" + ") + ` = ${euro(ctx, s)}`);
+    const chip = el("span", "chip pop", on.map((v) => (CENT ? face(ctx, v) : ctx.num(v))).join(" + ") + ` = ${euro(ctx, s)}`);
     ways.append(chip);
     if (found.length >= t.ways) {
       locked = true;
@@ -268,7 +302,7 @@ export function anwenden(host, t, ctx) {
   }
   scene.append(top);
   const padBox = el("div");
-  const p = pad(padBox, ctx, t.range === 100 ? 3 : 2, (n) => {
+  const p = entry(padBox, ctx, t, t.range === 100 ? 3 : 2, t.options, (n) => {
     if (locked) return false;
     if (n !== t.answer) {
       p.clear();
@@ -290,8 +324,9 @@ export function anwenden(host, t, ctx) {
           // Count up from the price to the note, like at the till.
           const row = el("div", "count-row pop");
           row.append(el("span", "chip", euro(ctx, t.price)));
-          const next10 = Math.min(t.paid, Math.ceil((t.price + 1) / 10) * 10);
-          if (next10 > t.price && next10 < t.paid) row.append(el("span", "chip", `+${ctx.num(next10 - t.price)} → ${euro(ctx, next10)}`));
+          const unit = CENT ? 100 : 10; // up to the next whole euro, or ten euros
+          const next10 = Math.min(t.paid, Math.ceil((t.price + 1) / unit) * unit);
+          if (next10 > t.price && next10 < t.paid) row.append(el("span", "chip", `+${CENT ? euro(ctx, next10 - t.price) : ctx.num(next10 - t.price)} → ${euro(ctx, next10)}`));
           row.append(el("span", "chip", `… → ${euro(ctx, t.paid)}`));
           hintBox.append(row);
         }
@@ -309,7 +344,7 @@ export function pruefen(host, t, ctx) {
   let locked = false;
   const scene = el("div", "scene card owl-scene");
   const talk = el("div", "talk");
-  const said = el("b", "said", euro(ctx, t.said));
+  const said = el("b", "said", euro(ctx, t.said, t.short));
   const bubble = el("div", "bubble");
   bubble.append(said);
   talk.append(el("span", "owl", "🦉"), bubble);
@@ -335,7 +370,7 @@ export function pruefen(host, t, ctx) {
     judge.hidden = true;
     padBox.hidden = false;
     said.classList.add("wrong");
-    p = pad(padBox, ctx, t.range === 100 ? 3 : 2, (n) => {
+    p = entry(padBox, ctx, t, t.range === 100 ? 3 : 2, t.options, (n) => {
       if (locked) return false;
       if (n !== total) {
         p.clear();
@@ -352,15 +387,18 @@ export function pruefen(host, t, ctx) {
       return true;
     });
     ctx.tap();
-    ctx.tell(t.kind === "pieces" ? G.fixPieces : G.fix);
+    const e = Math.floor(total / 100), c = total % 100;
+    ctx.tell(t.kind === "pieces" ? G.fixPieces : t.kind === "comma" ? G.fixComma(euro(ctx, t.said, true), ctx.num(e), ctx.num(c)) : G.fix);
   });
   host.append(scene, judge, padBox);
   ctx.tell(G.question(euro(ctx, t.said)));
   return {
     hint() {
-      return t.kind === "pieces" ? G.hintPieces : G.hint;
+      return t.kind === "pieces" ? G.hintPieces : t.kind === "comma" ? G.hintComma : G.hint;
     },
   };
 }
 
-export const draw = port({ sehen, machen, forschen, anwenden, pruefen });
+// every board first says whether it counts in cents
+const cents = (board) => (host, t, ctx) => ((CENT = t.range === 500), board(host, t, ctx));
+export const draw = port({ sehen: cents(sehen), machen: cents(machen), forschen: cents(forschen), anwenden: cents(anwenden), pruefen: cents(pruefen) });

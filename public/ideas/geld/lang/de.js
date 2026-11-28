@@ -4,6 +4,8 @@ const big = (text) => text[0].toUpperCase() + text.slice(1); // "drei" -> "Drei"
 
 export default {
   geld: {
+    sep: ",", // between euros and cents: 2,50 €
+    cent: "ct",
     intro: {
       sehen: "Wie viel Geld liegt da?",
       machen: "Bezahl genau.",
@@ -17,6 +19,8 @@ export default {
       pieces: "Das sind die Stücke. Aber ein 2-€-Stück ist 2 € wert!",
       done: (e) => `Das sind ${e}.`,
       hint: "Fang beim größten an und zähl weiter, Stück für Stück.",
+      missCent: "Zähl erst die Euro, dann die Cent. Hundert Cent sind ein Euro.",
+      hintCent: "Erst die Euro-Münzen, dann die Cent, vom größten zum kleinsten. Nach dem Komma stehen die Cent, immer zwei Ziffern.",
     },
     machen: {
       question: (e) => `Das kostet ${e}. Leg genau so viel hin!`,
@@ -68,6 +72,8 @@ export default {
       fixed: (e) => `Jetzt stimmt es: ${e}.`,
       hint: "Die Eule hat ein Stück vergessen oder doppelt gezählt.",
       hintPieces: "Jedes Stück hat seinen Wert. Ein 5-€-Schein ist 5 €, nicht 1.",
+      fixComma: (said, e, c) => `Gut aufgepasst! ${said} heißt ${e} Euro und ${c}0 Cent. Hier liegen ${e} Euro und ${c} Cent. Wie schreibt man das?`,
+      hintComma: "Nach dem Komma stehen immer zwei Ziffern für die Cent. 5 Cent schreibt man 0,05 €.",
     },
   },
 };

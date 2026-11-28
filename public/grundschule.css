@@ -217,3 +217,11 @@ button.box-cell { cursor: pointer; }
 .pt-col:nth-last-child(4) .pt-head { background: #e6ecff; }
 .pt-col:nth-last-child(5) .pt-head { background: #fff1b8; }
 .pt-col:nth-last-child(6) .pt-head { background: #e4d4ff; }
+
+/* ====================== Idea "geld", level "cent": the cent coins ====================== */
+.coin.cent { width: 34px; height: 34px; font-size: 10px; }
+.coin.cent.c1, .coin.cent.c2, .coin.cent.c5 { background: radial-gradient(circle, #e0995e 60%, #b8693a 61%); }
+.coin.cent.c1 { width: 30px; height: 30px; }
+.coin.cent.c10, .coin.cent.c20, .coin.cent.c50 { background: radial-gradient(circle, #f4d36b 60%, #c9a227 61%); }
+.coin.cent.c50 { width: 38px; height: 38px; }
+.money-choice .name-btn { min-width: 100px; font-size: 22px; }
