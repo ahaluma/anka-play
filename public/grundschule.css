@@ -1,0 +1,77 @@
+/* The pictures of the stations added for the rest of primary school (docs/GRUNDSCHULE.md): written calculation,
+   rounding, big numbers, sizes and units, area and plans, cube buildings, data and chance. */
+
+/* ====================== Idea "schriftlich": the written sum on squared paper ====================== */
+.sheet-scene {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  background: #fff;
+  background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
+.sheet {
+  display: grid;
+  grid-template-columns: repeat(var(--cols), 44px);
+  justify-content: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.sheet-row { display: contents; }
+
+.sheet-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 44px;
+  font-size: 30px;
+  font-weight: 800;
+  border-radius: 8px;
+}
+
+.sheet-cell.tail, .sheet-cell.times { justify-content: flex-start; white-space: nowrap; font-size: 26px; padding-left: 4px; }
+.sheet-cell.off { color: var(--go); }
+
+.sheet-row.names .sheet-cell { height: 22px; font-size: 13px; font-weight: 700; color: var(--muted); }
+.sheet-row.carry .sheet-cell { height: 26px; font-size: 18px; color: var(--blue); }
+.sheet-row.carry .sheet-cell.traded { color: var(--go); }
+.sheet-row.carry .sheet-cell.rest { justify-content: flex-start; padding-left: 2px; }
+.sheet-row.line .sheet-cell { border-top: 4px solid var(--ink); border-radius: 0; }
+.sheet-row.line .sheet-cell.lead, .sheet-row.line .sheet-cell.tail { border-top-color: transparent; }
+.sheet-cell.struck { text-decoration: line-through; text-decoration-color: var(--go); text-decoration-thickness: 3px; color: var(--muted); }
+.sheet-cell.on { background: rgba(255, 200, 58, 0.35); }
+.sheet-row.line .sheet-cell.on { border-radius: 0 0 8px 8px; }
+.sheet-cell.gap { color: var(--go); outline: 3px dashed var(--go); outline-offset: -4px; }
+.sheet-cell.found { color: var(--ok); }
+
+.sheet-say { margin: 0; min-height: 26px; font-size: 18px; font-weight: 800; text-align: center; }
+.sheet-tools { display: flex; justify-content: center; min-height: 0; }
+.sheet-tools .trade-btn { font-size: 18px; padding: 10px 16px; }
+.sheet-options .name-btn { font-size: 18px; }
+
+.sheet-choice { display: flex; flex-direction: column; align-items: center; gap: 10px; width: 100%; }
+.sheet-pick { width: 100%; max-width: 360px; padding: 6px; background: #fff; }
+.sheet-pick .sheet { grid-template-columns: repeat(var(--cols), 36px); }
+.sheet-pick .sheet-cell { height: 36px; font-size: 24px; }
+.sheet-pick .sheet-row.names .sheet-cell { height: 18px; font-size: 12px; }
+.sheet-pick .sheet-row.carry .sheet-cell { height: 6px; }
+.sheet-pick.right { outline: 5px solid var(--ok); }
+
+/* ====================== Idea "runden": a stretch of the footbridge, the frog, the middle ====================== */
+.round-scene { display: flex; flex-direction: column; align-items: center; gap: 10px; position: relative; background: linear-gradient(var(--sky) 0 50%, var(--water) 50%); }
+.round-line { width: 100%; max-width: 360px; height: auto; overflow: visible; }
+.round-no { font-size: 17px; font-weight: 800; fill: var(--ink); }
+.round-mid { font-size: 12px; font-weight: 800; fill: var(--pink); }
+.round-tag { font-size: 16px; font-weight: 800; fill: var(--ink); paint-order: stroke; stroke: #fff; stroke-width: 4px; }
+.round-frog { transition: transform 0.5s cubic-bezier(0.3, 1.6, 0.5, 1); }
+.round-taps { position: relative; width: 100%; max-width: 360px; height: 52px; margin-top: -56px; }
+.round-spot { position: absolute; top: 0; width: 46px; height: 46px; margin-left: -23px; border: 3px dashed var(--ink); border-radius: 50%; background: rgba(255, 255, 255, 0.35); cursor: pointer; }
+.round-spot.right { border-style: solid; background: rgba(18, 165, 100, 0.35); }
+.round-big { margin: 6px 0; font-size: 34px; font-weight: 800; letter-spacing: 1px; }
+.round-way { margin: 0; min-height: 26px; font-size: 20px; font-weight: 800; color: var(--blue); }
+.round-btn { min-width: 96px; font-size: 26px; }
+.round-digits { display: grid; grid-template-columns: repeat(5, 56px); gap: 8px; justify-content: center; }
+.round-digit { height: 56px; font-size: 26px; font-weight: 800; }
+.round-digit.on { background: var(--sun); }
