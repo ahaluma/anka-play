@@ -18,11 +18,12 @@ export const PLACES = [
   { id: "bach", links: ["huegel", "teich"] },
 ];
 
-/** The memory world (memory/): three tables in a ring, the same rule. */
+/** The memory world (memory/): four tables in a ring, the same rule. */
 export const MEMORY_PLACES = [
-  { id: "memory-zahlen", links: ["memory-formen", "memory-rechnen"] },
-  { id: "memory-formen", links: ["memory-rechnen", "memory-zahlen"] },
-  { id: "memory-rechnen", links: ["memory-zahlen", "memory-formen"] },
+  { id: "memory-zahlen", links: ["memory-original", "memory-formen"] },
+  { id: "memory-formen", links: ["memory-zahlen", "memory-rechnen"] },
+  { id: "memory-rechnen", links: ["memory-formen", "memory-original"] },
+  { id: "memory-original", links: ["memory-rechnen", "memory-zahlen"] },
 ];
 
 /** Every place of every world, by id. A portal leads only within its own world. */

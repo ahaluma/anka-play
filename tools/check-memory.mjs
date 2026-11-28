@@ -28,6 +28,12 @@ for (const table of D.TABLES) {
           check(r <= lv.to && c.value.a <= Math.max(lv.to, 100), `rechnen ${level}: too big: ${JSON.stringify(c.value)}`);
           if (lv.ops.every((o) => o === "+" || o === "-")) check(c.value.a <= lv.to && c.value.b <= lv.to, `rechnen ${level}: numbers over ${lv.to}`);
         }
+      if (table === "original")
+        for (const c of cards) {
+          const n = c.kind === "zahl" ? c.value : c.value.n;
+          check(n >= lv.from && n <= lv.to, `original ${level}: ${n} out of range`);
+          if (c.kind === "bilder") check(D.PICTURES.includes(c.value.picture), `original ${level}: unknown picture ${c.value.picture}`);
+        }
       if (table === "zahlen") for (const c of cards) check(c.value >= lv.from && c.value <= lv.to, `zahlen ${level}: ${c.value} out of range`);
     }
   });

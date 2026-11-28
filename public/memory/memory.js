@@ -1,4 +1,4 @@
-// The memory world (#/memory-zahlen, #/memory-formen, #/memory-rechnen): three tables, each a memory game
+// The memory world (#/memory-zahlen, #/memory-formen, #/memory-rechnen, #/memory-original): four tables, each a memory game
 // (deck.js), linked in a ring by portals like the places of the Tal. A pure game: no stars, nothing read
 // aloud; a turned card, a pair and a miss each make a short sound. The level of each table follows the child:
 // a board with few misses moves one level up, many misses one down (deck.js nextLevel).
@@ -48,6 +48,11 @@ export async function render(root, route) {
       const d = el("span", "mem-dots" + (c.value > 5 ? " two" : "") + (c.value > 10 ? " big" : ""));
       for (let i = 0; i < c.value; i++) d.append(el("i"));
       f.append(d);
+    } else if (c.kind === "bilder") {
+      const { n, picture } = c.value;
+      const pics = el("span", "mem-pics " + (n <= 3 ? "few" : n <= 6 ? "some" : n <= 10 ? "lots" : "heaps"));
+      for (let i = 0; i < n; i++) pics.append(figure(picture));
+      f.append(pics);
     } else if (c.kind === "aufgabe") {
       const { a, op, b } = c.value;
       f.append(el("span", "sum", `${num(a)} ${OP[op]} ${num(b)}`));
@@ -75,7 +80,9 @@ export async function render(root, route) {
 
     async function tap(c) {
       if (locked || c.el.classList.contains("found") || c === picked) return;
-      if (!picked) {
+      // The original memory, as before: with open cards, a second card of the same kind just moves the choice.
+      if (!picked || (open && table === "original" && picked.kind === c.kind)) {
+        picked?.el.classList.remove("picked");
         picked = c;
         turn(c, true);
         c.el.classList.add("picked");

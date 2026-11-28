@@ -2,6 +2,7 @@
 // the place's name below it. The pictures are tiny vector scenes in the colours of the open Tal, no files.
 
 import { el, link } from "../engine/ui/parts.js";
+import { shared as T } from "../engine/i18n.js";
 import { placeById } from "./places.js";
 
 /** The small picture of each place, in a 60 × 40 box. */
@@ -48,12 +49,18 @@ const MINI = {
   // A stream with stones of different shapes on the bank.
   bach: `<path d="M0 6Q30 16 60 6V18Q30 28 0 18Z" class="m-water"/>
     <circle cx="12" cy="31" r="5" class="m-stone"/><path d="M24 36 30 25 36 36Z" class="m-stone"/><rect x="42" y="27" width="10" height="10" rx="1" class="m-stone"/>`,
+  // Home: a little house.
+  home: `<rect x="17" y="17" width="26" height="19" rx="1.5" class="m-wall"/><path d="M13 19 30 5 47 19Z" class="m-roof"/>
+    <rect x="26" y="25" width="8" height="11" rx="1" class="m-trunk"/>`,
   // The memory tables: two cards each, showing what is paired there.
   "memory-zahlen": `<rect x="6" y="5" width="21" height="30" rx="4" class="m-card"/><text x="16.5" y="27" class="m-num">3</text>
     <rect x="33" y="5" width="21" height="30" rx="4" class="m-card"/>
     <circle cx="39" cy="14" r="2.4" class="m-dot"/><circle cx="48" cy="20" r="2.4" class="m-dot"/><circle cx="39" cy="26" r="2.4" class="m-dot"/>`,
   "memory-formen": `<rect x="6" y="5" width="21" height="30" rx="4" class="m-card"/><circle cx="16.5" cy="20" r="6.5" class="m-apple"/>
     <rect x="33" y="5" width="21" height="30" rx="4" class="m-card"/><path d="M43.5 12.5L51 26.5H36Z" class="m-blue"/>`,
+  "memory-original": `<rect x="6" y="5" width="21" height="30" rx="4" class="m-card"/><text x="16.5" y="27" class="m-num">3</text>
+    <rect x="33" y="5" width="21" height="30" rx="4" class="m-card"/>
+    <circle cx="39" cy="13" r="3" class="m-apple"/><circle cx="48" cy="20" r="3" class="m-apple"/><circle cx="39" cy="27" r="3" class="m-apple"/>`,
   "memory-rechnen": `<rect x="2" y="5" width="30" height="30" rx="4" class="m-card"/><text x="17" y="25" class="m-sum">2+3</text>
     <rect x="37" y="5" width="21" height="30" rx="4" class="m-card"/><text x="47.5" y="27" class="m-num">5</text>`,
 };
@@ -64,17 +71,19 @@ export function miniScene(id, className = "mini") {
   return s;
 }
 
-/** The portals of a place. names: the places' names in the current language. */
+/** The portals of a place: the neighbour on one side, Home in the middle, the neighbour on the other side
+ *  (asked for 28.11.: a way Home at every place, and the portals half as high). names: the places' names. */
 export function portals(here, names, label) {
   const box = el("nav", "portals");
   box.setAttribute("aria-label", label);
-  for (const id of placeById[here].links) {
-    const a = link(`portal portal-${id}`, `#/${id}`);
-    a.setAttribute("aria-label", names[id]);
+  const [a, b] = placeById[here].links;
+  for (const [id, href, name] of [[a, `#/${a}`, names[a]], ["home", "#/", names.home ?? T.labels.home], [b, `#/${b}`, names[b]]]) {
+    const p = link(`portal portal-${id}`, href);
+    p.setAttribute("aria-label", name);
     const door = el("span", "portal-door");
     door.append(el("span", "portal-light"));
-    a.append(door, miniScene(id, "portal-mini"), el("span", "portal-name", names[id]));
-    box.append(a);
+    p.append(door, miniScene(id, "portal-mini"), el("span", "portal-name", name));
+    box.append(p);
   }
   return box;
 }

@@ -20,3 +20,8 @@
 .mem-dots.big { gap: 2px; }
 .mem-dots.big i, .mem-grid.many .mem-dots.big i { width: clamp(7px, 2vw, 10px); height: clamp(7px, 2vw, 10px); }
 .mem-grid.many .mem-dots i { width: clamp(8px, 2.3vw, 12px); height: clamp(8px, 2.3vw, 12px); }
+
+/* The original memory: a card with that many pictures. */
+.mem-pics { display: flex; flex-wrap: wrap; justify-content: center; align-content: center; gap: 2px; padding: 6px; }
+.mem-pics .fig { display: block; }
+.mem-pics.few .fig { width: 34%; } .mem-pics.some .fig { width: 30%; } .mem-pics.lots .fig { width: 24%; } .mem-pics.heaps .fig { width: 19%; }
