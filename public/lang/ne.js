@@ -123,6 +123,7 @@ export default {
     pickIdea: "के खेल्न चाहन्छौ?",
     star: "तारा",
     played: "खेलेको",
+    locked: "अझै बन्द",
     level: (g) => `${g} सम्मका सङ्ख्या`,
     levelPlain: (g) => `तह ${g}`,
     next: "लाटोकोसेरोले अब कहाँ जाने देखाउँछ।",

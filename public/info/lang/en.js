@@ -20,7 +20,9 @@ export default {
     ],
     after: [
       "A round with 4 of 5 tasks right at the first try earns a star ⭐ for that way. Once a station has enough stars, bigger numbers or harder tasks come. After two weak rounds it goes one level back. After three mistakes in a row an easier task comes.",
-      "The owl guides your child. She stays at a station until every way there has been tried and has its star. Only then does she show the way to the next station that is related to it.",
+      "At each station only the first way is open at the start. The others carry a lock 🔒. Once your child has played a way, the next one opens. What is open once stays open.",
+      "The order follows the idea. Where your child can make the idea themselves, as in counting, splitting, sharing or sorting, they start with Make. Where they have to recognise it, as with shapes, the clock or calculating, they start with See. On the mountain they always start with Understand.",
+      "The owl guides your child through the ways in order. She stays at a station until every way there has been tried and has its star. Only then does she show the way to the next station that is related to it.",
       "There are no points, no clock and no streaks of days. A mistake is explained, not punished.",
     ],
   },
@@ -87,8 +89,8 @@ export default {
     wiese: {
       idea: "A number says how many there are. More, fewer, the same.",
       ways: {
-        sehen: "Flowers on the meadow: how many are there? From the second round on they are shown only briefly. So your child learns to see small amounts at a glance.",
         machen: "Pick a given number of flowers into the basket. Two counters show how many are still on the meadow and how many are in the basket.",
+        sehen: "Flowers on the meadow: how many are there? From the second round on they are shown only briefly. So your child learns to see small amounts at a glance.",
         forschen: "Stepping stones in the stream with numbers, one is missing. Sometimes the frog hops backwards. Or the stones are mixed up and your child lays the way, smallest number first.",
         anwenden: "Where are there more, where fewer? One comes or goes: how many are there now? Make both sides the same.",
         pruefen: "The owl has counted. Is she right, or off by one?",
@@ -99,8 +101,8 @@ export default {
     bau: {
       idea: "Numbers are made of numbers: 5 is 3 and 2, or 4 and 1.",
       ways: {
-        sehen: "Animals go into the burrow. Some can be seen outside: how many are inside?",
         machen: "Share things out onto two leaves, in two different ways.",
+        sehen: "Animals go into the burrow. Some can be seen outside: how many are inside?",
         forschen: "Shake the apple tree: some apples fall down. How many stay up?",
         anwenden: "A small scene: the whole and one part are known, the other part is missing.",
         pruefen: "The owl says: “3 and 2 make 6.” Is that right?",
@@ -131,8 +133,8 @@ export default {
     obstbaum: {
       idea: "Sharing fairly: everyone gets the same number.",
       ways: {
-        sehen: "Each nest has the same number of eggs. A hen sits on one nest: how many eggs are under her?",
         machen: "Share food out to the animals so that each gets the same.",
+        sehen: "Each nest has the same number of eggs. A hen sits on one nest: how many eggs are under her?",
         forschen: "Think first: does it share out fairly, or is something left over?",
         anwenden: "Cherries in the grass, each bird gets so many. For how many birds is there enough?",
         pruefen: "The owl has shared. Is it fair?",
@@ -143,8 +145,8 @@ export default {
     wald: {
       idea: "A row always goes on in the same way, because one piece keeps coming back.",
       ways: {
-        sehen: "A row stops. What comes next?",
         machen: "Lay the row on yourself.",
+        sehen: "A row stops. What comes next?",
         forschen: "The row is a rhythm of clapping, stamping and patting the knees. Listen, join in: what comes next?",
         anwenden: "A bead is missing in the middle of a necklace. Which one belongs there?",
         pruefen: "The owl lays a row. One thing may be wrong: which one?",
@@ -155,8 +157,8 @@ export default {
     himmel: {
       idea: "First and then: picture stories in the right order, first, second, third.",
       ways: {
-        sehen: "Two pictures from a story. Which came first?",
         machen: "Tap the pictures of a story in order.",
+        sehen: "Two pictures from a story. Which came first?",
         forschen: "What happens next? Later also: what came before?",
         anwenden: "Animals stand in a line. Who is first, second, last?",
         pruefen: "The owl has laid out a story. Is the order right?",
@@ -167,8 +169,8 @@ export default {
     nester: {
       idea: "What belongs together? Sorting by a rule.",
       ways: {
-        sehen: "One thing: which basket does it go in?",
         machen: "Sort six things one by one into the baskets.",
+        sehen: "One thing: which basket does it go in?",
         forschen: "Four things, three belong together. Which one does not fit?",
         anwenden: "The baskets have no label. Your child finds the rule and puts the new thing in the right one.",
         pruefen: "The owl has sorted. One thing may be in the wrong basket.",
@@ -253,8 +255,8 @@ export default {
     blumenfeld: {
       idea: "Ten ones make a ten, ten tens make a hundred. Ten flowers become a bunch, ten bunches go into a basket.",
       ways: {
-        sehen: "Bunches and single flowers. How many flowers are there?",
         machen: "Lay a number with bunches and flowers.",
+        sehen: "Bunches and single flowers. How many flowers are there?",
         forschen: "One flower more, one bunch more, one fewer: what happens to the number? Say it first, then see.",
         anwenden: "Only numbers in a place-value table: 3 tens and 4 ones. Also turned round (“4 ones and 3 tens”) and with more than nine ones (“2 tens and 13 ones”).",
         pruefen: "The owl has counted. Her typical mistakes: tens and ones swapped (43 instead of 34), one ten too many, the zero forgotten (35 instead of 305).",
@@ -301,8 +303,8 @@ export default {
     muehle: {
       idea: "Measures and units: you measure with equal pieces, the units. A big unit is made of many small ones: 1 m = 100 cm, 1 kg = 1 000 g, 1 l = 1 000 ml. Every thing has a unit that fits it best.",
       ways: {
-        sehen: "Which unit fits? A pencil is 15 … cm or m long?",
         machen: "Put pieces together until it is exactly so much.",
+        sehen: "Which unit fits? A pencil is 15 … cm or m long?",
         forschen: "Continue a conversion table: 1 m = 100 cm, 2 m = 200 cm, 3 m 40 cm = ? cm.",
         anwenden: "Estimating with known sizes (How heavy is an apple? 15 g, 150 g or 1 500 g?) and short word problems with two units.",
         pruefen: "The owl converts. Her mistakes: the wrong number (1 kg = 100 g), numbers just written side by side (3 m 5 cm = 35 cm), simply added together.",
@@ -313,8 +315,8 @@ export default {
     garten: {
       idea: "Area and perimeter: the area is how many slabs lie in the bed. The perimeter is how long the fence all round is. The same number of slabs does not need the same amount of fence.",
       ways: {
-        sehen: "How many slabs does the bed have? How many pieces of fence?",
         machen: "Lay a bed: so many slabs (later also so much fence, or a rectangle).",
+        sehen: "How many slabs does the bed have? How many pieces of fence?",
         forschen: "Two beds: which has more slabs, which needs more fence? Or the same?",
         anwenden: "Rectangles: length times width instead of counting, first still with squares, then only with measures.",
         pruefen: "The owl has counted. Her mistakes: slabs and fence mixed up, only one piece of fence counted at a corner, a slab counted twice.",
@@ -337,8 +339,8 @@ export default {
     kisten: {
       idea: "Buildings of cubes: boxes stand on top of each other. A plan from above says in each square how many boxes stand there. The boxes you cannot see carry the ones on top. A net of the cube is six squares that fold into a cube.",
       ways: {
-        sehen: "How many boxes are there?",
         machen: "Write the plan: tap each square until the number is right. Next to it the building grows.",
+        sehen: "How many boxes are there?",
         forschen: "Six squares: do they fold into a cube? Afterwards the game shows which faces are opposite, or where it gets stuck.",
         anwenden: "Which plan from above belongs to the building?",
         pruefen: "The owl counts boxes. Her mistake: she counts only what she sees, or only the top ones.",

@@ -3,8 +3,10 @@
 // perspectives.<names>.<id>). See docs/DESIGN.md, section 7.
 //
 // A station has 1 to 5 perspectives: its idea lists the ones it has (`perspectives` in ideas/<id>/idea.js),
-// in this order, unless the idea needs another one: the Teich starts with Machen, the hands before the picture.
-// The list's order is the order the station shows them and the owl leads through them. A concept idea usually has all five; a station that is only a game (number memory)
+// in the order the child meets them: Machen first where the child can make the idea by acting (counting, splitting,
+// sharing, sorting, bundling), Sehen first where the idea lies in looking (shapes, clock, calculating); the Berg
+// keeps Verstehen (sehen) first. The station shows them and the owl leads through them in this order. Only the first
+// is open at first; each further one opens once the one before it is played (wayOpen in engine/learner.js). A concept idea usually has all five; a station that is only a game (number memory)
 // has the one perspective "spielen". Stars, flags, "mastered" and moving up count the station's OWN
 // perspectives, never a fixed five. A pure game ("spielen") has no stars to earn: its station is always
 // open and counts as mastered from the start (`game: true` in universe.js).

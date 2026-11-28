@@ -1,5 +1,6 @@
 // A station: its own background, its ideas (a choice first when there are several), the perspectives of the
-// chosen idea (1 to 5) with their stars in the child's group, and the perspective to play next.
+// chosen idea (1 to 5) with their stars in the child's group, and the perspective to play next. Only the
+// first perspective is open at first; each further one opens once the one before it is played (L.wayOpen).
 // A station with first-visit questions that are still due sends the child to them first (engine/gate.js).
 
 import { station as stationOf, map as mapOf, stationOpen, reachable } from "../graph.js";
@@ -77,10 +78,13 @@ export async function render(root, route) {
   for (const p of def.perspectives.map((id) => PERSPECTIVES.find((x) => x.id === id))) { // in the idea's order
     const star = L.starred(state.rec, def, p.id, g);
     const played = L.played(state.rec, def.id, p.id);
-    const a = link(`persp-item${star ? " star" : played ? " played" : ""}${p.id === next ? " next" : ""}`, href.play(s.id, ideaId, p.id, many));
-    a.append(el("span", "p-icon", p.icon), el("span", "p-name", names[p.id]), el("span", "p-state", star ? "⭐" : played ? "🌱" : ""));
-    a.setAttribute("aria-label", `${names[p.id]}${star ? " · " + T.stationText.star : played ? " · " + T.stationText.played : ""}`);
-    a.addEventListener("click", () => sound.tap());
+    const open = L.wayOpen(state.rec, def, p.id);
+    // A way not open yet: greyed, with a lock, and no link. It opens when the way before it has been played.
+    const a = open ? link(`persp-item${star ? " star" : played ? " played" : ""}${p.id === next ? " next" : ""}`, href.play(s.id, ideaId, p.id, many)) : el("span", "persp-item locked");
+    a.append(el("span", "p-icon", p.icon), el("span", "p-name", names[p.id]), el("span", "p-state", star ? "⭐" : played ? "🌱" : open ? "" : "🔒"));
+    a.setAttribute("aria-label", `${names[p.id]}${star ? " · " + T.stationText.star : played ? " · " + T.stationText.played : open ? "" : " · " + T.stationText.locked}`);
+    if (open) a.addEventListener("click", () => sound.tap());
+    else a.setAttribute("aria-disabled", "true");
     const li = el("li");
     li.append(a);
     list.append(li);

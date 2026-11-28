@@ -127,6 +127,7 @@ export default {
     pickIdea: "Was möchtest du spielen?",
     star: "Stern",
     played: "gespielt",
+    locked: "noch zu",
     level: (g) => `Zahlen bis ${g}`,
     levelPlain: (g) => `Stufe ${g}`,
     next: "Die Eule zeigt dir, wo es weitergeht.",

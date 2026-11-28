@@ -15,7 +15,7 @@ export const IDEA = {
     { id: "3", group: "3", age: 9, params: { level: 3 } },
   ],
   start: { at: "1" }, // a concept starts at its smallest case, whatever the age
-  perspectives: ["sehen", "machen", "forschen", "anwenden", "pruefen"],
+  perspectives: ["machen", "sehen", "forschen", "anwenden", "pruefen"],
   cards: { forschen: "vorhersagen", pruefen: "nachpruefen" },
   tasks: { make: task, check },
 };

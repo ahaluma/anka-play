@@ -29,11 +29,12 @@ const el = (tag, cls, text) => {
 };
 const paras = (box, list) => (list ?? []).forEach((p) => box.append(el("p", "", p)));
 
-/** A list of ways to play: icon, name (from the shared words of the map), what it is. */
+/** A list of ways to play: icon, name (from the shared words of the map), what it is. In the order they are
+ *  written: at a station that is the order the child plays them (tools/check-engine.mjs checks it). */
 function waysList(ways, names) {
   const ul = el("ul", "ways");
-  for (const p of PERSPECTIVES) {
-    if (!ways?.[p.id]) continue;
+  for (const p of Object.keys(ways ?? {}).map((id) => PERSPECTIVES.find((x) => x.id === id)).filter(Boolean)) {
+    if (!ways[p.id]) continue;
     const li = el("li");
     const what = el("div");
     what.append(el("strong", "", names[p.id]), el("span", "", ways[p.id]));
