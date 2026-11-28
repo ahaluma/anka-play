@@ -47,7 +47,9 @@ node tools/serve.mjs        # then open http://localhost:8080 (Node 22 or newer,
   operations and the clearing share think-lab's market code in `boards/rechnung/`. `ideas/index.js` lists the ideas that are written.
 - `public/offen/`: the open Tal, a first try (`#/offen/teich`, a button under the Tal map): the pond as one scene
   without stations. The owl (`owl.js`) picks what happens from small skills counted right and wrong
-  (`skills.js`: sicher after 20 answers with 18 of the last 20 right; one star for every right answer).
+  (`skills.js`: sicher after 20 answers with 18 of the last 20 right; one star for every right answer, which
+  flies to the stars in the top bar; feedback is only „Richtig!" or „Falsch."). The figures (frog, lily pad, star)
+  are light vector shapes drawn once in `figures.js` and reused: few colours, no emoji, no picture files.
   `node tools/check-offen.mjs` plays it with a simulated child. German only so far.
 - `public/lang/`: shared words: numbers, praise, buttons, names of maps, stations and things.
 - `public/art/<map>/`: the map's scene and the stations' backgrounds.

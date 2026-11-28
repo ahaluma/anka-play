@@ -7,16 +7,22 @@
 //   - one star for every right answer;
 //   - counting beyond 10 starts slowly once counting to 10 is sicher (not at the pond yet).
 
-/** The skills of the pond, in learning order. `after`: the skill that must be sicher first (the chain of
- *  the concept; skills taught at other places, like "zerlegen bis 5" at the burrow, do not block here yet). */
+/** The skills of the pond, in learning order. `after`: the skills that must have been sicher first; none means
+ *  open from the start. Comparing runs beside counting from the first event: "mehr" and "gleich viele" at
+ *  once, "weniger" (the hardest word) once "mehr" is sicher. Skills taught at other places, like "zerlegen bis
+ *  5" at the burrow, do not block here yet. */
 export const SKILLS = [
-  { id: "zaehlen5", strand: "zahlen", after: null },
-  { id: "vergleich5", strand: "zahlen", after: "zaehlen5" },
-  { id: "zaehlen10", strand: "zahlen", after: "vergleich5" },
-  { id: "vergleich10", strand: "zahlen", after: "zaehlen10" },
-  { id: "umverteilen", strand: "zahlen", after: "vergleich10" },
-  { id: "fuenfer", strand: "zahlen", after: "umverteilen" },
-  { id: "zehner", strand: "zahlen", after: "fuenfer" },
+  { id: "zaehlen5", strand: "zahlen", after: [] },
+  { id: "mehr", strand: "zahlen", after: [] },
+  { id: "gleich", strand: "zahlen", after: [] },
+  { id: "weniger", strand: "zahlen", after: ["mehr"] },
+  { id: "legen", strand: "zahlen", after: [] },
+  { id: "zaehlen10", strand: "zahlen", after: ["zaehlen5"] },
+  { id: "dazu", strand: "zahlen", after: ["zaehlen5"] },
+  { id: "weg", strand: "zahlen", after: ["zaehlen5"] },
+  { id: "umverteilen", strand: "zahlen", after: ["gleich"] },
+  { id: "fuenfer", strand: "zahlen", after: ["zaehlen5", "umverteilen"] },
+  { id: "zehner", strand: "zahlen", after: ["zaehlen10", "fuenfer"] },
 ];
 
 export const WINDOW = 20; // the last answers that decide the stand
@@ -58,7 +64,7 @@ const rightOfLast = (s) => s.last.reduce((a, b) => a + b, 0);
 
 /**
  * The stand of a skill:
- *   zu       not yet: the skill before is not sicher
+ *   zu       not yet: a skill before was never sicher
  *   neu      open, no answer yet
  *   uebt     fewer than 20 answers, or under 90 % of the last 20
  *   sicher   at least 20 answers and 18 of the last 20 right
@@ -69,7 +75,7 @@ export function stand(rec, id, now = Date.now()) {
   const def = SKILLS.find((k) => k.id === id);
   const s = rec.skills[id];
   const n = s ? s.right + s.wrong : 0;
-  if (!n && def?.after && !rec.skills[def.after]?.wasSure) return "zu"; // opens once the one before was sicher
+  if (!n && def?.after.some((id) => !rec.skills[id]?.wasSure)) return "zu"; // opens once the ones before were sicher
   if (!n) return "neu";
   const r = rightOfLast(s);
   if (n >= MIN && r >= SURE) return s.sureSince && now - s.sureSince >= LONG_DAYS * DAY ? "lange" : "sicher";

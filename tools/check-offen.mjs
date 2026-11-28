@@ -1,7 +1,8 @@
 // Checks the owl of the open Tal (public/offen/): a simulated child plays many events at the pond.
 //   - a child who answers well reaches "sicher" in every skill of the pond, one after the other;
 //   - "Wie viele?" comes after almost every event at first and gets rarer once counting is sicher, but never stops;
-//   - the stands follow the rule: 20 answers, then 18 of the last 20.
+//   - the stands follow the rule: 20 answers, then 18 of the last 20;
+//   - while "mehr" or "weniger" is practised, the owl asks to point only at a clear difference (at least 2).
 //
 //   node tools/check-offen.mjs           prints a short report, exits 1 when a check fails
 
@@ -31,6 +32,8 @@ function play(events, skill, seed = 1) {
   const sureAt = {};
   for (let e = 0; e < events; e++) {
     const n = Owl.frogs(rec, rnd, now);
+    const goal = Owl.target(rec, n, rnd, now);
+    if (goal) S.answer(rec, "legen", rnd() < skill, now);
     const a = Math.floor(rnd() * (n + 1)); // the child spreads the frogs somehow
     let red = a;
     let green = n - a;
@@ -40,12 +43,19 @@ function play(events, skill, seed = 1) {
     block.events++;
     if (steps.some((s) => s.kind === "count")) block.withCount++;
     for (const st of steps) {
-      if (st.kind === "share" && red === green) continue;
+      if (st.kind === "share" && (red === green || (red + green) % 2)) continue;
+      if (st.kind === "partner" && !Owl.partnerSkill(red + green)) continue;
+      if (st.kind === "plus" && (st.pad === "rot" ? red : green) >= 10) continue;
+      if (st.kind === "minus" && !(st.pad === "rot" ? red : green)) continue;
+      if ((st.kind === "more" || st.kind === "less") && red === green) continue;
       const id = Owl.skillOf(st, red, green);
       check(S.isOpen(rec, id, now), `asked ${id} before it was open`);
+      if ((id === "mehr" || id === "weniger") && !S.isSure(rec, id, now)) check(Math.abs(red - green) >= 2, `${id} asked at ${red} against ${green} while practised`);
       S.answer(rec, id, rnd() < skill, now);
       block.questions++;
-      if (st.kind === "share") red = green = n / 2;
+      if (st.kind === "share") red = green = (red + green) / 2;
+      if (st.kind === "plus") st.pad === "rot" ? red++ : green++;
+      if (st.kind === "minus") st.pad === "rot" ? red-- : green--;
     }
     for (const { id } of S.SKILLS) if (S.isSure(rec, id, now) && sureAt[id] === undefined) sureAt[id] = e + 1;
   }
@@ -59,11 +69,13 @@ function play(events, skill, seed = 1) {
   check(S.stand(rec, "zaehlen5") === "uebt", "19 right answers are not yet sicher");
   S.answer(rec, "zaehlen5", true);
   check(S.stand(rec, "zaehlen5") === "sicher", "20 of 20 is sicher");
-  check(S.stand(rec, "vergleich5") === "neu", "the next skill opens when the one before is sicher");
-  check(S.stand(rec, "zaehlen10") === "zu", "the skill after that stays closed");
+  check(S.stand(rec, "zaehlen10") === "neu", "the next skill opens when the one before is sicher");
+  check(S.stand(rec, "mehr") === "neu" && S.stand(rec, "gleich") === "neu", "comparing is open from the start, beside counting");
+  check(S.stand(rec, "weniger") === "zu", "weniger waits until mehr is sicher");
+  check(S.stand(rec, "fuenfer") === "zu", "five friends wait for counting and sharing");
   for (let i = 0; i < 6; i++) S.answer(rec, "zaehlen5", false);
   check(S.stand(rec, "zaehlen5") === "wackelt", "6 wrong of the last 20 after sicher: wackelt");
-  check(S.isOpen(rec, "vergleich5"), "a skill that wackelt keeps the next one open");
+  check(S.isOpen(rec, "zaehlen10"), "a skill that wackelt keeps the next one open");
   check(rec.stars === 20, "one star for every right answer");
 }
 

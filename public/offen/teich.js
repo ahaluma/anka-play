@@ -16,8 +16,7 @@ import { voice } from "../engine/ui/voice.js";
 import { sound, celebrate } from "../engine/ui/sound.js";
 import * as S from "./skills.js";
 import * as Owl from "./owl.js";
-
-const FROG = "🐸";
+import { mountFigures, figure } from "./figures.js";
 const ZONES = ["gruen", "rot", "shore"];
 const OTHER = { rot: "gruen", gruen: "rot" };
 const w = (n) => helpers.w(n);
@@ -32,7 +31,10 @@ export async function render(root) {
   voice.aloud = profiles.readAloud(state.kid, "vorschule");
 
   // ---- The screen: top bar with the stars, question, caption, the pond, the answers, parents' table.
-  const starBox = el("span", "offen-stars", `⭐ ${num(rec.stars)}`);
+  mountFigures();
+  const starBox = el("span", "offen-stars");
+  const starNum = el("b", "", num(rec.stars));
+  starBox.append(figure("star"), starNum);
   starBox.setAttribute("aria-label", X.stars);
   root.append(topbar({ back: { href: href.map("tal"), label: T.labels.map, icon: undefined }, middle: el("h1", "title", X.title), extra: [starBox] }));
   const question = el("p", "question card");
@@ -56,6 +58,7 @@ export async function render(root) {
   const signs = {};
   for (const z of ZONES) {
     const box = el("div", `offen-zone z-${z}`);
+    if (z !== "shore") box.append(figure("pad", "offen-pad"));
     box.dataset.zone = z;
     box.setAttribute("aria-label", X.pads[z]);
     const frogs = el("div", "offen-frogs");
@@ -83,11 +86,14 @@ export async function render(root) {
       box.classList.toggle("tappable", mode === "pick" && z !== "shore");
       for (let i = 0; i < at[z]; i++) {
         if (hidden === z) {
-          frogs.append(el("span", "offen-frog bubble", "💧"));
+          const r = el("span", "offen-frog bubble");
+          r.append(figure("ring"));
+          frogs.append(r);
           continue;
         }
         const movable = (mode === "place" || (mode === "share" && z !== "shore"));
-        const f = movable ? button("offen-frog", X.frog, FROG) : el("span", "offen-frog", FROG);
+        const f = movable ? button("offen-frog", X.frog) : el("span", "offen-frog");
+        f.append(figure("frog"));
         if (movable) {
           f.dataset.zone = z;
           if (selected === z && i === at[z] - 1) f.classList.add("lifted");
@@ -117,7 +123,8 @@ export async function render(root) {
       let ghost = null;
       const moveTo = (ev) => {
         if (!ghost && Math.hypot(ev.clientX - start.x, ev.clientY - start.y) > 10) {
-          ghost = el("span", "offen-ghost", FROG);
+          ghost = el("span", "offen-ghost");
+          ghost.append(figure("frog"));
           document.body.append(ghost);
           f.classList.add("away");
         }
@@ -175,15 +182,43 @@ export async function render(root) {
   const count = (skill, right) => {
     S.answer(rec, skill, right);
     save();
-    starBox.textContent = `⭐ ${num(rec.stars)}`;
-    if (right) {
+    if (right) flyStar(rec.stars);
+    else starNum.textContent = num(rec.stars);
+    drawParents();
+  };
+
+  /** A right answer: a big star appears over the pond and flies to the stars in the top bar, which then count
+   *  one up. So the child sees the reward land (asked for 28.11.). */
+  function flyStar(total) {
+    const from = pond.getBoundingClientRect();
+    const to = starBox.getBoundingClientRect();
+    const star = el("span", "offen-fly");
+    star.append(figure("star"));
+    star.setAttribute("aria-hidden", "true");
+    const x0 = from.left + from.width / 2 - 30;
+    const y0 = from.top + from.height / 2 - 30;
+    star.style.transform = `translate(${x0}px, ${y0}px) scale(0.2)`;
+    document.body.append(star);
+    const land = () => {
+      star.remove();
+      starNum.textContent = num(total);
       starBox.classList.remove("pop");
       void starBox.offsetWidth;
       starBox.classList.add("pop");
-    }
-    drawParents();
-  };
-  const praise = () => voice.tell(pick(T.praise));
+    };
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return land();
+    requestAnimationFrame(() => {
+      star.style.transform = `translate(${x0}px, ${y0}px) scale(1.4)`;
+      setTimeout(() => {
+        star.classList.add("going");
+        star.style.transform = `translate(${to.left + 4}px, ${to.top - 6}px) scale(0.55)`;
+      }, 380);
+    });
+    setTimeout(land, 1250);
+  }
+  // Feedback is only "Richtig!" or "Falsch." (decided 28.11.); the stars in the top bar show what was earned.
+  const praise = () => voice.tell(X.right);
+  const oops = () => voice.tell(X.wrong);
 
   /** The owl counts along: every frog of the pad lights up with its number. */
   async function countAlong(pad) {
@@ -213,7 +248,7 @@ export async function render(root) {
       sound.wrong();
       shake(node);
       count(skill, false);
-      await voice.tell(pick(T.oops));
+      await oops();
       await countAlong(pad);
       showSign(pad);
       await voice.tell(X.countMiss(pad, k, w(k)));
@@ -221,38 +256,140 @@ export async function render(root) {
     zone[pad].box.classList.remove("asked");
   }
 
-  async function askCompare() {
+  /** A number question: the buttons 0 to top. Returns whether it was right; on a miss the owl says "Falsch."
+   *  and the caller reveals. */
+  async function askNumber(text, skill, truth, top) {
+    await voice.ask(text, true, true);
+    const { value, node } = await choose(Array.from({ length: top + 1 }, (_, i) => i));
+    below.replaceChildren();
+    const right = value === truth;
+    if (right) sound.right();
+    else {
+      sound.wrong();
+      shake(node);
+    }
+    count(skill, right);
+    await (right ? praise() : oops());
+    return right;
+  }
+  const topFor = (n) => (n <= 5 ? 5 : 10);
+
+  /** "Wie viele sind es insgesamt?" Both pads together; on a miss the owl counts all of them. */
+  async function askTotal() {
+    const n = at.rot + at.gruen;
+    zone.rot.box.classList.add("asked");
+    zone.gruen.box.classList.add("asked");
+    if (!(await askNumber(X.total, Owl.countSkill(n), n, topFor(n)))) {
+      await countAll();
+      await voice.tell(X.totalIs(n, w(n)));
+    }
+    zone.rot.box.classList.remove("asked");
+    zone.gruen.box.classList.remove("asked");
+  }
+
+  async function countAll() {
+    const frogs = [...zone.gruen.frogs.children, ...zone.rot.frogs.children];
+    for (let i = 0; i < frogs.length; i++) {
+      frogs[i].classList.add("counted");
+      frogs[i].dataset.n = num(i + 1);
+      await Promise.all([voice.tell(W(i + 1)), wait(450)]);
+    }
+  }
+
+  /** One more or one fewer: the pad's number is shown, a frog hops on or jumps off, "Wie viele sind es jetzt?" */
+  async function askOne(pad, more) {
+    showSign(pad);
+    zone[pad].box.classList.add("asked");
+    await wait(600);
+    at[pad] += more ? 1 : -1;
+    signs[pad].textContent = "?";
+    signs[pad].classList.remove("known");
+    sound.tap();
+    draw();
+    const frogs = zone[pad].frogs.children;
+    if (more && frogs.length) frogs[frogs.length - 1].classList.add("pop");
+    await voice.tell(more ? X.hopOn(pad) : X.hopOff(pad));
+    const k = at[pad];
+    if (!(await askNumber(X.now, more ? "dazu" : "weg", k, topFor(Math.max(k, k + (more ? 0 : 1)))))) {
+      await countAlong(pad);
+    }
+    showSign(pad);
+    zone[pad].box.classList.remove("asked");
+  }
+
+  // The frogs grumble once per event before the first comparing question; when both pads hold the same, they
+  // only joke.
+  let grumbled = false;
+  async function grumble() {
+    if (grumbled) return;
+    grumbled = true;
     const a = at.rot;
     const b = at.gruen;
-    const skill = Owl.compareSkill(a, b);
     const full = a === b ? pick(["rot", "gruen"]) : a > b ? "rot" : "gruen";
     zone[full].box.classList.add("grumble");
     await voice.tell(X.grumble);
     zone[full].box.classList.remove("grumble");
-    await voice.ask(X.compare, true, true);
-    mode = "pick";
-    draw();
-    const answer = await new Promise((resolve) => {
-      onPad = (pad) => resolve(pad);
-      choose(["same"], { same: X.same }).then(({ value }) => resolve(value));
-    });
-    onPad = null;
-    mode = "wait";
+  }
+
+  /** The owl explains with both numbers shown. */
+  async function explain(word) {
+    showSign("rot");
+    showSign("gruen");
+    const a = at.rot;
+    const b = at.gruen;
+    if (a === b) return voice.tell(X.sameMiss(a, w(a)));
+    const big = a > b ? "rot" : "gruen";
+    const pad = word === "weniger" ? OTHER[big] : big;
+    await voice.tell(X.diffMiss(pad, at[pad], w(at[pad]), at[OTHER[pad]], w(at[OTHER[pad]]), word ?? "mehr"));
+  }
+
+  async function askSame() {
+    await grumble();
+    await voice.ask(X.same, true, true);
+    const { value, node } = await choose(["ja", "nein"], { ja: X.yes, nein: X.no });
     below.replaceChildren();
-    draw();
-    const truth = a === b ? "same" : a > b ? "rot" : "gruen";
-    if (answer === truth) {
+    const same = at.rot === at.gruen;
+    if ((value === "ja") === same) {
       sound.right();
-      count(skill, true);
+      count("gleich", true);
       await praise();
-      if (truth === "same") await voice.tell(X.compareSame);
+      if (same) await voice.tell(X.joke);
     } else {
       sound.wrong();
-      count(skill, false);
-      showSign("rot");
-      showSign("gruen");
-      if (truth === "same") await voice.tell(X.compareSameMiss(a, w(a)));
-      else await voice.tell(X.compareMiss(truth, at[truth], w(at[truth]), at[OTHER[truth]], w(at[OTHER[truth]])));
+      shake(node);
+      count("gleich", false);
+      if (same) await explain();
+      else {
+        showSign("rot");
+        showSign("gruen");
+        await voice.tell(X.notSame(num(at.rot), num(at.gruen)));
+      }
+    }
+  }
+
+  /** "Zeig das Blatt, wo mehr (weniger) Frösche sitzen." word: "mehr" | "weniger" */
+  async function askPoint(word) {
+    await grumble();
+    await voice.ask(X.point(word), true, true);
+    mode = "pick";
+    draw();
+    const pad = await new Promise((resolve) => (onPad = resolve));
+    onPad = null;
+    mode = "wait";
+    draw();
+    const big = at.rot > at.gruen ? "rot" : "gruen";
+    const truth = word === "mehr" ? big : OTHER[big];
+    if (pad === truth) {
+      sound.right();
+      count(word, true);
+      zone[pad].box.classList.add("asked");
+      await praise();
+      zone[pad].box.classList.remove("asked");
+    } else {
+      sound.wrong();
+      shake(zone[pad].box);
+      count(word, false);
+      await explain(word);
     }
   }
 
@@ -269,16 +406,16 @@ export async function render(root) {
     selected = null;
     below.replaceChildren();
     draw();
-    showSign("rot");
-    showSign("gruen");
     if (at.rot === at.gruen) {
       sound.right();
       count("umverteilen", true);
-      await voice.tell(X.shareRight(at.rot, w(at.rot)));
+      await praise();
     } else {
       sound.wrong();
       count("umverteilen", false);
-      await voice.tell(X.shareMiss(num(at.rot), num(at.gruen)));
+      await oops();
+      showSign("rot");
+      showSign("gruen");
       // The owl lets one frog hop at a time until it is fair.
       while (at.rot !== at.gruen) {
         const from = at.rot > at.gruen ? "rot" : "gruen";
@@ -290,8 +427,15 @@ export async function render(root) {
         showSign("gruen");
         await wait(700);
       }
-      await voice.tell(X.shareRight(at.rot, w(at.rot)));
     }
+    // Ask instead of telling: how many sit on each pad now?
+    signs.rot.textContent = signs.gruen.textContent = "?";
+    signs.rot.classList.remove("known");
+    signs.gruen.classList.remove("known");
+    const k = at.rot;
+    if (!(await askNumber(X.each, Owl.countSkill(k), k, topFor(k)))) await countAlong("rot");
+    showSign("rot");
+    showSign("gruen");
   }
 
   async function askPartner(shown) {
@@ -307,19 +451,58 @@ export async function render(root) {
     await voice.ask(X.partner(n, shown, at[shown], w(at[shown]), pad), true, true);
     const { value, node } = await choose(Array.from({ length: n + 1 }, (_, i) => i));
     below.replaceChildren();
-    hidden = null;
-    draw();
-    showSign(pad);
-    if (value === at[pad]) {
-      sound.right();
-      count(skill, true);
-      await praise();
-    } else {
+    const right = value === at[pad];
+    if (right) sound.right();
+    else {
       sound.wrong();
       shake(node);
-      count(skill, false);
     }
-    await voice.tell(X.partnerMiss(W(at.rot), w(at.gruen), w(n)));
+    count(skill, right);
+    hidden = null;
+    draw();
+    await (right ? praise() : oops());
+    if (!right) await countAlong(pad);
+    showSign(pad);
+  }
+
+  /** "Setz drei Frösche auf die rote Seerose." The child places, then taps Fertig. The other frogs go on the
+   *  other pad afterwards. */
+  async function makeAmount({ pad, k }) {
+    await voice.ask(X.make(pad, k, w(k)), true, true);
+    if (!rec.stars) voice.tell(X.how);
+    const done = button("btn ok offen-done", X.done, X.done);
+    below.replaceChildren(done);
+    await new Promise((resolve) => done.addEventListener("click", resolve));
+    below.replaceChildren();
+    const right = at[pad] === k;
+    if (right) sound.right();
+    else sound.wrong();
+    count("legen", right);
+    await (right ? praise() : oops());
+    if (!right) {
+      // The owl puts it right, one frog at a time, and the child sees the number.
+      mode = "wait";
+      while (at[pad] !== k) {
+        if (at[pad] > k) {
+          at[pad]--;
+          at.shore++;
+        } else if (at.shore) {
+          at.shore--;
+          at[pad]++;
+        } else {
+          at[OTHER[pad]]--;
+          at[pad]++;
+        }
+        sound.tap();
+        draw();
+        await wait(600);
+      }
+      showSign(pad);
+      await voice.tell(X.madeIs(pad, k, w(k)));
+      mode = "place";
+      draw();
+    }
+    if (at.shore) await voice.ask(X.rest(OTHER[pad]), true, true);
   }
 
   // ---- One event, then the next.
@@ -328,6 +511,7 @@ export async function render(root) {
     below.replaceChildren();
     hidden = null;
     selected = null;
+    grumbled = false;
     at.rot = at.gruen = 0;
     for (const p of ["rot", "gruen"]) {
       signs[p].textContent = "?";
@@ -340,9 +524,13 @@ export async function render(root) {
     await voice.tell(X.arrive(at.shore));
     mode = "place";
     draw();
-    await voice.ask(X.place, true, true);
-    if (!rec.stars) voice.tell(X.how);
-    await new Promise((resolve) => (onMoved = () => at.shore === 0 && resolve()));
+    const goal = Owl.target(rec, at.shore);
+    if (goal) await makeAmount(goal);
+    else {
+      await voice.ask(X.place, true, true);
+      if (!rec.stars) voice.tell(X.how);
+    }
+    if (at.shore) await new Promise((resolve) => (onMoved = () => at.shore === 0 && resolve()));
     onMoved = () => {};
     mode = "wait";
     draw();
@@ -352,8 +540,12 @@ export async function render(root) {
     for (const step of steps) {
       voice.newTask();
       if (step.kind === "count") await askCount(step.pad);
-      else if (step.kind === "compare") await askCompare();
-      else if (step.kind === "share" && at.rot !== at.gruen) await askShare();
+      else if (step.kind === "total") await askTotal();
+      else if (step.kind === "plus" && at[step.pad] < 10) await askOne(step.pad, true);
+      else if (step.kind === "minus" && at[step.pad] > 0) await askOne(step.pad, false);
+      else if (step.kind === "same") await askSame();
+      else if ((step.kind === "more" || step.kind === "less") && at.rot !== at.gruen) await askPoint(step.kind === "more" ? "mehr" : "weniger");
+      else if (step.kind === "share" && at.rot !== at.gruen && (at.rot + at.gruen) % 2 === 0) await askShare();
       else if (step.kind === "partner" && Owl.partnerSkill(at.rot + at.gruen)) await askPartner(step.shown);
       await wait(300);
     }
@@ -387,6 +579,6 @@ export async function render(root) {
   event().catch(() => {});
   return () => {
     voice.clear();
-    document.querySelectorAll(".offen-ghost").forEach((g) => g.remove());
+    document.querySelectorAll(".offen-ghost, .offen-fly").forEach((g) => g.remove());
   };
 }

@@ -7,7 +7,7 @@
 //
 // VERSION and FILES are written by tools/check-offline.mjs --write (run it after changing any file).
 
-const VERSION = "56cb7feacc76";
+const VERSION = "9a403ffeb1ec";
 const CACHE = `anka-${VERSION}`;
 
 const FILES = [
@@ -384,6 +384,7 @@ const FILES = [
   "/lang/en.js",
   "/lang/ne.js",
   "/manifest.webmanifest",
+  "/offen/figures.js",
   "/offen/lang/de.js",
   "/offen/offen.css",
   "/offen/owl.js",
