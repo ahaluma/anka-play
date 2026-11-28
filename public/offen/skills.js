@@ -25,7 +25,16 @@ export const SKILLS = [
   { id: "umverteilen", strand: "zahlen", after: ["verteilen"] },
   { id: "fuenfer", strand: "zahlen", after: ["zaehlen5", "umverteilen"] },
   { id: "zehner", strand: "zahlen", after: ["zaehlen10", "fuenfer"] },
+  // Taught at the burrow (bau.js): how many are still inside, when some came out.
+  { id: "zerlegen5", strand: "zahlen", after: ["zaehlen5"], places: ["bau"] },
+  { id: "zerlegen10", strand: "zahlen", after: ["zerlegen5", "zaehlen10"], places: ["bau"] },
+  // Taught at the apple tree (apfelbaum.js): sharing apples among two or three hares, then what is left over.
+  { id: "teilen", strand: "zahlen", after: ["verteilen"], places: ["apfelbaum"] },
+  { id: "rest", strand: "zahlen", after: ["teilen"], places: ["apfelbaum"] },
 ];
+/** The skills a place practises: the pond's are the ones without `places`. Counting, comparing and laying an
+ *  amount come back everywhere, so a skill is the same skill at every place. */
+export const skillsAt = (place) => SKILLS.filter((k) => (k.places ?? ["teich"]).includes(place));
 
 export const WINDOW = 20; // the last answers that decide the stand
 export const MIN = 20; // answers before a skill can be sicher

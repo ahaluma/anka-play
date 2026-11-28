@@ -4,7 +4,10 @@
 //   - a child who answers well reaches "sicher" in every skill of the pond, one after the other;
 //   - "Wie viele?" comes after almost every event at first and gets rarer once counting is sicher, but never stops;
 //   - the stands follow the rule: 20 answers, then 18 of the last 20;
-//   - while "mehr" or "weniger" is practised, the owl asks to point only at a clear difference (at least 2).
+//   - while "mehr" or "weniger" is practised, the owl asks to point only at a clear difference (at least 2);
+//   - every place links to exactly two others, both ways (places.js);
+//   - the apple tree and the burrow: their worlds refuse impossible events, and a child who did the pond well
+//     becomes sicher in sharing, the rest, and splitting there.
 //
 //   node tools/check-offen.mjs           prints a short report, exits 1 when a check fails
 
@@ -13,6 +16,9 @@ import * as Owl from "../public/offen/owl.js";
 import * as World from "../public/offen/world.js";
 import { RUNS } from "../public/offen/runs.js";
 import { QUESTIONS, byId, skillOf, answerOf } from "../public/offen/questions.js";
+import { PLACES, placeById } from "../public/offen/places.js";
+import * as A from "../public/offen/apfel.js";
+import * as H from "../public/offen/hasen.js";
 
 const RUN = RUNS.teich;
 
@@ -144,13 +150,13 @@ function play(events, skill, seed = 1) {
 
 const good = play(600, 0.95);
 console.log("A child with 95 % right, 600 events at the pond:");
-console.log("  sicher after event: " + S.SKILLS.map(({ id }) => `${id} ${good.sureAt[id] ?? "–"}`).join(", "));
+console.log("  sicher after event: " + S.skillsAt("teich").map(({ id }) => `${id} ${good.sureAt[id] ?? "–"}`).join(", "));
 console.log("  events with \"Wie viele?\" per block of 20: " + good.blocks.map((b) => b.withCount).join(" "));
 console.log("  first \"Verteil gerecht\" at event " + good.sharedAt);
 const short = good.lengths.filter((n) => n < RUN.min).length;
 console.log(`  questions per event: ${Math.min(...good.lengths)} to ${Math.max(...good.lengths)}, fewer than ${RUN.min} in ${short} of ${good.lengths.length}`);
 check(short < good.lengths.length / 20, "too many short events");
-for (const { id } of S.SKILLS) check(good.sureAt[id] !== undefined, `${id} never became sicher`);
+for (const { id } of S.skillsAt("teich")) check(good.sureAt[id] !== undefined, `${id} never became sicher`);
 const firstPlay = play(5, 0.95, 3);
 const first = firstPlay.blocks[0].withCount / firstPlay.blocks[0].events;
 const late = good.blocks.slice(-5).reduce((n, b) => n + b.withCount, 0) / good.blocks.slice(-5).reduce((n, b) => n + b.events, 0);
@@ -158,9 +164,61 @@ check(first >= 0.9, `"Wie viele?" at first after ${Math.round(first * 100)} % of
 check(late < 0.5 && late > 0, `"Wie viele?" late after ${Math.round(late * 100)} % of events, wanted rarer but not never`);
 
 const weak = play(200, 0.6, 7);
-console.log("A child with 60 % right, 200 events: " + S.report(weak.rec).map((r) => `${r.id} ${r.stand}`).join(", "));
+console.log("A child with 60 % right, 200 events: " + S.report(weak.rec).filter((r) => S.skillsAt("teich").some((k) => k.id === r.id)).map((r) => `${r.id} ${r.stand}`).join(", "));
 const lucky = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].filter((seed) => S.isSure(play(100, 0.6, seed).rec, "zaehlen5")).length;
 check(lucky <= 1, `a child with 60 % right is sicher in counting in ${lucky} of 10 plays`);
+
+// The places: each links to exactly two others, both ways, and every place can be reached.
+{
+  for (const p of PLACES) {
+    check(p.links.length === 2 && new Set(p.links).size === 2 && !p.links.includes(p.id), `${p.id} must link to two other places`);
+    for (const l of p.links) check(placeById[l]?.links.includes(p.id), `${p.id} -> ${l} has no way back`);
+  }
+  const seen = new Set(["teich"]);
+  const todo = ["teich"];
+  while (todo.length) for (const l of placeById[todo.pop()].links) if (!seen.has(l)) seen.add(l), todo.push(l);
+  check(seen.size === PLACES.length, "a place that cannot be reached from the pond");
+  const { default: T } = await import("../public/offen/lang/de.js");
+  for (const p of PLACES) check(T.places[p.id], `no name for ${p.id}`);
+  for (const k of S.SKILLS) check(T.parents.skills[k.id], `no parents' name for ${k.id}`);
+}
+
+// The apple tree and the burrow, played by a child who is sicher at the pond.
+{
+  const rnd = seeded(11);
+  const now = Date.now();
+  const rec = good.rec;
+  rec.wrongRow = 0;
+  const w = A.create();
+  check(w.send({ type: "wachsen", n: 3 }) && w.send({ type: "pflueck" }) && w.state.basket === 1, "an apple is picked");
+  check(!w.send({ type: "gib", to: 0 }), "no hare to give to");
+  check(w.send({ type: "hasen", n: 2 }) && w.send({ type: "gib", to: 1 }) && !w.send({ type: "gib", to: 0 }), "only apples in the basket can be given");
+  const h = H.create();
+  check(h.send({ type: "wohnen", n: 4 }) && h.send({ type: "raus" }) && !h.send({ type: "wohnen", n: 0 }), "hares live and come out");
+  check(!H.create().send({ type: "raus" }), "nobody inside to come out");
+  let shares = 0;
+  let rests = 0;
+  for (let e = 0; e < 300; e++) {
+    const p = A.plan(rec, rnd, now);
+    check(p.pick >= 1 && p.pick < p.n + 1 && p.n <= 10, `apple tree: ${p.n} apples, pick ${p.pick}`);
+    if (p.share) {
+      shares++;
+      check(p.pick === p.share.hares * p.share.each + p.share.rest && p.share.rest < p.share.hares, "apple tree: the picked apples do not share as planned");
+      check(S.isOpen(rec, "teilen", now), "sharing apples before it was open");
+      S.answer(rec, "teilen", rnd() < 0.95, now);
+      if (p.share.rest) {
+        rests++;
+        check(S.isOpen(rec, "rest", now), "a rest before it was open");
+        S.answer(rec, "rest", rnd() < 0.95, now);
+      }
+    }
+    const b = H.plan(rec, rnd, now);
+    check(b.out >= 1 && b.out < b.n && (b.askOut || b.askIn || b.change), "burrow: an event without a question");
+    if (b.askIn) S.answer(rec, H.splitSkill(b.n), rnd() < 0.95, now);
+  }
+  console.log(`Apple tree and burrow, 300 events after the pond: ${shares} with sharing, ${rests} with a rest; ` + ["teilen", "rest", "zerlegen5", "zerlegen10"].map((id) => `${id} ${S.stand(rec, id, now)}`).join(", "));
+  for (const id of ["teilen", "rest", "zerlegen5", "zerlegen10"]) check(rec.skills[id]?.wasSure, `${id} never became sicher at its place`);
+}
 
 if (failed) process.exit(1);
 console.log("ok");

@@ -49,6 +49,33 @@ export default {
   masked: (pad) => `Wie viele waren auf der ${PAD[pad]}?`,
   partner: (n, pad, k, w, other) => `${n === 5 ? "Fünf" : "Zehn"} Frösche. Auf der ${PAD[pad]} ${k === 1 ? "einer" : k === 0 ? "keiner" : w}. Wie viele auf der ${PAD[other]}?`,
 
+  // Die Orte und ihre Portale (places.js): jeder Ort führt direkt zu zwei anderen.
+  places: { teich: "Teich", apfelbaum: "Apfelbaum", bau: "Bau" },
+  portals: "Wege zu anderen Orten",
+
+  apfel: {
+    title: "Apfelbaum",
+    apple: "Apfel",
+    basket: "Korb",
+    hare: "Hase",
+    pick: (k, w) => (k === 1 ? "Pflück einen Apfel!" : `Pflück ${w} Äpfel!`),
+    how: "Apfel antippen, dann Fertig.",
+    left: "Wie viele hängen noch am Baum?",
+    share: "Gib jedem Hasen gleich viele!",
+    shareRest: "Was übrig bleibt, bleibt im Korb.",
+    shareHow: "Hasen antippen, dann Fertig.",
+    each: "Wie viele hat jeder Hase?",
+    rest: "Wie viele bleiben übrig?",
+  },
+
+  bau: {
+    title: "Bau",
+    live: (n, w) => `${w[0].toUpperCase()}${w.slice(1)} Hasen wohnen hier.`,
+    out: "Wie viele sind draußen?",
+    inside: "Wie viele sind noch drin?",
+    now: "Wie viele sind jetzt draußen?",
+  },
+
   next: "Weiter",
   owlNext: "Gleich kommen neue Frösche.",
 
@@ -71,6 +98,10 @@ export default {
       umverteilen: "umverteilen, bis es gleich ist",
       fuenfer: "Fünferfreunde",
       zehner: "Zehnerfreunde",
+      zerlegen5: "zerlegen bis 5: wie viele noch drin",
+      zerlegen10: "zerlegen bis 10",
+      teilen: "gerecht teilen",
+      rest: "teilen mit Rest",
     },
     stands: { zu: "noch nicht dran", neu: "neu", uebt: "übt", sicher: "sicher", lange: "lange sicher", wackelt: "wackelt" },
   },
