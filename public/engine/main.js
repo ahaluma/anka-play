@@ -9,6 +9,8 @@ const root = document.getElementById("app");
 const screens = {
   home: () => import("./ui/home.js"),
   teich: () => import("../offen/teich.js"),
+  apfelbaum: () => import("../offen/apfelbaum.js"),
+  bau: () => import("../offen/bau.js"),
 };
 
 let cleanup = null;

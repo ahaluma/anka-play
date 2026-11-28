@@ -3,7 +3,8 @@
 // (<symbol>, drawn with <use>), so even a slow phone draws a pond full of frogs easily.
 //
 //   mountFigures()        once per screen: the shared definitions
-//   figure("frog")        an <svg> that shows one figure; also "star", "ring" (a frog under water), "mask", "pad"
+//   figure("frog")        an <svg> that shows one figure; also "apple", "hare", "star", "ring" (a frog under water),
+//                         "mask", "pad"
 
 const NS = "http://www.w3.org/2000/svg";
 
@@ -16,6 +17,21 @@ const SYMBOLS = {
       <circle cx="12.5" cy="14" r="3.4" class="f-eye"/><circle cx="27.5" cy="14" r="3.4" class="f-eye"/>
       <circle cx="13.2" cy="14.4" r="1.7" class="f-ink"/><circle cx="28.2" cy="14.4" r="1.7" class="f-ink"/>
       <path d="M14.5 24.5q5.5 4 11 0" class="f-line"/>
+    </symbol>`,
+  // A round apple with a stalk and a leaf.
+  apple: `<symbol id="fig-apple" viewBox="0 0 40 40">
+      <path d="M20 12C13 7 5 11 5 21c0 9 6 16 11 16c2 0 3-1 4-1s2 1 4 1c5 0 11-7 11-16c0-10-8-14-15-9Z" class="f-apple"/>
+      <path d="M20 12q0-5 3-8" class="f-stalk"/><path d="M22 8q5-5 10-2q-4 5-10 2Z" class="f-leaf"/>
+      <ellipse cx="13" cy="19" rx="2.5" ry="4" class="f-shine"/>
+    </symbol>`,
+  // A hare seen from the front: two long ears, a round head, eyes, a pink nose.
+  hare: `<symbol id="fig-hare" viewBox="0 0 40 40">
+      <ellipse cx="14" cy="11" rx="4" ry="10" class="f-fur"/><ellipse cx="26" cy="11" rx="4" ry="10" class="f-fur"/>
+      <ellipse cx="14" cy="12" rx="1.8" ry="7" class="f-ear"/><ellipse cx="26" cy="12" rx="1.8" ry="7" class="f-ear"/>
+      <ellipse cx="20" cy="28" rx="13" ry="11" class="f-fur"/>
+      <ellipse cx="20" cy="32" rx="7" ry="5" class="f-muzzle"/>
+      <circle cx="15" cy="25" r="2" class="f-ink"/><circle cx="25" cy="25" r="2" class="f-ink"/>
+      <ellipse cx="20" cy="30" rx="2.2" ry="1.6" class="f-nose"/>
     </symbol>`,
   star: `<symbol id="fig-star" viewBox="0 0 40 40">
       <path d="M20 3.5l4.9 10.4 11.4 1.4-8.4 7.8 2.2 11.3L20 28.8 9.9 34.4l2.2-11.3-8.4-7.8 11.4-1.4z" class="f-star"/>

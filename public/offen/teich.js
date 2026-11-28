@@ -21,6 +21,7 @@ import * as World from "./world.js";
 import { RUNS } from "./runs.js";
 import { skillOf, answerOf } from "./questions.js";
 import { mountFigures, figure } from "./figures.js";
+import { portals } from "./portals.js";
 const ZONES = ["gruen", "rot", "shore"];
 const OTHER = { rot: "gruen", gruen: "rot" };
 const w = (n) => helpers.w(n);
@@ -53,7 +54,7 @@ export async function render(root) {
   pond.append(water, shoreBox);
   board.append(pond, below);
   const parents = el("details", "offen-parents card");
-  root.append(question, caption, board, parents);
+  root.append(question, caption, board, portals("teich", X.places, X.portals), parents);
   voice.mount({ caption, question });
 
   // ---- The frogs: how many sit where, and the zones that draw them.
@@ -713,7 +714,8 @@ export async function render(root) {
     const head = el("tr");
     for (const h of P.head) head.append(el("th", "", h));
     table.append(head);
-    for (const r of S.report(rec)) {
+    const here = S.skillsAt("teich").map((k) => k.id);
+    for (const r of S.report(rec).filter((r) => here.includes(r.id))) {
       const tr = el("tr", `st-${r.stand}`);
       tr.append(el("td", "", P.skills[r.id]), el("td", "", num(r.right)), el("td", "", num(r.wrong)), el("td", "", r.lastN ? P.of(num(r.lastRight), num(r.lastN)) : "–"), el("td", "", P.stands[r.stand]));
       table.append(tr);
