@@ -269,6 +269,22 @@ function play(rec, def, p, right, { age = 4, size = 5 } = {}) {
   check(!mem.has("anka:old") && mem.get("other") === "x" && mem.get("anka:lang") === '"ne"' && mem.has("anka:learner:k1"), "loading replaces AnkaPlay's entries, keeps the language and leaves others alone");
 }
 
+// ---------- The info page for parents (/info/): every station is explained, with the ways it really has
+{
+  const { STATIONS, MAPS } = await import("../public/content/universe.js");
+  const info = (await import("../public/info/lang/de.js")).default;
+  for (const s of STATIONS) {
+    const t = info.stations[s.id];
+    check(t?.idea && t?.learns, `the info page explains station ${s.id}`);
+    if (!t) continue;
+    const has = s.ideas.flatMap((i) => defs[i]?.perspectives ?? []);
+    const ways = Object.keys(t.ways ?? info.maps[`${s.map}Ways`] ?? {});
+    check(ways.every((w) => has.includes(w)), `the info page names only the ways station ${s.id} has`);
+    if (t.ways) check(has.every((w) => ways.includes(w)), `the info page names every way of station ${s.id}`);
+  }
+  for (const m of MAPS) check(info.maps[m.id] && info.ageOf[m.id], `the info page describes map ${m.id}`);
+}
+
 console.log(`${checks} checks.`);
 for (const p of problems) console.log(`PROBLEM: ${p}`);
 if (!problems.length) console.log("The engine keeps the rules.");
