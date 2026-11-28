@@ -214,13 +214,29 @@ check(lucky <= 1, `a child with 60 % right is sicher in counting in ${lucky} of 
         S.answer(rec, "rest", rnd() < 0.95, now);
       }
     }
+    check(A.questions(p) >= A.MIN_Q && A.questions(p) <= A.MAX_Q, `apple tree: ${A.questions(p)} questions in one event`);
+    check(!p.oneFalls || !p.share, "apple tree: one more apple falls while the basket is shared");
     const b = H.plan(rec, rnd, now);
-    check(b.out >= 1 && b.out < b.n && (b.askOut || b.askIn || b.change), "burrow: an event without a question");
-    if (b.askIn) S.answer(rec, H.splitSkill(b.n), rnd() < 0.95, now);
+    check(b.out >= 1 && b.out < b.n, `burrow: ${b.out} of ${b.n} come out`);
+    check(b.steps.length >= H.MIN_Q && b.steps.length <= H.MAX_Q, `burrow: ${b.steps.length} questions in one event`);
+    let outside = b.out;
+    for (const st of b.steps) {
+      if (st.change) outside += st.change === "raus" ? 1 : -1;
+      check(outside >= 0 && outside <= b.n, "burrow: more hares out than live here");
+      if (st.ask === "in") S.answer(rec, st.skill, rnd() < 0.95, now);
+    }
   }
   console.log(`Apple tree and burrow, 300 events after the pond: ${shares} with sharing, ${rests} with a rest; ` + ["teilen", "rest", "zerlegen5", "zerlegen10"].map((id) => `${id} ${S.stand(rec, id, now)}`).join(", "));
   check(firsts > 50 && firsts < 160, `"Wie viele Äpfel hängen auf dem Baum?" in ${firsts} of 300 rounds for a sure counter, wanted about every third`);
   check(A.plan(S.valid(null), rnd, now).askFirst, "a new child is always asked how many apples hang on the tree");
+  for (let e = 0; e < 200; e++) {
+    const fresh = S.valid(null);
+    const ap = A.plan(fresh, rnd, now);
+    const bp = H.plan(fresh, rnd, now);
+    check(A.questions(ap) >= A.MIN_Q, `apple tree: a new child gets only ${A.questions(ap)} questions`);
+    check(bp.steps.length >= H.MIN_Q, `burrow: a new child gets only ${bp.steps.length} questions`);
+    check(bp.steps.every((st) => S.isOpen(fresh, st.skill, now)), "burrow: a new child is asked for a skill that is not open");
+  }
   for (const id of ["teilen", "rest", "zerlegen5", "zerlegen10"]) check(rec.skills[id]?.wasSure, `${id} never became sicher at its place`);
 }
 

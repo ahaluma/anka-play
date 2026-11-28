@@ -4,6 +4,8 @@
 // State: { tree, basket, hares: [a, b, …] } apples on the tree, in the basket, in front of each hare.
 // Events:
 //   { type: "wachsen", n }        n apples grow on the tree (a new event starts; hares and basket empty)
+//   { type: "leer" }              a new event starts with a bare tree (hares and basket empty)
+//   { type: "wachs" }             one apple grows on the tree (the child taps the crown)
 //   { type: "pflueck" }           one apple from the tree into the basket
 //   { type: "zurueck" }           one apple from the basket back onto the tree
 //   { type: "hasen", n }          n hares come to share (two, later three)
@@ -15,6 +17,8 @@ import { isOpen, isSure, often, stand } from "./skills.js";
 
 const RULES = {
   wachsen: (s, e) => (e.n > 0 ? { tree: e.n, basket: 0, hares: [] } : null),
+  leer: () => ({ tree: 0, basket: 0, hares: [] }),
+  wachs: (s) => (s.tree < 10 ? { ...s, tree: s.tree + 1 } : null),
   pflueck: (s) => (s.tree > 0 ? { ...s, tree: s.tree - 1, basket: s.basket + 1 } : null),
   zurueck: (s) => (s.basket > 0 ? { ...s, tree: s.tree + 1, basket: s.basket - 1 } : null),
   hasen: (s, e) => (e.n >= 2 && e.n <= 3 ? { ...s, hares: Array(e.n).fill(0) } : null),
@@ -48,10 +52,23 @@ const DRAN = ["neu", "uebt", "wackelt"];
 export const FALL = 0.2;
 const between = (rnd, lo, hi) => lo + Math.floor(rnd() * (hi - lo + 1));
 export const countSkill = (k) => (k <= 5 ? "zaehlen5" : "zaehlen10");
+/** The skill of "Wie viele sind jetzt im Korb?" after one more apple fell: one more, once it is open. */
+export const oneMoreSkill = (rec, k, now = Date.now()) => (isOpen(rec, "dazu", now) ? "dazu" : countSkill(k));
+
+/** Questions per event at the tree (picking not counted): long sequences, but not overdone. */
+export const MIN_Q = 3;
+export const MAX_Q = 5;
+
+/** How many questions a plan asks. */
+export const questions = (p) => [p.askFirst, p.askBasket, p.askLeft, p.oneFalls, !!p.share].filter(Boolean).length;
 
 /**
- * One event at the tree:
- *   { n, pick, share: null | { hares, each, rest }, askLeft, fall, askFirst }
+ * One event at the tree. It starts with the child tapping the bare crown until n apples have grown (nothing to
+ * get wrong), then:
+ *   { n, pick, share: null | { hares, each, rest }, askFirst, askBasket, askLeft, oneFalls, fall }
+ * in this order: "Wie viele Äpfel hängen auf dem Baum?" (askFirst), picking, "Wie viele Äpfel sind im Korb?"
+ * (askBasket), "Wie viele hängen noch am Baum?" (askLeft), one more apple falls: "Wie viele sind jetzt im
+ * Korb?" (oneFalls, one more), sharing among hares. At least MIN_Q questions per event.
  * n apples grow; "Pflück vier Äpfel." (Menge legen) takes `pick` of them, or about every fifth time (fall)
  * they fall into the basket by themselves; "Wie viele hängen noch?" (counting)
  * when askLeft. Once sharing fairly is open (sicher at the pond first), the owl often brings hares: the picked
@@ -85,5 +102,18 @@ export function plan(rec, rnd = Math.random, now = Date.now()) {
   // every third round.
   const first = countSkill(n);
   const askFirst = isOpen(rec, first, now) && (DRAN.includes(stand(rec, first, now)) || rnd() < 1 / 3);
-  return { n, pick, share, askLeft, fall, askFirst };
+  // Fill up to MIN_Q questions: the basket, one more falling (not while sharing: the basket goes to the hares),
+  // what still hangs, and the first question last, so it keeps its own rhythm (every third round once sure).
+  const p = { n, pick, share, askFirst, askBasket: rnd() < 0.3, askLeft, oneFalls: false, fall };
+  const basketSkill = countSkill(pick);
+  if (!isOpen(rec, basketSkill, now)) p.askBasket = false;
+  const fill = [
+    () => isOpen(rec, basketSkill, now) && !p.askBasket && (p.askBasket = true),
+    () => !share && !p.oneFalls && (p.oneFalls = true),
+    () => isOpen(rec, skill, now) && !p.askLeft && (p.askLeft = true),
+    () => isOpen(rec, first, now) && !p.askFirst && (p.askFirst = true),
+  ];
+  for (const f of fill) if (questions(p) < MIN_Q) f();
+  if (questions(p) > MAX_Q) p.askBasket = false;
+  return p;
 }

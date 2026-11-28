@@ -16,7 +16,6 @@ export default {
   frog: "Frosch",
 
   place: "Setz die Frösche auf die Seerosen.",
-  how: "Frosch antippen, dann Seerose.",
 
   right: "Richtig!",
   wrong: "Falsch.",
@@ -35,12 +34,9 @@ export default {
   same: "Sitzen auf beiden gleich viele?",
   yes: "Ja",
   no: "Nein",
-  sameMiss: (k, w) => `Doch, gleich viele: auf jeder ${k === 1 ? "einer" : w}.`,
   point: (word) => `Wo sind ${word}? Zeig!`,
-  diffMiss: (pad, m, mw, l, lw, word) => `Auf der ${PAD[pad]} sind ${word}: ${mw} und ${l === 0 ? "keiner" : lw}.`,
 
   share: "Mach es gerecht!",
-  shareHow: "Frösche umsetzen, dann Fertig.",
   done: "Fertig",
 
   look: (pad) => `Schau auf die ${TO[pad]}!`,
@@ -59,26 +55,24 @@ export default {
     basket: "Korb",
     hare: "Hase",
     pick: (k, w) => (k === 1 ? "Pflück einen Apfel!" : `Pflück ${w} Äpfel!`),
-    how: "Apfel antippen, dann Fertig.",
     first: "Wie viele Äpfel hängen auf dem Baum?",
     left: "Wie viele hängen noch am Baum?",
+    inBasket: "Wie viele Äpfel sind im Korb?",
+    basketNow: "Wie viele sind jetzt im Korb?",
     share: "Gib jedem Hasen gleich viele!",
     shareRest: "Was übrig bleibt, bleibt im Korb.",
-    shareHow: "Hasen antippen, dann Fertig.",
     each: "Wie viele hat jeder Hase?",
     rest: "Wie viele bleiben übrig?",
   },
 
   bau: {
     title: "Bau",
-    live: (n, w) => `${w[0].toUpperCase()}${w.slice(1)} Hasen wohnen hier.`,
     out: "Wie viele sind draußen?",
     inside: "Wie viele sind noch drin?",
     now: "Wie viele sind jetzt draußen?",
   },
 
   next: "Weiter",
-  owlNext: "Gleich kommen neue Frösche.",
 
   parents: {
     title: "Für Eltern: was gezählt wird",

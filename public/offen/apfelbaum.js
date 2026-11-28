@@ -1,4 +1,5 @@
-// The apple tree of the open Tal (#/apfelbaum). Apples grow: "Wie viele Äpfel hängen auf dem Baum?" comes first,
+// The apple tree of the open Tal (#/apfelbaum). The child taps the bare crown and apples grow, one per tap, until
+// the tree is full: nothing to get wrong. "Wie viele Äpfel hängen auf dem Baum?" comes first,
 // every round while counting is practised, then about every third round. Then the child picks as many as the
 // owl says (or they fall by themselves), then:
 // "Wie viele hängen noch?" Once sharing fairly is sicher at the pond, hares come and the picked apples are
@@ -32,7 +33,7 @@ export async function render(root) {
   ground.append(basket, hares);
   scene.append(tree, ground);
 
-  let mode = "wait"; // wait | pick | share
+  let mode = "wait"; // wait | grow | pick | share
   const apple = (cls, label, onTap) => {
     const b = onTap ? button(`apfel-apple ${cls}`, label) : el("span", `apfel-apple ${cls}`);
     b.append(figure("apple"));
@@ -50,8 +51,17 @@ export async function render(root) {
     }
   };
 
+  // Growing: every tap on the crown lets one apple grow, until the owl's number is reached. The crown bobs while
+  // it waits for taps, so no words are needed.
+  let onGrow = null;
+  crown.addEventListener("click", () => {
+    if (mode !== "grow" || document.body.classList.contains("listening")) return;
+    onGrow?.();
+  });
+
   function draw() {
     const s = world.state;
+    crown.classList.toggle("offer", mode === "grow");
     crown.replaceChildren();
     for (let i = 0; i < s.tree; i++) crown.append(apple("on-tree", Y.apple, mode === "pick" ? tapped({ type: "pflueck" }) : null));
     basket.replaceChildren(el("span", "apfel-basket-bowl"));
@@ -89,7 +99,6 @@ export async function render(root) {
     mode = "pick";
     draw();
     await voice.ask(Y.pick(p.pick, w(p.pick)), true, true);
-    if (!rec.stars) voice.tell(Y.how);
     await done();
     mode = "wait";
     draw();
@@ -111,8 +120,21 @@ export async function render(root) {
     treeSign.textContent = "?";
     treeSign.classList.remove("known");
     scene.classList.remove("bye");
+    // The bare tree: the child taps, the apples grow. No question, no wrong answer.
+    send({ type: "leer" });
+    mode = "grow";
+    draw();
+    await new Promise((resolve) => {
+      onGrow = () => {
+        if (world.state.tree >= p.n || !send({ type: "wachs" })) return;
+        sound.tap();
+        draw();
+        crown.lastChild?.classList.add("pop");
+        if (world.state.tree >= p.n) resolve();
+      };
+    });
+    onGrow = null;
     mode = "wait";
-    send({ type: "wachsen", n: p.n });
     draw();
     await wait(800);
 
@@ -142,6 +164,15 @@ export async function render(root) {
       await wait(300);
     } else await pickApples(p);
 
+    // "Wie viele Äpfel sind im Korb?"
+    if (p.askBasket) {
+      voice.newTask();
+      const k = world.state.basket;
+      basket.classList.add("asked");
+      if (!(await askNumber(Y.inBasket, A.countSkill(k), k))) await countAlong([...basket.querySelectorAll(".apfel-apple")]);
+      basket.classList.remove("asked");
+    }
+
     // "Wie viele hängen noch?"
     if (p.askLeft) {
       voice.newTask();
@@ -153,6 +184,22 @@ export async function render(root) {
     treeSign.textContent = num(world.state.tree);
     treeSign.classList.add("known");
 
+    // One more apple falls by itself (seen, not told): "Wie viele sind jetzt im Korb?"
+    if (p.oneFalls) {
+      voice.newTask();
+      await wait(500);
+      send({ type: "pflueck" });
+      sound.tap();
+      draw();
+      basket.querySelector(".apfel-pile")?.lastChild?.classList.add("fall");
+      treeSign.textContent = num(world.state.tree);
+      await wait(700);
+      const k = world.state.basket;
+      basket.classList.add("asked");
+      if (!(await askNumber(Y.basketNow, A.oneMoreSkill(rec, k), k))) await countAlong([...basket.querySelectorAll(".apfel-apple")]);
+      basket.classList.remove("asked");
+    }
+
     // Hares come: "Gib jedem gleich viele."
     if (p.share) {
       voice.newTask();
@@ -163,7 +210,6 @@ export async function render(root) {
       draw();
       await voice.ask(Y.share, true, true);
       if (p.share.rest) await voice.ask(Y.shareRest, true);
-      if (!rec.skills.teilen) voice.tell(Y.shareHow);
       await done();
       mode = "wait";
       draw();
