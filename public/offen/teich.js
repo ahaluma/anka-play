@@ -318,6 +318,7 @@ export async function render(root) {
   async function askOne(q, pad) {
     const more = q.id === "einer-dazu";
     showSign(pad);
+    const before = at[pad];
     zone[pad].box.classList.add("asked");
     await wait(600);
     if (!more) {
@@ -339,6 +340,7 @@ export async function render(root) {
       await countAlong(pad);
     }
     showSign(pad);
+    if ((before === 5 || before === 10) && S.isSure(rec, more ? "dazu" : "weg")) await sayAloud(before, 1, !more);
     zone[pad].box.classList.remove("asked");
   }
 
@@ -471,12 +473,19 @@ export async function render(root) {
    *  "Fünf plus zwei ist sieben." The caption shows it in digits, 5 + 2 = 7: heard and seen, not the same twice. */
   async function sumAloud() {
     const full = ["rot", "gruen"].find((p) => at[p] === 5 || at[p] === 10);
-    if (!full || !at[OTHER[full]] || Math.random() >= 0.4) return;
-    const a = at[full];
-    const b = at[OTHER[full]];
+    if (!full || !at[OTHER[full]] || !S.isSure(rec, "zaehlen10")) return;
+    await sayAloud(at[full], at[OTHER[full]], false);
+  }
+
+  /** "Fünf minus eins ist vier." aloud, 5 − 1 = 4 in digits. Plus and minus come in subtly: only from 100 stars
+   *  on, only once the child does it with the frogs for sure (one more / one fewer sicher; for 5 + 2, counting to
+   *  10 sicher), and then only about 3 times in 10 when it fits. Never asked, never counted. */
+  async function sayAloud(a, b, minus, chance = 0.3) {
+    if (rec.stars < 100 || Math.random() >= chance) return;
+    const c = minus ? a - b : a + b;
     voice.newTask();
-    caption.textContent = `${num(a)} + ${num(b)} = ${num(a + b)}`;
-    await voice.tell(X.sum(w(a), w(b), w(a + b)), false);
+    caption.textContent = `${num(a)} ${minus ? "−" : "+"} ${num(b)} = ${num(c)}`;
+    await voice.tell(X.sum(w(a), w(b), w(c), minus), false);
     await wait(800);
   }
 
