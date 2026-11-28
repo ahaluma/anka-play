@@ -9,4 +9,12 @@ export const PLACES = [
   { id: "bau", links: ["teich", "apfelbaum"] },
 ];
 
-export const placeById = Object.fromEntries(PLACES.map((p) => [p.id, p]));
+/** The memory world (memory/): three tables in a ring, the same rule. */
+export const MEMORY_PLACES = [
+  { id: "memory-zahlen", links: ["memory-formen", "memory-rechnen"] },
+  { id: "memory-formen", links: ["memory-rechnen", "memory-zahlen"] },
+  { id: "memory-rechnen", links: ["memory-zahlen", "memory-formen"] },
+];
+
+/** Every place of every world, by id. A portal leads only within its own world. */
+export const placeById = Object.fromEntries([...PLACES, ...MEMORY_PLACES].map((p) => [p.id, p]));

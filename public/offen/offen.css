@@ -139,3 +139,7 @@ button.apfel-apple { cursor: pointer; }
 @keyframes apple-fall { from { transform: translateY(-150px) rotate(-30deg); } 80% { transform: translateY(6px); } }
 .apfel-apple.fall { animation: apple-fall 0.45s ease-in; }
 @media (prefers-reduced-motion: reduce) { .apfel-apple.fall { animation: none; } }
+.m-card { fill: #fff; stroke: var(--o-ink); stroke-width: 1.5; }
+.m-num { font: 900 17px system-ui, sans-serif; text-anchor: middle; fill: var(--o-ink); }
+.m-sum { font: 900 11px system-ui, sans-serif; text-anchor: middle; fill: var(--o-ink); }
+.m-dot { fill: var(--o-ink); } .m-blue { fill: #2f6fd6; }

@@ -32,6 +32,8 @@ export default {
     whereTo: "Where are we going today?",
     pond: "The pond",
     pondNote: "Count, place and share frogs",
+    memory: "Memory",
+    memoryNote: "Numbers, shapes and sums: find the pairs",
     soon: "Soon",
     privacy: "Everything stays on this device. No ads, no tracking.",
     privacyLink: "Privacy",

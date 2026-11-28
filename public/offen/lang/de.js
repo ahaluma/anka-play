@@ -60,6 +60,7 @@ export default {
     hare: "Hase",
     pick: (k, w) => (k === 1 ? "Pflück einen Apfel!" : `Pflück ${w} Äpfel!`),
     how: "Apfel antippen, dann Fertig.",
+    first: "Wie viele Äpfel hängen auf dem Baum?",
     left: "Wie viele hängen noch am Baum?",
     share: "Gib jedem Hasen gleich viele!",
     shareRest: "Was übrig bleibt, bleibt im Korb.",

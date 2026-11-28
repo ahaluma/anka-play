@@ -1,4 +1,6 @@
-// The apple tree of the open Tal (#/apfelbaum). Apples grow, the child picks as many as the owl says, then:
+// The apple tree of the open Tal (#/apfelbaum). Apples grow: "Wie viele Äpfel hängen auf dem Baum?" comes first,
+// every round while counting is practised, then about every third round. Then the child picks as many as the
+// owl says (or they fall by themselves), then:
 // "Wie viele hängen noch?" Once sharing fairly is sicher at the pond, hares come and the picked apples are
 // shared: "Gib jedem gleich viele.", later with a rest: "Wie viele bleiben übrig?". The world (apfel.js) changes
 // only through events; the screen draws its state.
@@ -113,6 +115,20 @@ export async function render(root) {
     send({ type: "wachsen", n: p.n });
     draw();
     await wait(800);
+
+    // The first question: "Wie viele Äpfel hängen auf dem Baum?" Every round while counting is practised,
+    // then about every third round (apfel.js plan).
+    if (p.askFirst) {
+      crown.classList.add("asked");
+      if (!(await askNumber(Y.first, A.countSkill(p.n), p.n))) await countAlong([...crown.children]);
+      crown.classList.remove("asked");
+      treeSign.textContent = num(p.n);
+      treeSign.classList.add("known");
+      await wait(500);
+      treeSign.textContent = "?";
+      treeSign.classList.remove("known");
+      voice.newTask();
+    }
 
     if (p.fall) {
       // The apples fall into the basket by themselves, one after the other.

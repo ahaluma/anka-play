@@ -11,6 +11,7 @@ const screens = {
   teich: () => import("../offen/teich.js"),
   apfelbaum: () => import("../offen/apfelbaum.js"),
   bau: () => import("../offen/bau.js"),
+  memory: () => import("../memory/memory.js"),
 };
 
 let cleanup = null;

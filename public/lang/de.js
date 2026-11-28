@@ -34,6 +34,8 @@ export default {
     whereTo: "Wohin geht es heute?",
     pond: "Der Teich",
     pondNote: "Frösche zählen, setzen und verteilen",
+    memory: "Memory",
+    memoryNote: "Zahlen, Formen und Rechnen: finde die Paare",
     soon: "Bald",
     privacy: "Alles bleibt auf diesem Gerät. Keine Werbung, kein Tracking.",
     privacyLink: "Datenschutz",

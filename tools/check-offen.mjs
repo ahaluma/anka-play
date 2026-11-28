@@ -198,8 +198,10 @@ check(lucky <= 1, `a child with 60 % right is sicher in counting in ${lucky} of 
   check(!H.create().send({ type: "raus" }), "nobody inside to come out");
   let shares = 0;
   let rests = 0;
+  let firsts = 0;
   for (let e = 0; e < 300; e++) {
     const p = A.plan(rec, rnd, now);
+    if (p.askFirst) firsts++;
     check(p.pick >= 1 && p.pick < p.n + 1 && p.n <= 10, `apple tree: ${p.n} apples, pick ${p.pick}`);
     if (p.share) {
       shares++;
@@ -217,6 +219,8 @@ check(lucky <= 1, `a child with 60 % right is sicher in counting in ${lucky} of 
     if (b.askIn) S.answer(rec, H.splitSkill(b.n), rnd() < 0.95, now);
   }
   console.log(`Apple tree and burrow, 300 events after the pond: ${shares} with sharing, ${rests} with a rest; ` + ["teilen", "rest", "zerlegen5", "zerlegen10"].map((id) => `${id} ${S.stand(rec, id, now)}`).join(", "));
+  check(firsts > 50 && firsts < 160, `"Wie viele Äpfel hängen auf dem Baum?" in ${firsts} of 300 rounds for a sure counter, wanted about every third`);
+  check(A.plan(S.valid(null), rnd, now).askFirst, "a new child is always asked how many apples hang on the tree");
   for (const id of ["teilen", "rest", "zerlegen5", "zerlegen10"]) check(rec.skills[id]?.wasSure, `${id} never became sicher at its place`);
 }
 
