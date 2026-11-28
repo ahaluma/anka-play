@@ -126,7 +126,9 @@ span.offen-frog { cursor: default; }
 .apfel-trunk { position: absolute; bottom: 0; left: 50%; width: 30px; height: 70px; margin-left: -15px; border-radius: 6px 6px 0 0; background: var(--o-trunk); }
 .apfel-crown { --a: clamp(30px, 9vw, 44px); position: relative; display: flex; flex-wrap: wrap; justify-content: center; align-content: center; gap: 4px; width: min(86%, 300px); min-height: 160px; margin-bottom: 50px; padding: 22px 26px; border-radius: 50% 50% 46% 46% / 55% 55% 45% 45%; background: var(--o-crown); }
 .apfel-ground { display: flex; flex-direction: column; gap: 10px; padding: 10px; }
-.apfel-basket { position: relative; display: grid; place-items: center; min-height: 64px; padding: 8px 10px 12px; border-radius: 0 0 26px 26px; background: #e9cf9c; box-shadow: inset 0 6px 0 #d4b47a; }
+/* The basket: narrower than the scene, a darker wicker brown with a rim and a handle, so it reads as a basket. */
+.apfel-basket { position: relative; align-self: center; display: grid; place-items: center; width: min(62%, 250px); min-height: 64px; margin-top: 22px; padding: 12px 10px 12px; border-radius: 4px 4px 30px 30px; background: #c99a5e; box-shadow: inset 0 7px 0 #a5753e; }
+.apfel-basket::before { content: ""; position: absolute; left: 18%; right: 18%; bottom: 100%; height: 26px; border: 6px solid #a5753e; border-bottom: 0; border-radius: 60px 60px 0 0; }
 .apfel-basket-bowl { display: none; }
 .apfel-pile { --a: clamp(24px, 7vw, 34px); display: flex; flex-wrap: wrap; justify-content: center; gap: 2px; min-height: var(--a); }
 .apfel-apple { display: block; width: var(--a); height: var(--a); padding: 0; border: 0; background: none; }
