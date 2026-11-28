@@ -27,7 +27,26 @@ const top = (k) => (k <= 5 ? 5 : 10);
 const pads = ["rot", "gruen"];
 const OTHER = { rot: "gruen", gruen: "rot" };
 
+const fewOn = (s) => pads.filter((p) => s[p] >= 1 && s[p] <= 5);
+
 export const QUESTIONS = [
+  // ---- merken: the frogs on one pad put on their funny masks and are invisible. "Wie viele waren es?"
+  // Only now and then (chance), and first in a run, while the child has just seen them.
+  {
+    id: "maske",
+    position: "merken",
+    skill: "merken",
+    chance: 0.5,
+    fits: (s) => fewOn(s).length > 0,
+    params: (s, rnd) => {
+      const can = fewOn(s);
+      return can[Math.floor(rnd() * can.length)];
+    },
+    answer: (s, p) => s[p],
+    choices: () => 5,
+    form: "number",
+    say: "masked",
+  },
   // ---- zählen: how many on one pad
   {
     id: "wie-viele",

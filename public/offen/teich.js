@@ -80,6 +80,7 @@ export async function render(root) {
   let mode = "wait"; // wait | place | share | pick (tap a pad to answer) | hidden
   let selected = null; // the zone of the tapped frog
   let hidden = null; // the pad whose frogs dove
+  let masked = null; // the pad whose frogs wear their masks: { pad, on } on = invisible behind them
   let onMoved = () => {};
   let onPad = null;
 
@@ -88,6 +89,13 @@ export async function render(root) {
       const { box, frogs } = zone[z];
       frogs.replaceChildren();
       box.classList.toggle("under", hidden === z);
+      if (masked?.pad === z && masked.on) {
+        // Invisible: one mask floats over the pad, never one per frog, so nothing gives the number away.
+        const m = el("span", "offen-masked");
+        m.append(figure("mask"));
+        frogs.append(m);
+        continue;
+      }
       box.classList.toggle("target", (mode === "place" || mode === "share") && selected !== null && selected !== z && (mode !== "share" || z !== "shore"));
       box.classList.toggle("tappable", mode === "pick" && z !== "shore");
       for (let i = 0; i < at[z]; i++) {
@@ -100,6 +108,7 @@ export async function render(root) {
         const movable = (mode === "place" || (mode === "share" && z !== "shore"));
         const f = movable ? button("offen-frog", X.frog) : el("span", "offen-frog");
         f.append(figure("frog"));
+        if (masked?.pad === z) f.append(figure("mask", "on-frog"));
         if (movable) {
           f.dataset.zone = z;
           if (selected === z && i === at[z] - 1) f.classList.add("lifted");
@@ -446,6 +455,31 @@ export async function render(root) {
     showSign("gruen");
   }
 
+  /** The frogs on one pad put on their funny masks and are invisible. "Wie viele waren es?" Then masks off. */
+  async function askMask(q, pad) {
+    const k = answerOf(q, at, pad);
+    zone[pad].box.classList.add("asked");
+    await voice.tell(X.look(pad));
+    await wait(1500);
+    masked = { pad, on: false };
+    sound.tap();
+    draw();
+    await voice.tell(X.maskOn);
+    await wait(500);
+    masked.on = true;
+    draw();
+    zone[pad].box.classList.remove("asked");
+    const right = await askNumber(X.masked, skillOf(q, at, pad), k, q.choices(at, pad));
+    masked.on = false;
+    draw();
+    await wait(700);
+    masked = null;
+    sound.tap();
+    draw();
+    if (!right) await countAlong(pad);
+    showSign(pad);
+  }
+
   async function askPartner(q, shown) {
     const n = world.total;
     const skill = skillOf(q, at, shown);
@@ -558,6 +592,7 @@ export async function render(root) {
     voice.newTask();
     below.replaceChildren();
     hidden = null;
+    masked = null;
     selected = null;
     grumbled = false;
     world.send({ type: "platsch" });
@@ -593,6 +628,7 @@ export async function render(root) {
     // The GameRun of the pond: the owl picks questions of the catalogue per position, or skips a position. Each
     // is checked again against the world as it is now, since the child's answers and the owl's help change it.
     const ASK = {
+      maske: askMask,
       "wie-viele": askCount,
       zusammen: askTotal,
       "gleich-viele": askSame,

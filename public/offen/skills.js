@@ -18,6 +18,7 @@ export const SKILLS = [
   { id: "weniger", strand: "zahlen", after: ["mehr"] },
   { id: "legen", strand: "zahlen", after: [] },
   { id: "zaehlen10", strand: "zahlen", after: ["zaehlen5"] },
+  { id: "merken", strand: "zahlen", after: ["zaehlen5"] },
   { id: "dazu", strand: "zahlen", after: ["zaehlen5"] },
   { id: "weg", strand: "zahlen", after: ["zaehlen5"] },
   { id: "verteilen", strand: "zahlen", after: ["gleich"] },

@@ -3,7 +3,7 @@
 // (<symbol>, drawn with <use>), so even a slow phone draws a pond full of frogs easily.
 //
 //   mountFigures()        once per screen: the shared definitions
-//   figure("frog")        an <svg> that shows one figure; also "star", "ring" (a frog under water), "pad"
+//   figure("frog")        an <svg> that shows one figure; also "star", "ring" (a frog under water), "mask", "pad"
 
 const NS = "http://www.w3.org/2000/svg";
 
@@ -23,6 +23,11 @@ const SYMBOLS = {
   // Where a frog dove: two rings on the water.
   ring: `<symbol id="fig-ring" viewBox="0 0 40 40">
       <ellipse cx="20" cy="22" rx="13" ry="5" class="f-ring"/><ellipse cx="20" cy="22" rx="6.5" ry="2.4" class="f-ring"/>
+    </symbol>`,
+  // A funny eye mask, drawn in the frog's own box so it sits right over the eyes; the eyes look through the holes.
+  mask: `<symbol id="fig-mask" viewBox="0 0 40 40">
+      <path d="M3 12Q20 5 37 12Q39.5 20.5 31 21.8Q24 22.6 20 18.6Q16 22.6 9 21.8Q.5 20.5 3 12ZM9 14.5a3.5 2.8 0 1 0 7 0a3.5 2.8 0 1 0-7 0ZM24 14.5a3.5 2.8 0 1 0 7 0a3.5 2.8 0 1 0-7 0Z" fill-rule="evenodd" class="f-mask"/>
+      <path d="M3 13.5l-2.5-2.5M37 13.5l2.5-2.5" class="f-line"/>
     </symbol>`,
   // A lily pad with its notch, stretched to the size of its place.
   pad: `<symbol id="fig-pad" viewBox="0 0 200 120" preserveAspectRatio="none">

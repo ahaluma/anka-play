@@ -11,6 +11,7 @@ export const RUNS = {
     place: "teich",
     start: ["frei", "legen", "verteilen"],
     positions: [
+      { id: "merken", questions: ["maske"], most: 1 },
       { id: "zaehlen", questions: ["wie-viele"], most: 2 },
       { id: "zusammen", questions: ["zusammen"], most: 1 },
       { id: "vergleichen", questions: ["gleich-viele", "zeig-mehr", "zeig-weniger"], most: 3 },

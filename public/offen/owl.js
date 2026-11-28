@@ -100,14 +100,16 @@ export function plan(run, rec, scene, rnd = Math.random, now = Date.now()) {
           spare.push({ q, p: s.rot >= s.gruen ? "rot" : "gruen", at, last: true });
           continue;
         }
-        const pads = dran(rec, skill, now) ? ["rot", "gruen"] : [rnd() < 0.5 ? "rot" : "gruen"];
+        // A pad whose frogs were just guessed behind the masks is known: count the other one.
+        const known = chosen.find((c) => c.q.id === "maske")?.p;
+        const pads = (dran(rec, skill, now) ? ["rot", "gruen"] : [rnd() < 0.5 ? "rot" : "gruen"]).filter((x) => x !== known);
         for (const p of pads) here.push({ q, p, at });
         continue;
       }
       const p = q.params ? q.params(s, rnd, ctx) : null;
       const skill = skillOf(q, s, p);
       if (!isOpen(rec, skill, now)) continue;
-      if (want(skill)) here.push({ q, p, at });
+      if (want(skill) && rnd() < (q.chance ?? 1)) here.push({ q, p, at });
       else spare.push({ q, p, at, skill });
     }
     // One more or one fewer, not both. Comparing may ask all three in a row.

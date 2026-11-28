@@ -46,6 +46,9 @@ export default {
   shareHow: "Frösche umsetzen, dann Fertig.",
   done: "Fertig",
 
+  look: (pad) => `Schau auf die ${TO[pad]}!`,
+  maskOn: "Masken auf!",
+  masked: "Wie viele waren es?",
   dive: (pad) => `Die auf der ${PAD[pad]} tauchen unter.`,
   partner: (n, pad, k, w, other) => `${n === 5 ? "Fünf" : "Zehn"} Frösche. Auf der ${PAD[pad]} ${k === 1 ? "einer" : k === 0 ? "keiner" : w}. Wie viele auf der ${PAD[other]}?`,
 
@@ -60,6 +63,7 @@ export default {
     of: (r, n) => `${r} von ${n}`,
     skills: {
       zaehlen5: "zählen bis 5",
+      merken: "Menge merken bis 5",
       mehr: "zeigen, wo mehr sind",
       gleich: "gleich viele oder nicht",
       weniger: "zeigen, wo weniger sind",
