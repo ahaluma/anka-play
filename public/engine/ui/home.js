@@ -1,4 +1,5 @@
-// Home: who plays (each child with their owl), the language switch, and the door to the pond.
+// Home: who plays (each child with their owl), the language switch, the door to the pond and the door to
+// the memory world.
 // A guest (no child chosen) plays with the owl without a hat.
 
 import { shared as T, LANGS, lang, setLang, num } from "../i18n.js";
@@ -10,6 +11,7 @@ import { sound } from "./sound.js";
 import { voice } from "./voice.js";
 import { kidForm } from "./kidform.js";
 import { owl } from "./owl.js";
+import { miniScene } from "../../offen/portals.js";
 
 export function render(root) {
   const top = el("div", "topbar");
@@ -39,6 +41,10 @@ export function render(root) {
   const art = el("span", "door-art", "");
   door.append(art, el("strong", "", T.home.pond), el("small", "", T.home.pondNote));
   doors.append(door);
+  // The memory world: its own door, the number table first.
+  const memDoor = link("door card door-memory", href.memory());
+  memDoor.append(miniScene("memory-rechnen", "door-art"), el("strong", "", T.home.memory), el("small", "", T.home.memoryNote));
+  doors.append(memDoor);
 
   const foot = el("p", "foot", T.home.privacy + " ");
   foot.append(link("", "/datenschutz/", T.home.privacyLink));

@@ -541,3 +541,5 @@ button.stone.loose.used { visibility: hidden; }
 .think-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin: 10px 0 0; padding: 0; list-style: none; }
 .think-row li { font-size: 28px; filter: grayscale(1); opacity: 0.3; }
 .think-row li.got { filter: none; opacity: 1; }
+.door-memory .door-art { display: grid; place-items: center; padding: 6px; background: #ece6fb; }
+.door-memory .door-art svg { width: 100%; height: auto; }

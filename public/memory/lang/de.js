@@ -1,0 +1,11 @@
+// Texte der Memory-Welt, Deutsch. Nichts wird vorgelesen: die Karten zeigen, was sie sind.
+export default {
+  tables: { zahlen: "Zahlen-Memory", formen: "Formen-Memory", rechnen: "Rechen-Memory" },
+  places: { "memory-zahlen": "Zahlen", "memory-formen": "Formen", "memory-rechnen": "Rechnen" },
+  portals: "Andere Memory-Tische",
+  card: "Karte",
+  open: "Finde die Paare.",
+  down: "Dreh zwei Karten um. Finde die Paare.",
+  solved: "Alle Paare gefunden!",
+  next: "Weiter",
+};

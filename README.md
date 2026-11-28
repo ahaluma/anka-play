@@ -29,6 +29,8 @@ node tools/serve.mjs        # then open http://localhost:8080 (Node 22 or newer,
     `owl.js` which question comes next, `runs.js`;
   - the apple tree: `apfelbaum.js` the screen, `apfel.js` its world and plan; the burrow: `bau.js`, `hasen.js`;
     both use the shared frame `scene.js`.
+- `public/memory/`: the memory world, its own door on Home: three tables in a ring (numbers and dots, shapes,
+  sums and their results from plus up to divided). `deck.js` the boards and levels, `memory.js` the screen.
 - `public/datenschutz/`: the privacy policy.
 - `public/sw.js`: offline after the first visit.
 
@@ -36,6 +38,7 @@ node tools/serve.mjs        # then open http://localhost:8080 (Node 22 or newer,
 
 ```sh
 node tools/check-offen.mjs     # simulated children at all places, the owl's choices, the portals, the texts
+node tools/check-memory.mjs    # the memory boards: one partner per card, right sums, levels
 node tools/check-offline.mjs   # sw.js lists every file (after a change: --write)
 ```
 
