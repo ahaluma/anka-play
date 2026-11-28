@@ -335,7 +335,7 @@ export async function render(root) {
     if (more && frogs.length) frogs[frogs.length - 1].classList.add("pop");
     await wait(500);
     const k = answerOf(q, at, pad);
-    if (!(await askNumber(X.now, skillOf(q, at, pad), k, q.choices(at, pad)))) {
+    if (!(await askNumber(X.now(pad), skillOf(q, at, pad), k, q.choices(at, pad)))) {
       await countAlong(pad);
     }
     showSign(pad);
@@ -493,7 +493,7 @@ export async function render(root) {
     masked.on = true;
     draw();
     zone[pad].box.classList.remove("asked");
-    const right = await askNumber(X.masked, skillOf(q, at, pad), k, q.choices(at, pad));
+    const right = await askNumber(X.masked(pad), skillOf(q, at, pad), k, q.choices(at, pad));
     masked.on = false;
     draw();
     await wait(700);

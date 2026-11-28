@@ -2,6 +2,7 @@
 // Bild und Ton ergänzen sich: Was das Bild allein zeigt (Frösche kommen, einer springt ins Wasser, Masken auf,
 // alle platschen ins Wasser, die Zahl auf dem Schild), wird nicht auch noch gesagt. Gesagt wird, was das Kind
 // zum Handeln braucht (Frage, Anweisung), Richtig/Falsch, und Wörter, die das Bild nicht trägt (mehr, übrig).
+// Jede Frage nach einer Zahl nennt den Ort: auf der roten, auf beiden zusammen, auf jeder Seerose.
 // w = Zahlwort ("drei"), W = großgeschrieben ("Drei").
 const PAD = { rot: "roten", gruen: "grünen" }; // auf der roten Seerose
 const TO = { rot: "rote", gruen: "grüne" }; // auf die rote Seerose
@@ -24,9 +25,9 @@ export default {
   shareOut: "Verteil gerecht! Auf jede Seerose gleich viele.",
   shareOutRest: "Verteil gerecht! Was übrig ist, bleibt am Ufer.",
   leftIs: "Einer bleibt übrig.",
-  total: "Wie viele zusammen?",
-  now: "Wie viele jetzt?",
-  each: "Wie viele auf jeder?",
+  total: "Wie viele auf beiden zusammen?",
+  now: (pad) => `Wie viele jetzt auf der ${PAD[pad]}?`,
+  each: "Wie viele auf jeder Seerose?",
   count: (pad) => `Wie viele auf der ${PAD[pad]}?`,
 
   grumble: "Hier ist es zu voll!",
@@ -44,7 +45,7 @@ export default {
 
   look: (pad) => `Schau auf die ${TO[pad]}!`,
   won: (pad) => `Yeaaah! ${pad === "rot" ? "Rot" : "Grün"} hat gewonnen!`,
-  masked: "Wie viele waren es?",
+  masked: (pad) => `Wie viele waren auf der ${PAD[pad]}?`,
   partner: (n, pad, k, w, other) => `${n === 5 ? "Fünf" : "Zehn"} Frösche. Auf der ${PAD[pad]} ${k === 1 ? "einer" : k === 0 ? "keiner" : w}. Wie viele auf der ${PAD[other]}?`,
 
   next: "Weiter",
