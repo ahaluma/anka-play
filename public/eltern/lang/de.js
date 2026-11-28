@@ -49,7 +49,7 @@ export default {
   // Die Karten
   howTitle: "So lesen Sie den Bericht",
   how: [
-    "Jede Station übt eine Idee auf bis zu fünf Arten:",
+    "Jede Station übt eine Idee (manche zwei), jede Idee auf bis zu fünf Arten:",
     "Ein Stern ⭐ heißt: eine Runde mit 4 von 5 Aufgaben auf Anhieb richtig, auf der Stufe, auf der Ihr Kind gerade ist. 🌱 heißt: schon gespielt, noch ohne Stern. Mit genug Sternen geht es eine Stufe höher; nach zwei schwierigen Runden eine zurück.",
     "„Geschafft“ heißt: jede Art der Station hat ihren Stern auf der höchsten Stufe. Spiele wie das Zahlen-Memory sind immer offen und haben keine Sterne.",
   ],
@@ -58,8 +58,8 @@ export default {
   mapNotPlayed: "Noch nicht gespielt",
   mapNotes: {
     tal: "Für 3 bis 6 Jahre: Zahlen, Formen, Muster, mit Dingen und Bildern, ohne Rechenzeichen. Eine Runde hat 3 Aufgaben, ab 7 Jahren 5.",
-    fluss: "Schule: Zahlenstrahl, Zehner und Einer, Formen, Uhr und Kalender. Öffnet sich ab 6 Jahren oder wenn Wiese und Teich im Tal geschafft sind.",
-    feld: "Schule: Plus, Minus, Mal, Geteilt, Geld und Rechengeschichten. Hier gibt es Teilstufen: Eine gute Runde führt eine Teilstufe weiter, Sterne gibt es auf der obersten, wenn alles gemischt kommt. Was noch wackelt, kommt öfter wieder.",
+    fluss: "Schule: Zahlenstrahl und Runden, Zehner und Einer bis zur Million, Formen und Körper, Größen und Einheiten, Fläche und Pläne, Würfelgebäude, Daten und Zufall, Uhr und Kalender. Öffnet sich ab 6 Jahren oder wenn Wiese und Teich im Tal geschafft sind.",
+    feld: "Schule: Plus, Minus, Mal, Geteilt, Geld, Rechengeschichten und schriftliches Rechnen (die Scheune öffnet sich mit 8 Jahren oder wenn Plus und Minus bis 100 geschafft sind). Hier gibt es Teilstufen: Eine gute Runde führt eine Teilstufe weiter, Sterne gibt es auf der obersten, wenn alles gemischt kommt. Was noch wackelt, kommt öfter wieder.",
     berg: "Knobeln für 9 bis 12 Jahre: zwölf Lager mit je einer Denkstrategie und der Gipfel. Ein Lager kommt aus dem Nebel, wenn die darunter geschafft sind. Nach jeder Runde fragt der Berg: Wie war das?",
   },
 

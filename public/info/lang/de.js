@@ -5,7 +5,7 @@
 export default {
   title: "Was Ihr Kind lernt",
   intro: [
-    "AnkaPlay ist ein Mathe- und Denkspiel für Kinder von 3 bis 12 Jahren. Es hat vier Welten. Jede Welt ist eine Landschaft mit Stationen, und jede Station übt eine Idee aus der Mathematik.",
+    "AnkaPlay ist ein Mathe- und Denkspiel für Kinder von 3 bis 12 Jahren. Es hat vier Welten. Jede Welt ist eine Landschaft mit Stationen. Jede Station übt eine Idee aus der Mathematik, manche zwei.",
     "Auf dieser Seite steht, was Ihr Kind an jeder Station tut und was es dabei lernt. Am Ende steht, warum das Spiel so aufgebaut ist.",
   ],
   contents: "Inhalt",
@@ -16,7 +16,7 @@ export default {
   basics: {
     h: "So spielt Ihr Kind",
     p: [
-      "Ihr Kind wählt auf der Karte eine Station. Dort spielt es eine Runde: 5 Aufgaben, im Tal 3. Jede Station hat bis zu fünf Spielarten. Jede Spielart zeigt dieselbe Idee von einer anderen Seite:",
+      "Ihr Kind wählt auf der Karte eine Station. Dort spielt es eine Runde: 5 Aufgaben, im Tal 3. Jede Idee hat bis zu fünf Spielarten. Jede Spielart zeigt dieselbe Idee von einer anderen Seite:",
     ],
     after: [
       "Eine Runde mit 4 von 5 Aufgaben auf Anhieb richtig bringt einen Stern ⭐ für diese Spielart. Hat eine Station genug Sterne, kommen größere Zahlen oder schwerere Aufgaben. Nach zwei schwachen Runden geht es eine Stufe zurück. Nach drei Fehlern hintereinander kommt eine leichtere Aufgabe.",
@@ -41,11 +41,11 @@ export default {
       "Alles wird vorgelesen. Solange die Stimme spricht, wartet das Spiel mit dem Tippen (höchstens 10 Sekunden). Ihr Kind antwortet, indem es auf Bilder und Dinge tippt; es muss nichts schreiben. Fast jede Aufgabe hat ein Bild. Für jede gespielte Runde wächst an der Station eine Blume.",
     ],
     fluss: [
-      "Der Fluss ist für Schulkinder: Zahlen bis 1000, Formen, Messen, Uhr und Kalender. Er öffnet sich mit 6 Jahren, oder früher, wenn die Wiese und der Teich im Tal geschafft sind.",
+      "Der Fluss ist für Schulkinder: der Zahlenstrahl und das Runden, Zehner und Einer bis zur Million, Formen und Körper, Größen und Einheiten, Fläche und Pläne, Würfelgebäude, Daten und Zufall, Uhr und Kalender. Er öffnet sich mit 6 Jahren, oder früher, wenn die Wiese und der Teich im Tal geschafft sind.",
       "Hier liest Ihr Kind selbst; vorgelesen wird nur, wenn es auf 🔊 tippt (oder wenn Sie im Elternbereich „Überall vorlesen“ einschalten). Bis 10 tippt es die Antwort an, ab 20 tippt es sie auf einem Zahlenfeld ein. Nach dem zweiten Fehler zeigt ein Tipp, wo es hinschauen soll, danach hilft ein Bild.",
     ],
     feld: [
-      "Am Feld wird gerechnet: Plus, Minus, Mal, Geteilt, Geld und Rechengeschichten. Es öffnet sich wie der Fluss mit 6 Jahren; über die Brücke vom Steg kommt man hinüber.",
+      "Am Feld wird gerechnet: Plus, Minus, Mal, Geteilt, Geld, Rechengeschichten und schriftliches Rechnen. Es öffnet sich wie der Fluss mit 6 Jahren; über die Brücke vom Steg kommt man hinüber.",
       "Beim ersten Weg über die Brücke stellt das Spiel drei kurze Aufgaben, zum Beispiel 3 + 6, 8 + 5 und 23 + 40. Die Antworten legen nur fest, wo Ihr Kind anfängt; der Weg ist immer offen.",
       "An allen vier Rechen-Stationen gibt es dieselben fünf Spielarten:",
     ],
@@ -63,7 +63,7 @@ export default {
     ],
     berg: [
       "Der Berg ist für Kinder von 9 bis 12 Jahren, die gern knobeln. Die Aufgaben sind wie bei Mathe-Wettbewerben für dieses Alter. Der Berg öffnet sich mit 9 Jahren. Früher öffnet er sich, wenn die Grundlagen am Fluss und am Feld geschafft sind (Steg, Blumenfeld, Apfelbaum, Beeren), oder wenn Sie ihn im Elternbereich öffnen.",
-      "Der Berg hat zwölf Lager und den Gipfel. Jedes Lager übt eine Denkstrategie. Ein Lager kommt aus dem Nebel, wenn die Lager darunter geschafft sind. Jedes Lager hat vier Stufen, und jedes Kind beginnt bei Stufe 1. Die Seiten sehen aus wie ein kariertes Heft, und der Text ist das Tagebuch einer Expedition.",
+      "Der Berg hat zwölf Lager und den Gipfel. Jedes Lager übt eine Denkstrategie. Ein Lager kommt aus dem Nebel, wenn die Lager darunter geschafft sind. Jedes Lager hat vier Stufen (unten bei jedem Lager), und jedes Kind beginnt bei Stufe 1. Die Seiten sehen aus wie ein kariertes Heft, und der Text ist das Tagebuch einer Expedition.",
       "Die fünf Spielarten heißen hier anders:",
     ],
     bergWays: {
@@ -390,7 +390,14 @@ export default {
     },
     scheune: {
       idea: "Schriftlich rechnen: Die Zahlen stehen genau untereinander, Einer unter Einern. Man rechnet Stelle für Stelle von rechts. Zehn an einer Stelle werden ein Übertrag; fehlt etwas, tauscht man einen Zehner in zehn Einer. Die Scheune öffnet sich mit 8 Jahren oder wenn Plus und Minus bis 100 geschafft sind.",
-      steps: "Plus und Minus: zwei, drei Stellen, dann viele. Mal: mit einer Ziffer, dann mit zwei Ziffern. Geteilt: ohne Rest, dann mit Rest.",
+      ways: {
+        sehen: "Eine Spalte ist dran: Was schreibt man unten hin, was wandert weiter? Oder: Welche von drei Rechnungen steht richtig untereinander?",
+        machen: "Selbst rechnen, Spalte für Spalte von rechts. Steht bei Minus oben zu wenig, tippt das Kind selbst auf „Tauschen“.",
+        forschen: "In einer fertigen Rechnung fehlt eine Ziffer. Welche? Dafür rechnet man rückwärts.",
+        anwenden: "Eine kleine Geschichte vom Hof (Äpfel, Kartoffeln, Mehl). Die Rechnung steht schon untereinander, das Kind rechnet sie aus.",
+        pruefen: "Die Eule hat schriftlich gerechnet. Ihre Fehler: Übertrag vergessen, Zahlen verrutscht, bei Minus die kleinere von der größeren Ziffer genommen statt zu tauschen, eine Null oder den Rest einer Stelle vergessen.",
+      },
+      steps: "Stufe 1: Plus. Stufe 2: Minus. Bei beiden erst zweistellig, dann dreistellig, dann mit mehreren Überträgen. Stufe 3: Mal, eine zwei- oder dreistellige Zahl mal eine Ziffer. Stufe 4: Geteilt durch eine Ziffer, ohne Rest, dann mit Rest. Jede Stufe hat Teilstufen wie die anderen Rechen-Stationen; die Sterne gibt es, wenn alles gemischt kommt.",
       learns: "Die schriftlichen Rechenverfahren verstehen statt nur ausführen: warum der Übertrag, warum das Entbündeln, warum die Stellen untereinander stehen.",
     },
     hofstand: {
@@ -410,61 +417,73 @@ export default {
     zaun: {
       idea: "Lücken zählen, nicht die Dinge. Zwischen zwei Pfählen hängt ein Brett. Wie viele Pfähle ein Zaun braucht, hängt von seinen Enden ab.",
       example: "Ein Zaun ist 36 m lang, alle 4 m steht ein Pfahl. Wie viele Pfähle? Dieselbe Idee: Wie oft muss man einen Baumstamm sägen? Wie lange schlägt eine Glocke?",
+      steps: "Stufe 1: kurze Zäune, Pfähle und Bretter zählen. Stufe 2: mit Metern (36 m, alle 4 m ein Pfahl), Bäume an einem Weg, Glockenschläge, Stockwerke eines Turms. Stufe 3: rückwärts (aus den Pfählen die Länge) und mit Zeit (jeder Schnitt dauert gleich lang), größere Zahlen. Stufe 4: ein Feld mit vier Seiten und Ecken, Zeit rückwärts.",
       learns: "Genau hinsehen, was gezählt wird, und den klassischen Fehler um eins vermeiden.",
     },
     haken: {
       idea: "Alle Möglichkeiten zählen, keine vergessen, keine doppelt.",
       example: "4 Eissorten und 3 Waffeln: Wie viele Eistüten? Wie viele Spiele, wenn jeder gegen jeden spielt? Wie viele Wege durch ein Straßengitter?",
+      steps: "Stufe 1: zwei Dinge kombinieren. Stufe 2: drei Dinge, Zahlen aus Ziffernkarten, Zahlenschlösser. Stufe 3: jeder gegen jeden, Wege im Straßengitter, Sitzplätze im Bus. Stufe 4: Wege mit Baustelle, zwei dürfen nicht nebeneinander sitzen, Ziffernsummen, Hin- und Rückspiele.",
       learns: "Systematisch zählen mit Baum, Tabelle und Liste; Fälle abziehen, die nicht gehen.",
     },
     huetten: {
       idea: "Logikrätsel: ausschließen, bis nur eine Möglichkeit bleibt.",
       example: "Fünf Kinder, fünf Hütten und ein paar Hinweise: Wer wohnt wo? Später auch: Wer lügt?",
+      steps: "Stufe 1: zwei oder drei Kinder, ein bis drei Hinweise. Stufe 2: vier Kinder, nur Hinweise mit „nicht“. Stufe 3: zwei Sorten Dinge zugleich; zählen, was nach den Hinweisen noch möglich ist. Stufe 4: Plätze in einer Reihe, Lügner, fünf Kinder.",
       learns: "Mit Tabellen und Ausschluss schließen, Hinweise verknüpfen, Aussagen prüfen.",
     },
     vorrat: {
       idea: "Rückwärts denken: Das Ende ist bekannt, der Anfang nicht. Jeden Schritt rückgängig machen, den letzten zuerst.",
       example: "Am Ende sind 12 Nüsse in der Höhle. Vorher wurde erst die Hälfte gegessen, dann kamen 3 dazu. Wie viele waren am Anfang da?",
+      steps: "Stufe 1: ein Schritt. Stufe 2: drei Schritte, einer davon Halbieren. Stufe 3: „die Hälfte und noch 3“, eine Seerose, die sich jeden Tag verdoppelt, Treppen zwischen Stockwerken. Stufe 4: ein Drittel, ein Viertel, lange Ketten, größere Zahlen.",
       learns: "Rechenschritte umkehren: Plus wird Minus, Verdoppeln wird Halbieren.",
     },
     ameisen: {
       idea: "Die Regel finden, und dann weit springen, ohne alles aufzuschreiben.",
       example: "Eine Ameisenstraße wächst nach einer Regel. Wie viele Ameisen sind es an Platz 100? Welcher Wochentag ist in 50 Tagen?",
+      steps: "Stufe 1: Es kommt immer gleich viel dazu, nicht weit. Stufe 2: weiter weg, zwei Sprünge im Wechsel, ein Muster, das wiederkommt. Stufe 3: Figuren aus Streichhölzern, Wochentage, lange Summen. Stufe 4: Ziffern in einem langen Zahlenband, Quadratzahlen, größere Figuren.",
       learns: "Regeln in Folgen erkennen, mit Tabellen arbeiten, geschickt summieren.",
     },
     waage: {
       idea: "Ersetzen: Was gleich schwer ist, darf tauschen.",
       example: "Ein Kürbis wiegt so viel wie 3 Äpfel. Ein Kürbis und 2 Äpfel wiegen 10 kg. Wie schwer ist ein Apfel?",
+      steps: "Stufe 1: Ein großes Ding wiegt so viel wie 2 oder 3 kleine. Stufe 2: zwei Waagen nacheinander, ein Korb, der auf beiden Seiten steht. Stufe 3: Summe und Unterschied, drei Dinge paarweise gewogen. Stufe 4: Waagen wie „2 große wiegen so viel wie 3 kleine“, Gewichte auf beiden Seiten.",
       learns: "Gleichungen verstehen, ohne Buchstaben: auf beiden Seiten dasselbe wegnehmen, ersetzen, bis eine Sorte bleibt.",
     },
     stall: {
       idea: "Annehmen und verbessern: erst alle gleich, dann tauschen.",
       example: "Im Stall sind Hühner und Kühe, zusammen 10 Köpfe und 28 Beine. Wie viele Kühe? Angenommen, alle sind Hühner …",
+      steps: "Stufe 1: wenige Tiere, Hühner und Kühe oder Boote. Stufe 2: bis 30 Köpfe, auch Tische und Fahrräder. Stufe 3: Spinnen und Fahrräder, eine dritte Sorte, die nichts ändert. Stufe 4: ein Quiz mit Plus- und Minuspunkten, Münzen, größere Zahlen.",
       learns: "Mit einer Annahme beginnen und schrittweise verbessern; sehen, wie viel ein Tausch ändert.",
     },
     tanz: {
       idea: "Paare bilden: gerade, ungerade und der Rest.",
       example: "Bleibt beim Paartanz jemand übrig? Ein Lichtschalter wird 15-mal gedrückt: Ist das Licht danach an oder aus? Heute ist Montag: Welcher Tag ist in 100 Tagen?",
+      steps: "Stufe 1: wenige Kinder beim Paartanz, ein Lichtschalter, gerade oder ungerade Summe. Stufe 2: Gruppen mit Rest (Mannschaften, Abteile im Zug), größere Zahlen. Stufe 3: Dominosteine auf einem Brett, Münzen umdrehen, die letzte Ziffer einer Potenz. Stufe 4: derselbe Rest bei 2, 3 und 4, die letzte Ziffer sehr großer Potenzen.",
       learns: "Gerade und ungerade, Teilen mit Rest, Dinge, die sich im Kreis wiederholen.",
     },
     fels: {
       idea: "Ordentlich zählen und im Kopf drehen.",
       example: "Wie viele Dreiecke stecken in der Figur? Was zeigt die Uhr im Spiegel? Welche Seite liegt beim gefalteten Würfel gegenüber?",
+      steps: "Stufe 1: Dreiecke in einer kleinen Figur, Quadrate in einem kleinen Gitter. Stufe 2: größere Figuren, die Uhr im Spiegel. Stufe 3: Würfelnetze, noch größere Figuren. Stufe 4: ein bemalter Würfel wird zerschnitten, gefaltetes Papier mit Loch, Rechtecke im Gitter.",
       learns: "Ordnung beim Zählen, räumliches Vorstellen: spiegeln, falten, drehen.",
     },
     socken: {
       idea: "Der schlimmste Fall: Sicher ist, was auch mit Pech klappt.",
       example: "Im Dunkeln Socken aus der Kiste ziehen: Wie viele, damit sicher zwei gleiche dabei sind?",
+      steps: "Stufe 1: zwei oder drei Farben, zwei gleiche. Stufe 2: mehr Farben, bis zu vier gleiche. Stufe 3: von jeder Farbe eine, eine bestimmte Farbe. Stufe 4: Geburtstage im selben Monat, Punkte in einem Quadrat (mehr Dinge als Kästen).",
       learns: "An den ungünstigsten Fall denken; das Schubfachprinzip (mehr Dinge als Kästen).",
     },
     steine: {
       idea: "Vom Ende her: Spiele gegen die Eule. Wer den letzten Stein nimmt, gewinnt.",
       example: "Jeder nimmt 1 bis 3 Steine. Wie viele musst du nehmen, damit die Eule sicher verliert?",
+      steps: "Stufe 1: 1 oder 2 Steine nehmen, wenige Steine. Stufe 2: bis zu 5 Steine nehmen, bis 30 Steine. Stufe 3: Wer den letzten nimmt, verliert; ein Zählspiel bis zu einer Zahl. Stufe 4: zwei Haufen, eine Tafel Schokolade brechen.",
       learns: "Vom Ziel aus rückwärts planen, Gewinnstellungen erkennen, Strategien begründen.",
     },
     mauer: {
       idea: "Eingrenzen: Hinweis für Hinweis, bis nur eine Zahl bleibt. Und Zahlenmauern: Jeder Stein ist die Summe der zwei darunter.",
       example: "Unten in der Mauer fehlt ein Stein, oben steht 30. Welche Zahl fehlt? Magische Quadrate, Schlösser mit Hinweisen.",
+      steps: "Stufe 1: unten drei Steine mit kleinen Zahlen, den obersten ausrechnen. Stufe 2: ein Stein unten fehlt. Stufe 3: Eingrenzen mit Hinweisen, magische Quadrate. Stufe 4: Ziffernrätsel, alle Mauern zählen, die oben dieselbe Zahl haben.",
       learns: "Mögliche Lösungen Schritt für Schritt eingrenzen, Zusammenhänge in Zahlenmauern erkennen.",
     },
     gipfel: {

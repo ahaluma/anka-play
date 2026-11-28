@@ -9,8 +9,9 @@ import { textsIn, shared, lang, DEFAULT_LANG } from "../engine/i18n.js";
 import { icons } from "../engine/ui/parts.js";
 
 const T = await textsIn(new URL("./lang/", import.meta.url));
-// The explanations exist in German only so far. Until a language has its own, the names of maps, stations and
-// ways come in German too, so a sentence never mixes two languages; only the frame (title, back, note) is translated.
+// German, English and Nepali have their own explanations. A language without them gets the German page, and then
+// the names of maps, stations and ways come in German too, so a sentence never mixes two languages; only the frame
+// (title, back, note) is translated.
 const own = lang === DEFAULT_LANG || (await import(`./lang/${lang}.js`).then((m) => !!m.default.stations, () => false));
 const S = own ? shared : (await import("../lang/de.js")).default;
 if (!own) document.querySelector("#page").lang = DEFAULT_LANG;
