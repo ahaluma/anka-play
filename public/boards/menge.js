@@ -5,14 +5,16 @@
 //   show.flash    after the first round of a perspective the things show only for a short look, then a bush
 //                 covers them (text "look", then "ask" with v.seen = true)
 //   show.pool     build: that many lie on the field; the child taps them into the basket and checks (✓).
-//                 The answer is the number in the basket. A sign shows the number to make.
+//                 The answer is the number in the basket. Two counters, one on the field and one at the basket,
+//                 show how many are in each place now: picking one flower takes one from the field and adds one
+//                 to the basket. The number to make is only in the sentence (and the hint's places).
 //   show.change   a story: n are there (text "start"), then `change` come (+) or go (−) (text "change");
 //                 from the second round a bush covers them first, so the child thinks instead of counting again
 //   show.owl      { says }: the owl claims a number; the child checks it (answer mode yesNo, with fix)
 //
 // Texts of the task (ideas/<id>/lang): ask, and look / start / change as above; hint, right, miss.
 
-import { el, button, group, sign, dots, wait } from "../engine/ui/parts.js";
+import { el, button, group, dots, wait } from "../engine/ui/parts.js";
 
 export function draw(host, t, ctx) {
   const s = t.show;
@@ -82,6 +84,8 @@ function build(host, t, ctx) {
   field.setAttribute("aria-label", ctx.label("field"));
   const basket = el("div", "basket");
   basket.setAttribute("aria-label", ctx.label("basket"));
+  const onField = tally(ctx.num);
+  const inBasket = tally(ctx.num);
   const help = el("div", "hint-box");
   const check = button("btn ok check-btn", ctx.label("done"), "✓");
 
@@ -99,13 +103,15 @@ function build(host, t, ctx) {
       left.append(p);
     }
     field.replaceChildren(left);
-    const inside = el("span", "pics" + (picked > 10 ? " many" : ""));
+    const inside = el("span", "pics" + (picked > 5 ? " many" : "")); // smaller, so the counter fits beside them
     for (let i = 0; i < picked; i++) {
       const p = button("pic thing", ctx.label("thing"), icon);
       p.addEventListener("click", () => move(-1));
       inside.append(p);
     }
-    basket.replaceChildren(el("span", "basket-icon", "🧺"), inside);
+    basket.replaceChildren(el("span", "basket-icon", "🧺"), inside, inBasket.node);
+    onField.set(pool - picked);
+    inBasket.set(picked);
     if (help.firstChild) help.replaceChildren(places(target, Math.min(picked, target), icon));
   }
   check.addEventListener("click", async () => {
@@ -114,7 +120,7 @@ function build(host, t, ctx) {
     const right = await ctx.give(picked);
     locked = right;
   });
-  scene.append(sign(target, ctx.num), field);
+  scene.append(onField.node, field);
   host.append(scene, basket, help, check);
   redraw();
   ctx.ask("ask");
@@ -122,6 +128,26 @@ function build(host, t, ctx) {
     ownAnswer: true,
     hint() {
       if (!help.firstChild) help.append(places(target, Math.min(picked, target), icon));
+    },
+  };
+}
+
+/** A counter: how many are in one place now, as a number and as dots. It pops when the number changes. */
+function tally(num) {
+  const node = el("div", "sign tally");
+  let now = null;
+  return {
+    node,
+    set(n) {
+      if (n === now) return;
+      const changed = now !== null;
+      now = n;
+      node.replaceChildren(el("b", "", num(n)), dots(n, "sign-dots"));
+      if (changed) {
+        node.classList.remove("pop");
+        void node.offsetWidth; // restart the animation
+        node.classList.add("pop");
+      }
     },
   };
 }
