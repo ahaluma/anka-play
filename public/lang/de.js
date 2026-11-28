@@ -79,6 +79,7 @@ export default {
     zeit: { name: "Uhr und Kalender", about: "Uhr, Zeitspannen, Kalender" },
     daten: { name: "Daten und Zufall", about: "Strichlisten, Diagramme, Zufall" },
     wuerfel: { name: "Würfelgebäude", about: "Kisten zählen, Baupläne, Würfelnetze" },
+    tausend: { name: "Große Zahlen", about: "Stellentafel bis zu einer Million" },
     geld: { name: "Geld", about: "Zählen, bezahlen, zurückgeben" },
     plus: { name: "Plus", about: "Zusammenzählen" },
     minus: { name: "Minus", about: "Wegnehmen und Unterschied" },

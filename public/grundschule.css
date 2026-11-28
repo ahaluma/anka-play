@@ -191,3 +191,29 @@ button.box-cell { cursor: pointer; }
 .box-net { width: 100%; height: auto; }
 .net-square { fill: #fff; stroke: var(--ink); stroke-width: 3; stroke-linejoin: round; transition: fill 0.3s; }
 .net-square.clash { fill: #ff8a73; }
+
+/* ====================== Idea "tausend": the place-value table with counters ====================== */
+.pt-scene { display: flex; flex-direction: column; align-items: center; gap: 8px; background: #fff; }
+.pt-table, .pt-foot, .pt-digits { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; width: 100%; max-width: 340px; }
+.pt-table { border: 3px solid var(--ink); border-radius: 10px; overflow: hidden; }
+.pt-col { display: flex; flex-direction: column; border-left: 2px solid var(--ink); transition: background 0.3s; }
+.pt-col:first-child { border-left: 0; }
+.pt-col.on { background: rgba(255, 200, 58, 0.35); }
+.pt-col.bundle .pt-chip { background: var(--sun); transform: scale(1.15); }
+.pt-head { padding: 3px 0; border-bottom: 2px solid var(--ink); background: #e6ecff; font-size: 15px; font-weight: 900; text-align: center; }
+.pt-body { display: grid; grid-template-columns: repeat(2, 16px); justify-content: center; align-content: start; gap: 4px; min-height: 104px; padding: 6px 0; }
+.pt-6 .pt-body { grid-template-columns: repeat(2, 13px); }
+.pt-chip { width: 16px; height: 16px; border: 2px solid var(--ink); border-radius: 50%; background: var(--blue); transition: transform 0.3s, background 0.3s; }
+.pt-6 .pt-chip { width: 13px; height: 13px; }
+.pt-btns { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.pt-btn { width: 40px; height: 36px; padding: 0; font-size: 22px; font-weight: 900; }
+.pt-6 .pt-btn { width: 36px; }
+.pt-digit { font-size: 24px; font-weight: 900; text-align: center; color: var(--blue); }
+.pt-big { margin: 0; font-size: 30px; font-weight: 900; }
+.pt-option { min-width: 104px; font-size: 22px; }
+.pt-col:nth-last-child(1) .pt-head { background: #ffd0e0; }
+.pt-col:nth-last-child(2) .pt-head { background: #c9efb4; }
+.pt-col:nth-last-child(3) .pt-head { background: #f6d7b0; }
+.pt-col:nth-last-child(4) .pt-head { background: #e6ecff; }
+.pt-col:nth-last-child(5) .pt-head { background: #fff1b8; }
+.pt-col:nth-last-child(6) .pt-head { background: #e4d4ff; }

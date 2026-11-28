@@ -127,7 +127,7 @@ export const STATIONS = [
   // Fluss (school, 6 to 10): numbers, space and time. What was the station, the flower shop, the workshop
   // and the weather station of the town, now in a river scene.
   { id: "steg", map: "fluss", ideas: ["reihe", "runden"], icon: "🌉", landmark: "bruecke", pos: { x: 230, y: 380 } }, // the long footbridge is the number line; rounding: which round neighbour is nearer
-  { id: "blumenfeld", map: "fluss", ideas: ["stellen"], icon: "💐", pos: { x: 330, y: 160 } }, // tens and ones: bunches and baskets
+  { id: "blumenfeld", map: "fluss", ideas: ["stellen", "tausend"], icon: "💐", pos: { x: 330, y: 160 } }, // tens and ones: bunches and baskets; big numbers in the place-value table
   { id: "kiesbank", map: "fluss", ideas: ["formen"], icon: "🔷", landmark: "kiesbank", pos: { x: 760, y: 430 } }, // shapes, solids, mirror in the water, ruler
   { id: "muehle", map: "fluss", ideas: ["masse"], icon: "🌾", landmark: "fluss", pos: { x: 600, y: 300 } }, // sizes and units at the water mill
   { id: "garten", map: "fluss", ideas: ["flaeche", "plan"], icon: "🥕", pos: { x: 560, y: 470 } }, // beds of slabs with a fence; the plan of the garden
