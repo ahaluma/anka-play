@@ -14,6 +14,8 @@ import * as World from "./world.js";
 
 const DRAN = ["neu", "uebt", "wackelt"];
 const dran = (rec, id, now) => DRAN.includes(stand(rec, id, now));
+/** How often "Wie viele?" asks both pads while counting is practised; otherwise one pad and then the total. */
+export const BOTH_PADS = 0.2;
 const between = (rnd, lo, hi) => lo + Math.floor(rnd() * (hi - lo + 1));
 
 /** How many frogs come. Three wrong answers in a row: at most five, and only counting. */
@@ -72,8 +74,8 @@ export const partnerSkill = (n) => (n === 5 ? "fuenfer" : n === 10 ? "zehner" : 
 /**
  * Plan a GameRun (runs.js) for the scene after placing: per position, questions from the catalogue
  * (questions.js) that fit the scene and whose skill is open, each with the chance of its skill's stand. A
- * position may stay empty. While counting is practised, both pads are counted; once it is sicher, one pad now
- * and then, so "Wie viele?" gets rarer. Then the run is filled up to `min` questions (skills being practised
+ * position may stay empty. While counting is practised, about every fifth run counts both pads, the others one pad
+ * and then the total; once it is sicher, one pad now and then, so "Wie viele?" gets rarer. Then the run is filled up to `min` questions (skills being practised
  * first, any open one next, "Wie viele?" last) and cut at `max`. Later positions see the scene as the earlier
  * questions leave it: the owl plays the run ahead on a copy of the world (world.js), sending each question's
  * events (a frog hops on, the pads are made fair).
@@ -87,6 +89,7 @@ export function plan(run, rec, scene, rnd = Math.random, now = Date.now()) {
   const want = (id) => id && isOpen(rec, id, now) && rnd() < often(rec, id, now);
   const chosen = []; // { q, p, at } at = index of the position
   const spare = []; // fitting questions not chosen, to fill up with
+  let oneCounted = false; // "Wie viele?" asked about one pad only
   const w = World.create(scene);
   run.positions.forEach((pos, at) => {
     const s = { ...w.state };
@@ -102,8 +105,16 @@ export function plan(run, rec, scene, rnd = Math.random, now = Date.now()) {
         }
         // A pad whose frogs were just guessed behind the masks is known: count the other one.
         const known = chosen.find((c) => c.q.id === "maske")?.p;
-        const pads = (dran(rec, skill, now) ? ["rot", "gruen"] : [rnd() < 0.5 ? "rot" : "gruen"]).filter((x) => x !== known);
+        // While counting is practised: about every fifth time both pads, otherwise one pad and then the total.
+        const two = dran(rec, skill, now) && rnd() < BOTH_PADS;
+        const pads = (two ? ["rot", "gruen"] : [rnd() < 0.5 ? "rot" : "gruen"]).filter((x) => x !== known);
         for (const p of pads) here.push({ q, p, at });
+        if (pads.length === 1) oneCounted = true;
+        continue;
+      }
+      // One pad was counted: ask the total too, when its counting skill is open.
+      if (q.id === "zusammen" && oneCounted && isOpen(rec, skillOf(q, s, null), now)) {
+        here.push({ q, p: null, at });
         continue;
       }
       const p = q.params ? q.params(s, rnd, ctx) : null;
