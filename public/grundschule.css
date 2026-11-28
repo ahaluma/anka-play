@@ -75,3 +75,24 @@
 .round-digits { display: grid; grid-template-columns: repeat(5, 56px); gap: 8px; justify-content: center; }
 .round-digit { height: 56px; font-size: 26px; font-weight: 800; }
 .round-digit.on { background: var(--sun); }
+
+/* ====================== Idea "masse": things, pieces to measure with, the table of units ====================== */
+.size-scene { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.size-thing { font-size: 84px; line-height: 1; }
+.size-guess { margin: 0; font-size: 30px; font-weight: 800; }
+.size-btn { min-width: 100px; font-size: 22px; }
+.size-unit { margin: 4px 0 0; text-align: center; font-weight: 800; color: var(--muted); }
+.size-pan { position: relative; display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: center; gap: 6px; width: 100%; min-height: 76px; padding: 10px 8px 10px 52px; border: 3px solid var(--ink); border-radius: 14px; background: #fff; }
+.size-pan::before { content: attr(data-tool); position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font-size: 30px; }
+.size-piece, .size-add { min-height: 46px; padding: 0 10px; border: 3px solid var(--ink); border-radius: 10px; font-size: 16px; font-weight: 800; cursor: pointer; }
+.size-piece { min-width: calc(34px * var(--w, 1)); }
+.size-piece.len, .size-add.len { background: #ffe39a; }
+.size-piece.mass, .size-add.mass { background: #d6dbe6; }
+.size-piece.vol, .size-add.vol { background: #bfe6ff; }
+.size-shelf { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+.size-sum { margin: 0; min-height: 24px; font-weight: 800; color: var(--blue); }
+.size-table { display: flex; flex-direction: column; gap: 6px; font-size: 24px; font-weight: 800; text-align: center; }
+.size-table p { margin: 0; }
+.size-table p.ask { padding: 4px 12px; border-radius: 10px; background: rgba(255, 200, 58, 0.4); }
+.size-table p.ask.right { background: rgba(18, 165, 100, 0.25); }
+.size-rule { margin: 0; min-height: 26px; font-size: 20px; font-weight: 800; color: var(--blue); }

@@ -129,6 +129,7 @@ export const STATIONS = [
   { id: "steg", map: "fluss", ideas: ["reihe", "runden"], icon: "🌉", landmark: "bruecke", pos: { x: 230, y: 380 } }, // the long footbridge is the number line; rounding: which round neighbour is nearer
   { id: "blumenfeld", map: "fluss", ideas: ["stellen"], icon: "💐", pos: { x: 330, y: 160 } }, // tens and ones: bunches and baskets
   { id: "kiesbank", map: "fluss", ideas: ["formen"], icon: "🔷", landmark: "kiesbank", pos: { x: 760, y: 430 } }, // shapes, solids, mirror in the water, ruler
+  { id: "muehle", map: "fluss", ideas: ["masse"], icon: "🌾", landmark: "fluss", pos: { x: 600, y: 300 } }, // sizes and units at the water mill
   { id: "sonnenfels", map: "fluss", ideas: ["zeit"], icon: "☀️", landmark: "grosser-fels", pos: { x: 820, y: 180 } }, // clock, calendar, charts, chance
 
   // Feld (school, 6 to 10): calculation, what was the market. Natural scene: the edge of a field.
@@ -197,6 +198,8 @@ export const EDGES = [
   ...both("blumenfeld", "sonnenfels", 0.3),
   ...both("steg", "kiesbank", 0.4), // the ruler is a number line
   ...both("kiesbank", "sonnenfels", 0.3),
+  ...both("kiesbank", "muehle", 0.6), // the ruler / units of length
+  ...both("blumenfeld", "muehle", 0.4), // ten of one make one of the next / 100 cm make 1 m
 
   // ---- Feld -----------------------------------------------------------------------------------
   ...both("apfelbaum", "beeren", 0.9),
@@ -258,6 +261,8 @@ export const EDGES = [
   ...rel("teich", "apfelbaum", 0.7), // friends of ten / plus across ten (crosses bands)
   ...rel("obstbaum", "nussbaum", 0.8), // sharing fairly / dividing (crosses bands)
   ...rel("kiesel", "kiesbank", 0.7), // shapes / shapes and solids (crosses bands)
+  ...rel("ufer", "muehle", 0.6), // heavier, longer / grams and metres (crosses bands)
+  ...rel("muehle", "hofstand", 0.4), // units / euros and cents
   ...rel("himmel", "sonnenfels", 0.6), // first and then / the clock and the calendar (crosses bands)
   ...rel("blumenfeld", "apfelbaum", 0.7), // tens and ones / adding with tens
   ...rel("blumenfeld", "hofstand", 0.6), // bundling / notes and coins
