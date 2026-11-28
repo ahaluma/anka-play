@@ -585,7 +585,24 @@ export async function render(root) {
       mode = "place";
       draw();
     }
-    if (at.shore) await voice.ask(X.rest(OTHER[pad]), true, true);
+    if (!at.shore) return;
+    // Half the time the other frogs hop onto the other pad by themselves (seen, not told); otherwise the child
+    // sets them: "Die anderen auf die grüne!"
+    if (Math.random() < 0.5) {
+      mode = "wait";
+      selected = null;
+      await wait(400);
+      while (at.shore) {
+        hop("shore", OTHER[pad]);
+        sound.tap();
+        draw();
+        const frogs = zone[OTHER[pad]].frogs.children;
+        frogs[frogs.length - 1]?.classList.add("pop");
+        await wait(350);
+      }
+      mode = "place";
+      draw();
+    } else await voice.ask(X.rest(OTHER[pad]), true, true);
   }
 
   /** "Verteil die Frösche gerecht auf die zwei Seerosen." From the shore onto both pads, the same on each; with an
