@@ -16,7 +16,7 @@ export function parse(hash = location.hash) {
   const parts = path.split("/").filter(Boolean).map(decodeURIComponent);
   const q = Object.fromEntries(new URLSearchParams(query));
   if (TAL.includes(parts[0])) return { screen: parts[0], q };
-  const mem = /^memory-(zahlen|formen|rechnen)$/.exec(parts[0] ?? "");
+  const mem = /^memory-(zahlen|formen|rechnen|original)$/.exec(parts[0] ?? "");
   if (mem) return { screen: "memory", table: mem[1], q };
   return { screen: "home", q };
 }

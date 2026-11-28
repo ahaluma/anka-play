@@ -58,6 +58,9 @@ const MINI = {
     <circle cx="39" cy="14" r="2.4" class="m-dot"/><circle cx="48" cy="20" r="2.4" class="m-dot"/><circle cx="39" cy="26" r="2.4" class="m-dot"/>`,
   "memory-formen": `<rect x="6" y="5" width="21" height="30" rx="4" class="m-card"/><circle cx="16.5" cy="20" r="6.5" class="m-apple"/>
     <rect x="33" y="5" width="21" height="30" rx="4" class="m-card"/><path d="M43.5 12.5L51 26.5H36Z" class="m-blue"/>`,
+  "memory-original": `<rect x="6" y="5" width="21" height="30" rx="4" class="m-card"/><text x="16.5" y="27" class="m-num">3</text>
+    <rect x="33" y="5" width="21" height="30" rx="4" class="m-card"/>
+    <circle cx="39" cy="13" r="3" class="m-apple"/><circle cx="48" cy="20" r="3" class="m-apple"/><circle cx="39" cy="27" r="3" class="m-apple"/>`,
   "memory-rechnen": `<rect x="2" y="5" width="30" height="30" rx="4" class="m-card"/><text x="17" y="25" class="m-sum">2+3</text>
     <rect x="37" y="5" width="21" height="30" rx="4" class="m-card"/><text x="47.5" y="27" class="m-num">5</text>`,
 };

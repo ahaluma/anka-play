@@ -3,13 +3,19 @@
 //
 //   zahlen   a number and that many dots: 4 and ••••, later up to 20
 //   formen   the same shape twice; later the second one turned, smaller or in another colour
+//   original the number memory of the old AnkaPlay (the tree stump in the Tal, asked back 28.11.): a number and
+//            a card with that many pictures, a different picture for every pair; its old ladder of twelve levels,
+//            open and face down, up to 20
 //   rechnen  a sum and its result: 2 + 3 and 5. Plus first, then minus, then both up to 20, later times and
 //            divided
 //
 // A card: { pair, kind, value } kind tells the screen how to draw it. Each table has a ladder of levels; a board
 // solved with few misses moves one level up, many misses one down.
 
-export const TABLES = ["zahlen", "formen", "rechnen"];
+export const TABLES = ["zahlen", "formen", "rechnen", "original"];
+
+/** The pictures of the original memory: figures of the Tal (offen/figures.js), one kind per pair. */
+export const PICTURES = ["apple", "frog", "hare", "falter", "pilz", "beere", "vogel", "maus", "schnecke", "blume", "star", "zapfen"];
 
 export const SHAPES = ["kreis", "quadrat", "dreieck", "rechteck", "stern", "herz", "sechseck", "raute"];
 export const COLORS = ["#e0604f", "#2f6fd6", "#3aa35f", "#f0b232", "#a57ad8", "#2fbfb8"];
@@ -45,12 +51,27 @@ export const LADDERS = {
     L(5, { ops: [":"], to: 50 }),
     L(6, { ops: ["*", ":"], to: 100 }),
   ],
+  // The old ladder, as it was (ideas/memory/idea.js before the rebuild): open boards first, then face down.
+  original: [
+    L(3, { from: 1, to: 3, open: true }),
+    L(3, { from: 1, to: 5, open: true }),
+    L(3, { from: 1, to: 3 }),
+    L(4, { from: 1, to: 5 }),
+    L(4, { from: 1, to: 6 }),
+    L(5, { from: 1, to: 7 }),
+    L(5, { from: 1, to: 8 }),
+    L(6, { from: 1, to: 10, open: true }),
+    L(6, { from: 1, to: 10 }),
+    L(6, { from: 5, to: 12 }),
+    L(6, { from: 8, to: 15 }),
+    L(6, { from: 11, to: 20 }),
+  ],
 };
 
 /** The level a child starts at, by age (no age: the first). */
 export function startLevel(table, age) {
   if (!age || age <= 4) return 0;
-  const byAge = { zahlen: [0, 0, 0, 0, 0, 2, 3, 4], formen: [0, 0, 0, 0, 0, 1, 2, 3], rechnen: [0, 0, 0, 0, 0, 0, 1, 3, 4, 5, 6, 7] };
+  const byAge = { zahlen: [0, 0, 0, 0, 0, 2, 3, 4], formen: [0, 0, 0, 0, 0, 1, 2, 3], rechnen: [0, 0, 0, 0, 0, 0, 1, 3, 4, 5, 6, 7], original: [0, 0, 0, 0, 1, 3, 5, 8, 10] };
   const a = byAge[table];
   return Math.min(a[Math.min(age, a.length - 1)], LADDERS[table].length - 1);
 }
@@ -105,6 +126,9 @@ export function deal(table, level, rnd = Math.random) {
       const twin = lv.same ? { shape: s, color, turn: 0, size: 1 } : { shape: s, color: rnd() < 0.5 ? color : COLORS[(i + 3) % COLORS.length], turn: [0, 45, 90, 180][between(rnd, 1, 3)], size: rnd() < 0.5 ? 0.65 : 1 };
       cards.push({ pair: i, kind: "form", value: { shape: s, color, turn: 0, size: 1 } }, { pair: i, kind: "form", value: twin });
     }
+  } else if (table === "original") {
+    const pics = pickFrom(PICTURES, lv.pairs, rnd);
+    for (const [i, n] of pickFrom(range(lv.from, lv.to), lv.pairs, rnd).entries()) cards.push({ pair: i, kind: "zahl", value: n }, { pair: i, kind: "bilder", value: { n, picture: pics[i] } });
   } else {
     const used = new Set();
     let i = 0;
