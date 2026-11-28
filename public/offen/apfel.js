@@ -51,7 +51,7 @@ export const countSkill = (k) => (k <= 5 ? "zaehlen5" : "zaehlen10");
 
 /**
  * One event at the tree:
- *   { n, pick, share: null | { hares, each, rest }, askLeft, fall }
+ *   { n, pick, share: null | { hares, each, rest }, askLeft, fall, askFirst }
  * n apples grow; "Pflück vier Äpfel." (Menge legen) takes `pick` of them, or about every fifth time (fall)
  * they fall into the basket by themselves; "Wie viele hängen noch?" (counting)
  * when askLeft. Once sharing fairly is open (sicher at the pond first), the owl often brings hares: the picked
@@ -81,5 +81,9 @@ export function plan(rec, rnd = Math.random, now = Date.now()) {
   // owl always asks what still hangs.
   const fall = rnd() < FALL;
   const askLeft = isOpen(rec, skill, now) && (fall || rnd() < (DRAN.includes(stand(rec, skill, now)) ? 0.9 : often(rec, skill, now) + 0.15));
-  return { n, pick, share, askLeft, fall };
+  // "Wie viele Äpfel hängen auf dem Baum?" first: every round while counting this many is practised, then about
+  // every third round.
+  const first = countSkill(n);
+  const askFirst = isOpen(rec, first, now) && (DRAN.includes(stand(rec, first, now)) || rnd() < 1 / 3);
+  return { n, pick, share, askLeft, fall, askFirst };
 }
