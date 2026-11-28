@@ -59,18 +59,23 @@ export const sound = {
     if (icon === "🦶") return tone(80, 0, 0.22, "sine", 0.45);
     if (icon === "🦵") return noise(0.07, 0.35, 500);
   },
+  /** Applause: many claps, close together, for about a second. */
+  applause() {
+    for (let i = 0; i < 18; i++) setTimeout(() => noise(0.08, 0.35 + Math.random() * 0.2, 1400 + Math.random() * 900), i * 55 + Math.random() * 40);
+  },
   win: () => [523, 659, 784, 1047, 784, 1047].forEach((f, i) => tone(f, i * 0.12, 0.25, "triangle", 0.2)),
 };
 
 const COLORS = ["#ff5a36", "#ffc83a", "#12a564", "#2456b8", "#e8488a"];
 
-export function celebrate(pieces = 60) {
+/** Confetti; `colors` lets a scene keep its own few colours. */
+export function celebrate(pieces = 60, colors = COLORS) {
   if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
   for (let i = 0; i < pieces; i++) {
     const el = document.createElement("div");
     el.className = "confetti";
     el.style.left = Math.random() * 100 + "vw";
-    el.style.background = COLORS[i % COLORS.length];
+    el.style.background = colors[i % colors.length];
     el.style.animationDuration = 1.6 + Math.random() * 1.6 + "s";
     el.style.animationDelay = Math.random() * 0.4 + "s";
     document.body.append(el);

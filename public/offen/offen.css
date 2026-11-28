@@ -1,0 +1,78 @@
+/* The open Tal: the pond as one scene (offen/teich.js). Water above with two lily pads, the shore below. */
+.offen-door { display: flex; justify-content: center; margin-top: 12px; text-decoration: none; color: var(--ink); }
+.offen-stars { display: inline-flex; align-items: center; gap: 6px; min-width: 70px; padding: 5px 12px 5px 8px; border: 3px solid var(--ink); border-radius: 999px; background: var(--card); font-weight: 900; font-size: 20px; }
+.offen-stars .fig { width: 24px; height: 24px; }
+
+.board.offen { display: flex; flex-direction: column; gap: 14px; width: 100%; }
+
+/* The palette of the open Tal: few, quiet colours. */
+:root {
+  --o-water: #cfe7ee; --o-shore: #eee3c6; --o-pad: #86b884; --o-pad-rose: #dca79c;
+  --o-frog: #4f9358; --o-belly: #bcdaa8; --o-ink: #24304a; --o-star: #f0b232;
+}
+.fig { display: block; width: 100%; height: 100%; overflow: visible; }
+.f-body { fill: var(--o-frog); }
+.f-belly { fill: var(--o-belly); }
+.f-eye { fill: #fff; }
+.f-ink { fill: var(--o-ink); }
+.f-line { fill: none; stroke: var(--o-ink); stroke-width: 1.6; stroke-linecap: round; }
+.f-star { fill: var(--o-star); }
+.f-mask { fill: var(--o-ink); }
+.f-ring { fill: none; stroke: #fff; stroke-width: 1.8; opacity: 0.9; }
+
+.offen-pond { display: flex; flex-direction: column; overflow: hidden; padding: 0; touch-action: none; }
+.offen-water { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px; padding: 22px 10px; background: var(--o-water); }
+.offen-shore { padding: 8px 10px 12px; background: var(--o-shore); }
+
+.offen-zone { position: relative; display: grid; place-items: center; min-height: 110px; border-radius: 50%; }
+.offen-zone.z-shore { min-height: 64px; border-radius: 14px; }
+.offen-pad { position: absolute; inset: 0; width: 100%; height: 100%; transition: transform 0.2s; }
+.offen-pad use { fill: var(--o-pad); }
+.z-rot .offen-pad use { fill: var(--o-pad-rose); }
+.offen-zone { transition: box-shadow 0.2s; }
+.offen-zone.target, .offen-zone.asked { box-shadow: 0 0 0 5px var(--o-star); }
+.offen-zone.z-shore.target { box-shadow: inset 0 0 0 4px var(--o-star); }
+.offen-zone.target { cursor: pointer; }
+.offen-zone.tappable { cursor: pointer; animation: nudge 1.2s ease-in-out infinite; }
+.offen-zone.z-rot.tappable { animation-delay: 0.3s; }
+.offen-zone.grumble { animation: shake 0.4s ease-in-out 2; }
+
+.offen-frogs { --frog: clamp(26px, 8.2vw, 48px); position: relative; display: flex; flex-wrap: wrap; justify-content: center; gap: 1px; max-width: calc(5 * var(--frog) + 4px); padding: 6px 2px; }
+.offen-frog { position: relative; display: block; flex: 0 0 var(--frog); width: var(--frog); height: var(--frog); padding: 1px; border: 0; background: none; cursor: grab; touch-action: none; }
+span.offen-frog { cursor: default; }
+.offen-frog .on-frog { position: absolute; inset: 1px; width: auto; height: auto; animation: mask-on 0.35s ease-out; }
+.offen-masked { display: block; width: calc(var(--frog) * 1.4); height: calc(var(--frog) * 1.4); animation: mask-float 2.4s ease-in-out infinite alternate; }
+@keyframes mask-on { from { transform: translateY(-60%) scale(1.4); opacity: 0; } }
+@keyframes mask-float { from { transform: translateY(-3px) rotate(-6deg); } to { transform: translateY(3px) rotate(6deg); } }
+@keyframes leave { to { transform: translateY(14px) scale(0.5); opacity: 0; } }
+.offen-frog.leave { animation: leave 0.45s ease-in forwards; }
+@keyframes hop-won { 50% { transform: translateY(-10px); } }
+.offen-zone.won .offen-frog { animation: hop-won 0.4s ease-in-out 3; }
+@media (prefers-reduced-motion: reduce) { .offen-frog .on-frog, .offen-masked, .offen-zone.won .offen-frog { animation: none; } }
+.offen-frog.lifted { transform: translateY(-8px) scale(1.15); }
+.offen-frog.lifted .fig { filter: drop-shadow(0 5px 0 rgba(36, 48, 74, 0.25)); }
+.offen-frog.away { opacity: 0.25; }
+.offen-frog.counted::after { content: attr(data-n); position: absolute; top: -6px; right: -4px; min-width: 18px; padding: 0 3px; border-radius: 9px; background: var(--o-star); color: var(--o-ink); font-size: 12px; font-weight: 900; text-align: center; }
+.offen-ghost { position: fixed; left: 0; top: 0; z-index: 50; width: 48px; height: 48px; pointer-events: none; }
+
+.offen-sign { position: absolute; top: 2px; right: 10px; z-index: 1; min-width: 34px; padding: 1px 8px; border-radius: 10px; background: rgba(255, 255, 255, 0.85); font-size: 20px; font-weight: 900; text-align: center; color: var(--muted); }
+.offen-sign.known { color: var(--o-ink); background: #fff; }
+
+.offen-pond.bye .offen-frog { animation: go-away 0.8s ease-in forwards; }
+.offen-below { min-height: 72px; display: flex; justify-content: center; }
+.offen-below .strip { grid-template-columns: repeat(6, 1fr); }
+.offen-done, .offen-next { min-width: 160px; font-size: 24px; }
+
+.offen-parents { margin-top: 18px; padding: 12px 14px; font-size: 15px; }
+.offen-parents summary { font-weight: 800; cursor: pointer; }
+.offen-note { color: var(--muted); }
+.offen-table { width: 100%; border-collapse: collapse; }
+.offen-table th, .offen-table td { padding: 5px 4px; border-bottom: 1px solid var(--grid); text-align: left; }
+.offen-table td:not(:first-child), .offen-table th:not(:first-child) { text-align: center; }
+.offen-table .st-sicher td:last-child, .offen-table .st-lange td:last-child { color: var(--ok); font-weight: 800; }
+.offen-table .st-wackelt td:last-child { color: var(--go); font-weight: 800; }
+.offen-table .st-zu td { color: var(--muted); }
+
+/* The star of a right answer: it grows over the pond, then flies to the stars in the top bar. */
+.offen-fly { position: fixed; left: 0; top: 0; z-index: 60; width: 60px; height: 60px; pointer-events: none; transition: transform 0.35s ease-out; }
+.offen-fly.going { transition: transform 0.75s cubic-bezier(0.5, 0, 0.75, 0.4); }

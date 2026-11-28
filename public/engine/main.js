@@ -13,6 +13,7 @@ const screens = {
   play: () => import("./ui/play.js"),
   gate: () => import("./ui/play.js"),
   eltern: () => import("../eltern/eltern.js"),
+  offen: () => import("../offen/teich.js"),
 };
 
 let cleanup = null;

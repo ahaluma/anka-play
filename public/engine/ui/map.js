@@ -47,6 +47,12 @@ export async function render(root, route) {
   scene.style.backgroundImage = `url("art/${m.id}/scene.svg")`;
   wrap.append(scene);
   root.append(wrap, thinkRow());
+  // The Tal: the first scene of the open Tal to try, beside the stations (offen/teich.js).
+  if (m.id === "tal") {
+    const a = el("a", "btn sun offen-door", T.mapText.offen ?? "Teich frei spielen");
+    a.href = href.offen();
+    root.append(a);
+  }
 
   // The paths between drawn stations, as a dashed trail.
   const shown = new Set(here.filter((s) => visible(s.id, f) && can.has(s.id)).map((s) => s.id));
