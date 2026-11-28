@@ -54,7 +54,7 @@ export default {
     apple: "Apfel",
     basket: "Korb",
     hare: "Hase",
-    grow: "Tipp auf den Baum!",
+    grow: "Tipp auf den Baum, bis alle Äpfel rot sind!",
     pick: (k, w) => (k === 1 ? "Pflück einen Apfel!" : `Pflück ${w} Äpfel!`),
     first: "Wie viele Äpfel hängen auf dem Baum?",
     left: "Wie viele hängen noch am Baum?",

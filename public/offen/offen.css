@@ -41,11 +41,14 @@
 /* What can be moved bobs, so the scene shows what to do without words (no "Frosch antippen"). */
 .offen-zone.offer .offen-frog { animation: nudge 1.6s ease-in-out infinite; }
 .offen-zone.offer .offen-frog:nth-child(2n) { animation-delay: 0.4s; }
-.apfel-crown.offer { cursor: pointer; animation: nudge 1.6s ease-in-out infinite; }
+.apfel-crown.offer { cursor: pointer; }
+/* A bud: an apple still to grow, pale; the next one bobs, so one tap after the other is shown, not told. */
+.apfel-apple.bud { opacity: 0.28; filter: grayscale(1); }
+.apfel-apple.bud.next { animation: nudge 1.4s ease-in-out infinite; }
 .bau-meadow.offer { cursor: pointer; }
 .bau-meadow.offer .bau-hare { animation: nudge 1.6s ease-in-out infinite; }
 .bau-meadow.offer .bau-hare:nth-child(2n) { animation-delay: 0.4s; }
-@media (prefers-reduced-motion: reduce) { .offen-zone.offer .offen-frog, .apfel-crown.offer, .bau-meadow.offer .bau-hare { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .offen-zone.offer .offen-frog, .apfel-apple.bud.next, .bau-meadow.offer .bau-hare { animation: none; } }
 .offen-zone.grumble { animation: shake 0.4s ease-in-out 2; }
 
 .offen-frogs { --frog: clamp(26px, 8.2vw, 48px); position: relative; display: flex; flex-wrap: wrap; justify-content: center; gap: 1px; max-width: calc(5 * var(--frog) + 4px); padding: 6px 2px; }
