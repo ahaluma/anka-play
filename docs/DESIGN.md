@@ -255,10 +255,11 @@ the other). Seven answer modes: `choose`, `type`, `tapThings`, `build`, `order`,
 
 ### 6.4 Perspectives per idea
 
-An idea lists its perspectives, 1 to 5, in the fixed order (`perspectives` in `idea.js`), and has one recipe
-for each. `zahl` has all five. A station that is only a game has the one perspective `spielen` 🎲, which
+An idea lists its perspectives, 1 to 5, usually in the fixed order (`perspectives` in `idea.js`), and has one recipe
+for each. An idea may list them in another order where its concept needs it (the Teich: Machen first, the hands
+before the picture); the station shows them and the owl leads through them in the idea's order. `zahl` has all five. A station that is only a game has the one perspective `spielen` 🎲, which
 stands alone. A game has no stars to earn: its station is marked `game: true` in `universe.js`, is always
-open and is mastered from the start. `check-ideas` refuses an idea with none, more than five, a wrong order, `spielen` mixed with
+open and is mastered from the start. `check-ideas` refuses an idea with none, more than five, one twice, `spielen` mixed with
 others, or a recipe for a perspective it does not list.
 
 ### 6.5 Where the line is, and why
