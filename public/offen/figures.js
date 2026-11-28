@@ -29,6 +29,10 @@ const SYMBOLS = {
       <path d="M3 12Q20 5 37 12Q39.5 20.5 31 21.8Q24 22.6 20 18.6Q16 22.6 9 21.8Q.5 20.5 3 12ZM9 14.5a3.5 2.8 0 1 0 7 0a3.5 2.8 0 1 0-7 0ZM24 14.5a3.5 2.8 0 1 0 7 0a3.5 2.8 0 1 0-7 0Z" fill-rule="evenodd" class="f-mask"/>
       <path d="M3 13.5l-2.5-2.5M37 13.5l2.5-2.5" class="f-line"/>
     </symbol>`,
+  // Signs on buttons, so a child who cannot read knows them: done (a tick), no (a cross), on (an arrow).
+  ok: `<symbol id="fig-ok" viewBox="0 0 40 40"><path d="M8 21l8 8 16-17" class="f-sign"/></symbol>`,
+  no: `<symbol id="fig-no" viewBox="0 0 40 40"><path d="M11 11l18 18M29 11L11 29" class="f-sign"/></symbol>`,
+  next: `<symbol id="fig-next" viewBox="0 0 40 40"><path d="M8 20h22M21 10l10 10-10 10" class="f-sign"/></symbol>`,
   // A lily pad with its notch, stretched to the size of its place.
   pad: `<symbol id="fig-pad" viewBox="0 0 200 120" preserveAspectRatio="none">
       <path d="M100 60L29.8 21.8A96 56 0 1 1 23.3 26.3Z"/>
