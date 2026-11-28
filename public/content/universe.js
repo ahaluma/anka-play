@@ -71,7 +71,7 @@ export const MAPS = [
       { id: "kiesbank", pos: { x: 760, y: 450 } },
       { id: "grosser-fels", pos: { x: 830, y: 150 } },
     ],
-    shows: ["steg", "blumenfeld", "kiesbank", "sonnenfels", "weide", "muehle", "garten"],
+    shows: ["steg", "blumenfeld", "kiesbank", "sonnenfels", "weide", "muehle", "garten", "kisten"],
   },
   {
     id: "feld",
@@ -131,6 +131,7 @@ export const STATIONS = [
   { id: "kiesbank", map: "fluss", ideas: ["formen"], icon: "🔷", landmark: "kiesbank", pos: { x: 760, y: 430 } }, // shapes, solids, mirror in the water, ruler
   { id: "muehle", map: "fluss", ideas: ["masse"], icon: "🌾", landmark: "fluss", pos: { x: 600, y: 300 } }, // sizes and units at the water mill
   { id: "garten", map: "fluss", ideas: ["flaeche", "plan"], icon: "🥕", pos: { x: 560, y: 470 } }, // beds of slabs with a fence; the plan of the garden
+  { id: "kisten", map: "fluss", ideas: ["wuerfel"], icon: "📦", landmark: "bruecke", pos: { x: 400, y: 470 } }, // boxes stacked at the landing: buildings, plans, nets
   { id: "weide", map: "fluss", ideas: ["daten"], icon: "🐦", landmark: "weide", pos: { x: 600, y: 140 } }, // tally marks, charts, chance under the willow
   { id: "sonnenfels", map: "fluss", ideas: ["zeit"], icon: "☀️", landmark: "grosser-fels", pos: { x: 820, y: 180 } }, // clock and calendar
 
@@ -206,6 +207,8 @@ export const EDGES = [
   ...both("blumenfeld", "weide", 0.4), // counting in bundles / tally marks in bundles of five
   ...both("weide", "sonnenfels", 0.5), // charts and chance were at the sunny rock
   ...both("muehle", "garten", 0.5), // metres / metres of fence, the scale
+  ...both("kiesbank", "kisten", 0.6), // solids, the cube / buildings of cubes, nets
+  ...both("garten", "kisten", 0.4), // the plan of the garden / the plan of a building
 
   // ---- Feld -----------------------------------------------------------------------------------
   ...both("apfelbaum", "beeren", 0.9),
@@ -271,6 +274,7 @@ export const EDGES = [
   ...rel("muehle", "hofstand", 0.4), // units / euros and cents
   ...rel("garten", "huehner", 0.5), // rows times columns / times
   ...rel("huegel", "garten", 0.5), // where is it / where on the plan (crosses bands)
+  ...rel("huegel", "kisten", 0.4), // in front, behind, on top / seen from the front and from above (crosses bands)
   ...rel("himmel", "sonnenfels", 0.6), // first and then / the clock and the calendar (crosses bands)
   ...rel("blumenfeld", "apfelbaum", 0.7), // tens and ones / adding with tens
   ...rel("blumenfeld", "hofstand", 0.6), // bundling / notes and coins

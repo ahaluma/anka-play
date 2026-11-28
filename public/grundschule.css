@@ -163,3 +163,31 @@ button.plan-cell { cursor: pointer; }
 .clock-half { display: flex; flex-direction: column; align-items: center; gap: 4px; }
 .clock-text { font-size: 20px; font-weight: 800; }
 .week.months { display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; }
+
+/* ====================== Idea "wuerfel": boxes, the plan from above, nets ====================== */
+.box-scene { display: flex; flex-direction: column; align-items: center; gap: 10px; background: #fff; }
+.box-building { width: 100%; height: auto; max-height: 230px; }
+.box-front { fill: #e8b46a; stroke: var(--ink); stroke-width: 2; stroke-linejoin: round; }
+.box-top { fill: #f8dca6; stroke: var(--ink); stroke-width: 2; stroke-linejoin: round; }
+.box-side { fill: #c4874a; stroke: var(--ink); stroke-width: 2; stroke-linejoin: round; }
+.box-slat { stroke: rgba(27, 33, 64, 0.35); stroke-width: 1.5; }
+.box-no { display: none; font-size: 15px; font-weight: 900; fill: var(--ink); }
+.show-tops .box-no { display: inline; }
+.box-plan { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.box-side-label { font-size: 12px; font-weight: 800; color: #6b7390; }
+.box-grid { display: grid; gap: 3px; }
+.box-cell { display: grid; place-items: center; width: 42px; height: 42px; padding: 0; border: 3px solid var(--ink); border-radius: 6px; background: #f8dca6; font-size: 22px; font-weight: 900; color: var(--ink); }
+button.box-cell { cursor: pointer; }
+.box-cell.wrong { background: #ffb4a2; }
+.box-cell.right { background: #b6ecc4; }
+.box-work { display: flex; justify-content: center; align-items: flex-end; gap: 18px; width: 100%; }
+.box-own { display: flex; flex-direction: column; align-items: center; gap: 4px; min-width: 120px; }
+.box-own .box-building { max-width: 150px; max-height: 150px; }
+.box-caption { font-size: 14px; font-weight: 800; color: #6b7390; }
+.box-options { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+.box-option { padding: 8px; }
+.box-option .box-cell { width: 30px; height: 30px; font-size: 17px; border-width: 2px; }
+.box-option.right { background: #b6ecc4; }
+.box-net { width: 100%; height: auto; }
+.net-square { fill: #fff; stroke: var(--ink); stroke-width: 3; stroke-linejoin: round; transition: fill 0.3s; }
+.net-square.clash { fill: #ff8a73; }
