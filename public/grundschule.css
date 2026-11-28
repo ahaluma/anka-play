@@ -96,3 +96,70 @@
 .size-table p.ask { padding: 4px 12px; border-radius: 10px; background: rgba(255, 200, 58, 0.4); }
 .size-table p.ask.right { background: rgba(18, 165, 100, 0.25); }
 .size-rule { margin: 0; min-height: 26px; font-size: 20px; font-weight: 800; color: var(--blue); }
+
+/* ====================== Idea "flaeche": the garden on squares ====================== */
+.garden-scene { display: flex; flex-direction: column; align-items: center; gap: 8px; background: linear-gradient(var(--sky) 0 20%, var(--grass) 20%); }
+.garden-scene.two { flex-direction: row; justify-content: center; gap: 10px; }
+.garden-half { display: flex; flex-direction: column; align-items: center; gap: 4px; flex: 1; min-width: 0; }
+.garden { width: 100%; max-width: 340px; height: auto; }
+.g-cell { fill: #d7c08f; stroke: rgba(27, 33, 64, 0.25); stroke-width: 1; }
+.g-cell.tap { cursor: pointer; }
+.g-slab { fill: #7cc46a; stroke: #3f7d3a; stroke-width: 2; cursor: pointer; }
+.g-slab.plain { fill: #9fd68f; }
+.g-line { stroke: #3f7d3a; stroke-width: 2; }
+.g-fence { stroke: #7a4f2c; stroke-width: 6; stroke-linecap: round; }
+.g-label { font-size: 18px; font-weight: 800; fill: var(--ink); }
+.garden-counts { margin: 0; min-height: 24px; font-weight: 800; color: var(--blue); text-align: center; }
+
+/* ====================== Idea "plan": the garden from above ====================== */
+.plan-scene { display: flex; flex-direction: column; align-items: center; gap: 8px; background: var(--grass); }
+.plan-grid { display: grid; grid-template-columns: 26px repeat(var(--n), minmax(0, 52px)); justify-content: center; gap: 3px; width: 100%; max-width: 360px; }
+.plan-head { display: flex; align-items: center; justify-content: center; font-weight: 800; color: var(--ink); }
+.plan-cell { position: relative; display: flex; align-items: center; justify-content: center; aspect-ratio: 1; padding: 0; border: 2px solid rgba(27, 33, 64, 0.35); border-radius: 6px; background: #d4efb9; font-size: 26px; overflow: hidden; }
+button.plan-cell { cursor: pointer; }
+.plan-cell.glow { outline: 4px solid var(--sun); outline-offset: -2px; }
+.plan-cell.picked { background: #ffe39a; }
+.plan-thing { display: block; font-size: 26px; line-height: 1; max-width: 100%; overflow: hidden; }
+.plan-way { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; min-height: 40px; }
+.plan-step { display: flex; align-items: center; justify-content: center; width: 34px; height: 34px; border: 3px solid var(--ink); border-radius: 8px; background: #fff; font-size: 22px; font-weight: 800; }
+.plan-empty { align-self: center; color: var(--muted); font-weight: 700; }
+.plan-keys { display: flex; justify-content: center; gap: 8px; }
+.plan-key { width: 58px; height: 58px; font-size: 28px; font-weight: 800; }
+.plan-btn { min-width: 84px; font-size: 24px; }
+.plan-scale { margin: 0; font-size: 20px; font-weight: 800; color: var(--blue); }
+.plan-thing.nest { font-size: 21px; }
+
+/* ====================== Idea "daten": tally marks, charts, dice ====================== */
+.data-scene { display: flex; flex-direction: column; align-items: center; gap: 10px; background: #fff; }
+.tally-list { display: flex; flex-direction: column; gap: 8px; width: 100%; max-width: 330px; }
+.tally-row { display: flex; align-items: center; gap: 10px; padding: 4px 8px; border-radius: 10px; }
+.tally-row.on { background: rgba(255, 200, 58, 0.35); }
+.tally-list.small .tally-row { padding: 0 8px; }
+.tally-marks { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.tally-five { width: 40px; height: 36px; }
+.tally-rest { height: 36px; }
+.tally-five line, .tally-rest line { stroke: var(--ink); stroke-width: 3.5; stroke-linecap: round; }
+.dchart { width: 100%; max-width: 340px; }
+.dchart-row { display: flex; align-items: center; gap: 6px; min-height: 40px; border-radius: 10px; }
+.dchart-row.glow { background: rgba(255, 200, 58, 0.35); }
+.dchart-key { width: 34px; font-size: 26px; text-align: center; }
+.dchart-bar { position: relative; display: grid; grid-template-columns: repeat(var(--cells), 1fr); flex: 1; height: 28px; border-left: 3px solid var(--ink); background-image: linear-gradient(90deg, rgba(27, 33, 64, 0.15) 1px, transparent 1px); background-size: calc(100% / var(--cells)) 100%; }
+.dchart.pics .dchart-bar { height: 32px; background-image: none; }
+.dchart-cell { margin: 3px 1px; border: 2px solid var(--ink); border-radius: 4px; background: var(--blue); }
+.dchart-pic { font-size: 18px; line-height: 32px; text-align: center; }
+.dchart-btn { width: 40px; height: 40px; padding: 0; font-size: 24px; font-weight: 800; }
+.dchart-axis { position: relative; height: 22px; margin-left: 43px; font-size: 13px; font-weight: 800; }
+.dchart-axis span { position: absolute; transform: translateX(-50%); }
+.dchart:has(.dchart-btn) .dchart-axis { margin-right: 92px; }
+.data-step { margin: 0; font-weight: 800; color: var(--blue); }
+.dice-faces { display: flex; gap: 6px; font-size: 46px; line-height: 1; }
+.die { padding: 2px; border-radius: 8px; }
+.die.on-a { background: var(--sun); }
+.die.on-b { box-shadow: inset 0 -8px 0 var(--blue); }
+.die.on-a.on-b { box-shadow: inset 0 -8px 0 var(--blue); }
+
+/* ====================== Idea "zeit": two clocks, the months ====================== */
+.clock-scene.two-clocks { display: flex; flex-direction: row; justify-content: center; gap: 12px; }
+.clock-half { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.clock-text { font-size: 20px; font-weight: 800; }
+.week.months { display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; }

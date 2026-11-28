@@ -2,33 +2,30 @@
 // was. It picks from tables with rules, which recipes cannot say (docs/DESIGN.md 6.5). idea.js hands it to the engine
 // (engine/recipe.js taskOf); check() is run by tools/check-ideas.mjs on 1000 tasks per level.
 
-// The tasks of the idea "Zeit": the clock, the calendar, reading charts, chance. The weather station in
-// the town. One function per perspective makes one task as plain data: no DOM, no texts.
+// The tasks of the idea "Zeit": the clock and the calendar. (Charts and chance moved to the willow, idea "daten",
+// docs/GRUNDSCHULE.md 3.8.) One function per perspective makes one task as plain data: no DOM, no texts.
 //
 //   task({ p, range }, r) → one task. range = 1, 2 or 3 (a level):
-//     1 full hours; pictures of the weather, one picture a day; a bag with a clear favourite
-//     2 half and quarter hours; bars with a scale, "how many more?"; certain, possible, impossible
-//     3 every five minutes; how much later, which day in n days; closer bags
+//     1 full hours; how many hours from … to …; in n hours, in n days
+//     2 half and quarter hours; how many minutes from … to …; the months
+//     3 every five minutes; spans over the full hour; how many days a month has
 //
 //   sehen     { range, h, m, choices: [{ h, m }] }       read the clock: which time is it?
 //   machen    { range, h, m, step, startH, startM }      set the clock to h:m (minute buttons by step)
-//   forschen  { range, bag: { colour: count }, kind, colour?, answer }
-//               "most"   which colour comes out most often? answer: a colour or "same"
-//               "chance" taking `colour` out is "sure", "maybe" or "never"
+//   forschen  { range, from: { h, m }, to: { h, m }, unit: "h" | "min", answer }   how long from … to …?
 //   anwenden  { range, kind, … }
-//               "most"  { days: { weather: count }, answer: weather }    which weather was most often?
-//               "count" { days, ask: weather, answer }                   on how many days?
-//               "diff"  { days, a, b, answer }                           how many more a than b?
 //               "later" { h, add, answer }                               h o'clock, in `add` hours?
 //               "day"   { today, add, answer }                           which weekday in `add` days?
+//               "month" { month, add, answer }                           which month `add` months after?
+//               "monthDays" { month, answer: 28 | 30 | 31 }              how many days has this month?
 //   pruefen   { range, h, m, said: { h, m }, right, choices }  the owl reads the clock
 //   key – short text that tells tasks apart, for "not the same task again".
 //
 // Weekdays are 0 = Monday … 6 = Sunday. Hours are 1 … 12 on the clock face.
 
 export const RANGES = [1, 2, 3];
-export const COLOURS = ["red", "blue", "yellow", "green"];
-export const WEATHER = ["sun", "cloud", "rain", "snow"];
+/** Days of the months in a normal year, January first. */
+export const MONTH_DAYS = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 const MINUTES = { 1: [0], 2: [0, 30, 15, 45], 3: [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55] };
 
 const rangeOf = (range) => (RANGES.includes(range) ? range : 1);
@@ -57,17 +54,6 @@ function choices(t, R, r) {
   return r.shuffle(list);
 }
 
-/** Two weeks of weather: 14 days, one weather that clearly comes most. */
-function fortnight(R, r) {
-  const kinds = r.shuffle(WEATHER).slice(0, R === 1 ? 3 : 4);
-  for (;;) {
-    const days = Object.fromEntries(kinds.map((k) => [k, 0]));
-    for (let i = 0; i < 14; i++) days[r.pick(kinds)]++;
-    const counts = Object.values(days).sort((a, b) => b - a);
-    if (counts[0] > counts[1] && counts[counts.length - 1] > 0) return days;
-  }
-}
-
 const makers = {
   sehen(R, r) {
     const t = time(R, r);
@@ -82,64 +68,37 @@ const makers = {
     return { range: R, ...t, step, startH: start.h, startM: start.m, key: `${t.h}:${t.m}` };
   },
   forschen(R, r) {
-    const kind = R === 1 ? "most" : r.pick(["most", "chance"]);
-    const n = R === 1 ? 2 : 3;
-    const cols = r.shuffle(COLOURS).slice(0, n);
-    const bag = {};
-    if (kind === "most") {
-      // Level 1: one colour clearly more; later closer, sometimes the same.
-      const big = R === 1 ? r.int(5, 7) : r.int(3, 5);
-      cols.forEach((c, i) => (bag[c] = i === 0 ? big : r.int(1, big - (R === 3 ? 1 : 2))));
-      if (R > 1 && r.chance(0.2)) bag[cols[1]] = big;
-      const max = Math.max(...Object.values(bag));
-      const top = cols.filter((c) => bag[c] === max);
-      return { range: R, bag, kind, answer: top.length > 1 ? "same" : top[0], key: `m${JSON.stringify(bag)}` };
+    // how long from one time to another: full hours; then minutes in quarters; then in fives, over the full hour
+    if (R === 1) {
+      const h = r.int(1, 10), add = r.int(1, 4);
+      return { range: R, from: { h, m: 0 }, to: { h: hour(h + add), m: 0 }, unit: "h", answer: add, key: `s${h}+${add}` };
     }
-    cols.forEach((c) => (bag[c] = r.int(1, 4)));
-    const pick = r.int(1, 3);
-    let colour, answer;
-    if (pick === 1) {
-      // sure: every ball has this colour
-      colour = cols[0];
-      for (const c of cols.slice(1)) delete bag[c];
-      bag[colour] = r.int(3, 6);
-      answer = "sure";
-    } else if (pick === 2) {
-      colour = r.pick(COLOURS.filter((c) => !(c in bag)));
-      answer = "never";
-    } else {
-      colour = r.pick(cols);
-      answer = "maybe";
-    }
-    return { range: R, bag, kind, colour, answer, key: `c${JSON.stringify(bag)}${colour}` };
+    const span = R === 2 ? r.pick([15, 30, 45, 60]) : 5 * r.int(2, 19);
+    const start = R === 2 ? r.pick([0, 15, 30, 45]) : 5 * r.int(0, 11);
+    const h = r.int(1, 11);
+    const end = start + span;
+    return { range: R, from: { h, m: start }, to: { h: hour(h + Math.floor(end / 60)), m: end % 60 }, unit: "min", answer: span, key: `s${h}:${start}+${span}` };
   },
   anwenden(R, r) {
-    if (R === 3 && r.chance(0.6)) {
-      if (r.chance(0.5)) {
-        const h = r.int(1, 12);
-        const add = r.int(2, 5);
-        return { range: R, kind: "later", h, add, answer: hour(h + add), key: `l${h}+${add}` };
-      }
+    const kinds = R === 1 ? ["later", "day"] : R === 2 ? ["later", "day", "month", "month"] : ["day", "month", "monthDays", "monthDays"];
+    const kind = r.pick(kinds);
+    if (kind === "later") {
+      const h = r.int(1, 12);
+      const add = r.int(2, 5);
+      return { range: R, kind, h, add, answer: hour(h + add), key: `l${h}+${add}` };
+    }
+    if (kind === "day") {
       const today = r.int(0, 6);
-      const add = r.int(1, 6);
-      return { range: R, kind: "day", today, add, answer: (today + add) % 7, key: `d${today}+${add}` };
+      const add = R === 1 ? r.int(1, 3) : r.int(1, 6);
+      return { range: R, kind, today, add, answer: (today + add) % 7, key: `d${today}+${add}` };
     }
-    const days = fortnight(R, r);
-    const kinds = Object.keys(days);
-    const kind = R === 1 ? r.pick(["most", "count"]) : r.pick(["count", "diff", "diff"]);
-    if (kind === "most") {
-      const max = Math.max(...Object.values(days));
-      return { range: R, kind, days, answer: kinds.find((k) => days[k] === max), key: `w${JSON.stringify(days)}` };
+    if (kind === "month") {
+      const month = r.int(0, 11);
+      const add = r.int(1, R === 2 ? 3 : 6);
+      return { range: R, kind, month, add, answer: (month + add) % 12, key: `m${month}+${add}` };
     }
-    if (kind === "count") {
-      const ask = r.pick(kinds);
-      return { range: R, kind, days, ask, answer: days[ask], key: `c${JSON.stringify(days)}${ask}` };
-    }
-    let a, b;
-    do [a, b] = r.shuffle(kinds).slice(0, 2);
-    while (days[a] === days[b]);
-    if (days[a] < days[b]) [a, b] = [b, a];
-    return { range: R, kind, days, a, b, answer: days[a] - days[b], key: `x${JSON.stringify(days)}${a}${b}` };
+    const month = r.int(0, 11);
+    return { range: R, kind, month, answer: MONTH_DAYS[month], key: `md${month}` };
   },
   pruefen(R, r) {
     const t = time(R, r);
@@ -167,27 +126,20 @@ export function check(t, level) {
   } else if (level.p === "machen") {
     if (!okTime(t) || same({ h: t.startH, m: t.startM }, t) || t.m % t.step) problems.push("clock");
   } else if (level.p === "forschen") {
-    const cols = Object.keys(t.bag);
-    if (!cols.length || cols.some((c) => t.bag[c] < 1)) problems.push("bag");
-    if (t.kind === "most") {
-      const max = Math.max(...Object.values(t.bag));
-      const top = cols.filter((c) => t.bag[c] === max);
-      if (t.answer !== (top.length > 1 ? "same" : top[0])) problems.push("most");
-    } else {
-      const want = !(t.colour in t.bag) ? "never" : cols.length === 1 ? "sure" : "maybe";
-      if (want !== t.answer) problems.push(`chance ${t.answer} should be ${want}`);
-    }
+    const mins = (x) => (x.h % 12) * 60 + x.m;
+    const d = (mins(t.to) - mins(t.from) + 720) % 720;
+    if ((t.unit === "h" ? d / 60 : d) !== t.answer || t.answer <= 0) problems.push(`span ${d}`);
+    if (!okTime(t.from) || !(t.to.m % 5 === 0)) problems.push("span times");
   } else if (level.p === "anwenden") {
-    if (t.days) {
-      const sum = Object.values(t.days).reduce((a, b) => a + b, 0);
-      if (sum !== 14) problems.push("not 14 days");
-      if (t.kind === "count" && t.answer !== t.days[t.ask]) problems.push("count");
-      if (t.kind === "diff" && (t.answer !== t.days[t.a] - t.days[t.b] || t.answer < 1)) problems.push("diff");
-    } else if (t.kind === "later") {
+    if (t.kind === "later") {
       if (t.answer !== hour(t.h + t.add)) problems.push("later");
     } else if (t.kind === "day") {
       if (t.answer !== (t.today + t.add) % 7) problems.push("day");
-    }
+    } else if (t.kind === "month") {
+      if (t.answer !== (t.month + t.add) % 12) problems.push("month");
+    } else if (t.kind === "monthDays") {
+      if (t.answer !== MONTH_DAYS[t.month]) problems.push("monthDays");
+    } else problems.push(`kind ${t.kind}`);
   }
   return problems;
 }

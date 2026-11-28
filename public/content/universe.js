@@ -71,7 +71,7 @@ export const MAPS = [
       { id: "kiesbank", pos: { x: 760, y: 450 } },
       { id: "grosser-fels", pos: { x: 830, y: 150 } },
     ],
-    shows: ["steg", "blumenfeld", "kiesbank", "sonnenfels"],
+    shows: ["steg", "blumenfeld", "kiesbank", "sonnenfels", "weide", "muehle", "garten"],
   },
   {
     id: "feld",
@@ -130,7 +130,9 @@ export const STATIONS = [
   { id: "blumenfeld", map: "fluss", ideas: ["stellen"], icon: "💐", pos: { x: 330, y: 160 } }, // tens and ones: bunches and baskets
   { id: "kiesbank", map: "fluss", ideas: ["formen"], icon: "🔷", landmark: "kiesbank", pos: { x: 760, y: 430 } }, // shapes, solids, mirror in the water, ruler
   { id: "muehle", map: "fluss", ideas: ["masse"], icon: "🌾", landmark: "fluss", pos: { x: 600, y: 300 } }, // sizes and units at the water mill
-  { id: "sonnenfels", map: "fluss", ideas: ["zeit"], icon: "☀️", landmark: "grosser-fels", pos: { x: 820, y: 180 } }, // clock, calendar, charts, chance
+  { id: "garten", map: "fluss", ideas: ["flaeche", "plan"], icon: "🥕", pos: { x: 560, y: 470 } }, // beds of slabs with a fence; the plan of the garden
+  { id: "weide", map: "fluss", ideas: ["daten"], icon: "🐦", landmark: "weide", pos: { x: 600, y: 140 } }, // tally marks, charts, chance under the willow
+  { id: "sonnenfels", map: "fluss", ideas: ["zeit"], icon: "☀️", landmark: "grosser-fels", pos: { x: 820, y: 180 } }, // clock and calendar
 
   // Feld (school, 6 to 10): calculation, what was the market. Natural scene: the edge of a field.
   { id: "apfelbaum", map: "feld", ideas: ["plus"], icon: "🍏", landmark: "obstgarten", pos: { x: 200, y: 260 } },
@@ -200,6 +202,10 @@ export const EDGES = [
   ...both("kiesbank", "sonnenfels", 0.3),
   ...both("kiesbank", "muehle", 0.6), // the ruler / units of length
   ...both("blumenfeld", "muehle", 0.4), // ten of one make one of the next / 100 cm make 1 m
+  ...both("kiesbank", "garten", 0.6), // shapes / area and fence
+  ...both("blumenfeld", "weide", 0.4), // counting in bundles / tally marks in bundles of five
+  ...both("weide", "sonnenfels", 0.5), // charts and chance were at the sunny rock
+  ...both("muehle", "garten", 0.5), // metres / metres of fence, the scale
 
   // ---- Feld -----------------------------------------------------------------------------------
   ...both("apfelbaum", "beeren", 0.9),
@@ -263,12 +269,14 @@ export const EDGES = [
   ...rel("kiesel", "kiesbank", 0.7), // shapes / shapes and solids (crosses bands)
   ...rel("ufer", "muehle", 0.6), // heavier, longer / grams and metres (crosses bands)
   ...rel("muehle", "hofstand", 0.4), // units / euros and cents
+  ...rel("garten", "huehner", 0.5), // rows times columns / times
+  ...rel("huegel", "garten", 0.5), // where is it / where on the plan (crosses bands)
   ...rel("himmel", "sonnenfels", 0.6), // first and then / the clock and the calendar (crosses bands)
   ...rel("blumenfeld", "apfelbaum", 0.7), // tens and ones / adding with tens
   ...rel("blumenfeld", "hofstand", 0.6), // bundling / notes and coins
   ...rel("blumenfeld", "scheune", 0.6), // trading a bunch for ten flowers / trading a ten in written minus
   ...rel("steg", "beeren", 0.6), // the number line / minus as distance
-  ...rel("sonnenfels", "lichtung", 0.4), // reading charts / stories with numbers
+  ...rel("weide", "lichtung", 0.4), // reading charts / stories with numbers
   ...rel("ameisen", "huehner", 0.4), // rows and rules / times tables (crosses bands)
   ...rel("zaun", "steg", 0.4),
 ];
