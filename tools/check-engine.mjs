@@ -283,6 +283,35 @@ function play(rec, def, p, right, { age = 4, size = 5 } = {}) {
     if (t.ways) check(has.every((w) => ways.includes(w)), `the info page names every way of station ${s.id}`);
   }
   for (const m of MAPS) check(info.maps[m.id] && info.ageOf[m.id], `the info page describes map ${m.id}`);
+  // every idea with more than one level says what its levels are (a pure game and the top have none to tell)
+  for (const s of STATIONS) {
+    const t = info.stations[s.id];
+    for (const [i, id] of s.ideas.entries()) {
+      const part = i === 0 ? t : t?.second;
+      const levels = new Set((defs[id]?.ladder ?? []).map((r) => r.group)).size;
+      if (levels > 1) check(part?.steps, `the info page names the levels of ${id} at station ${s.id}`);
+    }
+  }
+  // English and Nepali say the same things as German: the same stations, ways, levels, second ideas, maps
+  const shape = (x) => (x && typeof x === "object" && !Array.isArray(x) ? Object.fromEntries(Object.keys(x).sort().map((k) => [k, shape(x[k])])) : Array.isArray(x) ? x.length : typeof x);
+  for (const code of ["en", "ne"]) {
+    const other = (await import(`../public/info/lang/${code}.js`)).default;
+    for (const key of ["stations", "maps", "ways", "ageOf", "labels", "basics"]) {
+      check(JSON.stringify(shape(other[key])) === JSON.stringify(shape(info[key])), `the info page in ${code} has the same ${key} as in German`);
+    }
+    check(other.why?.items?.length === info.why.items.length, `the info page in ${code} gives every reason why`);
+    check(!other.note, `the info page in ${code} is written in ${code}, without a note that it is not`);
+  }
+}
+
+// ---------- The parents' page: the same texts in every language
+{
+  const de = (await import("../public/eltern/lang/de.js")).default;
+  for (const code of ["en", "ne"]) {
+    const other = (await import(`../public/eltern/lang/${code}.js`)).default;
+    const keys = (x) => JSON.stringify(Object.keys(x).sort());
+    check(keys(other) === keys(de) && keys(other.mapNotes) === keys(de.mapNotes) && keys(other.mistakes) === keys(de.mistakes) && other.how.length === de.how.length, `the parents' page in ${code} has every text the German one has`);
+  }
 }
 
 console.log(`${checks} checks.`);

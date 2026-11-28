@@ -45,7 +45,7 @@ export default {
 
   howTitle: "How to read the report",
   how: [
-    "Each station trains one idea in up to five ways:",
+    "Each station trains one idea (some two), each idea in up to five ways:",
     "A star ⭐ means: a round with 4 of 5 tasks right at the first try, at the level your child is on now. 🌱 means: played, no star yet. With enough stars your child moves up a level; after two hard rounds, one level down.",
     "“Mastered” means: every way of the station has its star at the highest level. Games like number memory are always open and have no stars.",
   ],
@@ -54,8 +54,8 @@ export default {
   mapNotPlayed: "Not played yet",
   mapNotes: {
     tal: "For ages 3 to 6: numbers, shapes, patterns, with things and pictures, without signs. A round has 3 tasks, 5 from the age of 7.",
-    fluss: "School: the number line, tens and ones, shapes, clock and calendar. Opens at 6 or once the meadow and the pond in the valley are mastered.",
-    feld: "School: plus, minus, times, divide, money and word problems. There are sub-steps here: a good round moves one sub-step on, stars come on the top one, when everything comes mixed. What still wobbles comes back more often.",
+    fluss: "School: the number line and rounding, place value up to a million, shapes and solids, measures and units, area and plans, buildings of cubes, data and chance, clock and calendar. Opens at 6 or once the meadow and the pond in the valley are mastered.",
+    feld: "School: plus, minus, times, divide, money, word problems and written calculation (the barn opens at 8 or once plus and minus up to 100 are mastered). There are sub-steps here: a good round moves one sub-step on, stars come on the top one, when everything comes mixed. What still wobbles comes back more often.",
     berg: "Puzzles for ages 9 to 12: twelve camps with one thinking strategy each, and the summit. A camp comes out of the fog once the ones below are mastered. After each round the mountain asks: how was it?",
   },
 
@@ -112,5 +112,5 @@ export default {
   resetConfirm: (name) => `Delete all the progress of ${name}? The child stays and starts again.`,
   privacy: "Privacy",
   info: "What your child learns",
-  infoNote: "Every map and every station explained (in German for now).",
+  infoNote: "Every map and every station explained: what your child does there, what they learn, and why."
 };
