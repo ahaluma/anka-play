@@ -66,6 +66,12 @@ export async function render(root, route) {
   root.classList.add("parents");
   root.append(top, el("p", "intro", T.intro));
 
+  // ---------- What a child learns here: the info page (/info/)
+
+  const info = link("card p-card info-link", "/info/");
+  info.append(el("strong", "", `📖 ${T.info}`), el("span", "muted", T.infoNote));
+  root.append(info);
+
   // ---------- Children
 
   const kidsCard = el("section", "card p-card");
@@ -372,7 +378,7 @@ export async function render(root, route) {
     go(href.parents(shown?.id ?? "guest"));
   });
   const foot = el("div", "p-foot");
-  foot.append(reset, link("privacy-link", "/datenschutz/", T.privacy));
+  foot.append(reset, link("privacy-link", "/info/", T.info), link("privacy-link", "/datenschutz/", T.privacy));
   root.append(foot);
 
   return () => root.classList.remove("parents");

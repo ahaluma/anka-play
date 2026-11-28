@@ -57,7 +57,7 @@ export default {
   mapSummary: (done, of) => `${n(done)} von ${n(of)} ${of === 1 ? "Station" : "Stationen"} geschafft`,
   mapNotPlayed: "Noch nicht gespielt",
   mapNotes: {
-    tal: "Für 3 bis 6 Jahre: Zahlen, Formen, Muster, mit Dingen und Bildern, ohne Rechenzeichen. Eine Runde hat 5 Aufgaben, unter 5 Jahren 3.",
+    tal: "Für 3 bis 6 Jahre: Zahlen, Formen, Muster, mit Dingen und Bildern, ohne Rechenzeichen. Eine Runde hat 3 Aufgaben, ab 7 Jahren 5.",
     fluss: "Schule: Zahlenstrahl, Zehner und Einer, Formen, Uhr und Kalender. Öffnet sich ab 6 Jahren oder wenn Wiese und Teich im Tal geschafft sind.",
     feld: "Schule: Plus, Minus, Mal, Geteilt, Geld und Rechengeschichten. Hier gibt es Teilstufen: Eine gute Runde führt eine Teilstufe weiter, Sterne gibt es auf der obersten, wenn alles gemischt kommt. Was noch wackelt, kommt öfter wieder.",
     berg: "Knobeln für 9 bis 12 Jahre: zwölf Lager mit je einer Denkstrategie und der Gipfel. Ein Lager kommt aus dem Nebel, wenn die darunter geschafft sind. Nach jeder Runde fragt der Berg: Wie war das?",
@@ -119,4 +119,6 @@ export default {
   reset: "Fortschritt löschen",
   resetConfirm: (name) => `Den ganzen Fortschritt von ${name} löschen? Das Kind bleibt, es fängt neu an.`,
   privacy: "Datenschutz",
+  info: "Was Ihr Kind lernt",
+  infoNote: "Jede Welt und jede Station erklärt: was Ihr Kind dort tut, was es lernt und warum.",
 };

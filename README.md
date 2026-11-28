@@ -47,6 +47,9 @@ node tools/serve.mjs        # then open http://localhost:8080 (Node 22 or newer,
 - `public/art/<map>/`: the map's scene and the stations' backgrounds.
 - `public/eltern/`: the parents' page (`#/eltern`), drawn from `engine/report.js`; the backup is `engine/backup.js`
   (only AnkaPlay's own `anka:` entries; a think-lab backup is recognised and refused).
+- `public/info/`: the page for parents that explains every map and station, what a child learns there and why it is
+  built this way (`/info/`, linked from the parents' page). Texts in `info/lang/de.js`; English and Nepali show a note
+  until they are translated. `check-engine` checks that every station has its text.
 - `public/datenschutz/`: the privacy policy (German binding, English, Nepali). **Before going public**, put the
   operator's name, postal address and e-mail in `public/datenschutz/contact.js`.
 - `public/sw.js`: keeps a copy of every file on the phone (network first, so updates show at once). Its file list

@@ -53,7 +53,7 @@ export default {
   mapSummary: (done, of) => `${n(done)} of ${n(of)} ${of === 1 ? "station" : "stations"} mastered`,
   mapNotPlayed: "Not played yet",
   mapNotes: {
-    tal: "For ages 3 to 6: numbers, shapes, patterns, with things and pictures, without signs. A round has 5 tasks, 3 under the age of 5.",
+    tal: "For ages 3 to 6: numbers, shapes, patterns, with things and pictures, without signs. A round has 3 tasks, 5 from the age of 7.",
     fluss: "School: the number line, tens and ones, shapes, clock and calendar. Opens at 6 or once the meadow and the pond in the valley are mastered.",
     feld: "School: plus, minus, times, divide, money and word problems. There are sub-steps here: a good round moves one sub-step on, stars come on the top one, when everything comes mixed. What still wobbles comes back more often.",
     berg: "Puzzles for ages 9 to 12: twelve camps with one thinking strategy each, and the summit. A camp comes out of the fog once the ones below are mastered. After each round the mountain asks: how was it?",
@@ -111,4 +111,6 @@ export default {
   reset: "Delete progress",
   resetConfirm: (name) => `Delete all the progress of ${name}? The child stays and starts again.`,
   privacy: "Privacy",
+  info: "What your child learns",
+  infoNote: "Every map and every station explained (in German for now).",
 };
