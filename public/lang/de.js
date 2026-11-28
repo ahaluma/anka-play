@@ -59,7 +59,7 @@ export default {
   ideas: {
     zahl: { name: "Wie viele?", about: "Eine Zahl sagt, wie viele" },
     teile: { name: "Zahlen zerlegen", about: "Zahlen bestehen aus Zahlen" },
-    zehn: { name: "Zehnerfreunde", about: "Zwei Zahlen machen zusammen voll" },
+    zehn: { name: "Zehnerfreunde", about: "Hier ein paar, da ein paar. Zusammen sind es alle." },
     memory: { name: "Zahlen-Memory", about: "Finde die Paare" },
     gruppen: { name: "Gerecht teilen", about: "Jeder bekommt gleich viele" },
     muster: { name: "Muster", about: "Eine Reihe geht immer so weiter" },

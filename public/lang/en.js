@@ -57,7 +57,7 @@ export default {
   ideas: {
     zahl: { name: "How many?", about: "A number says how many" },
     teile: { name: "Splitting numbers", about: "Numbers are made of numbers" },
-    zehn: { name: "Friends of ten", about: "Two numbers fill it up together" },
+    zehn: { name: "Friends of ten", about: "Some here, some there. Together it's all of them." },
     memory: { name: "Number memory", about: "Find the pairs" },
     gruppen: { name: "Sharing fairly", about: "Everyone gets the same" },
     muster: { name: "Patterns", about: "A row always goes on like this" },
