@@ -44,6 +44,7 @@ export default {
   done: "Fertig",
 
   look: (pad) => `Schau auf die ${TO[pad]}!`,
+  sum: (a, b, c) => `${a[0].toUpperCase()}${a.slice(1)} plus ${b} ist ${c}.`,
   won: (pad) => `Yeaaah! ${pad === "rot" ? "Rot" : "Grün"} hat gewonnen!`,
   masked: (pad) => `Wie viele waren auf der ${PAD[pad]}?`,
   partner: (n, pad, k, w, other) => `${n === 5 ? "Fünf" : "Zehn"} Frösche. Auf der ${PAD[pad]} ${k === 1 ? "einer" : k === 0 ? "keiner" : w}. Wie viele auf der ${PAD[other]}?`,

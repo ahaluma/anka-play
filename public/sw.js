@@ -7,7 +7,7 @@
 //
 // VERSION and FILES are written by tools/check-offline.mjs --write (run it after changing any file).
 
-const VERSION = "951499b19ce0";
+const VERSION = "a66a8db25819";
 const CACHE = `anka-${VERSION}`;
 
 const FILES = [

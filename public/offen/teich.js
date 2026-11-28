@@ -467,6 +467,19 @@ export async function render(root) {
     showSign("gruen");
   }
 
+  /** Now and then, when one pad holds five or ten and the other some more, the owl says the sum aloud:
+   *  "Fünf plus zwei ist sieben." The caption shows it in digits, 5 + 2 = 7: heard and seen, not the same twice. */
+  async function sumAloud() {
+    const full = ["rot", "gruen"].find((p) => at[p] === 5 || at[p] === 10);
+    if (!full || !at[OTHER[full]] || Math.random() >= 0.4) return;
+    const a = at[full];
+    const b = at[OTHER[full]];
+    voice.newTask();
+    caption.textContent = `${num(a)} + ${num(b)} = ${num(a + b)}`;
+    await voice.tell(X.sum(w(a), w(b), w(a + b)), false);
+    await wait(800);
+  }
+
   /** Now and then (about every fifth comparison) the pad with more frogs wins: applause, confetti in the pond's
    *  colours, "Yeaaah! Rot hat gewonnen!". A joke of the scene, not praise for the child, and no star. */
   async function cheer() {
@@ -673,6 +686,7 @@ export async function render(root) {
       await wait(300);
     }
 
+    await sumAloud();
     voice.newTask();
     pond.classList.add("bye");
     await wait(900);
