@@ -45,6 +45,10 @@ node tools/serve.mjs        # then open http://localhost:8080 (Node 22 or newer,
   The Tal ideas other than *zahl* are think-lab's, ported with `engine/ui/ported.js` (their pictures are
   in `public/ported.css`); so are the Fluss ideas and the money stand (`public/ported-schule.css`), and the Berg's camps (`public/ported-berg.css`). The four
   operations and the clearing share think-lab's market code in `boards/rechnung/`. `ideas/index.js` lists the ideas that are written.
+- `public/offen/`: the open Tal, a first try (`#/offen/teich`, a button under the Tal map): the pond as one scene
+  without stations. The owl (`owl.js`) picks what happens from small skills counted right and wrong
+  (`skills.js`: sicher after 20 answers with 18 of the last 20 right; one star for every right answer).
+  `node tools/check-offen.mjs` plays it with a simulated child. German only so far.
 - `public/lang/`: shared words: numbers, praise, buttons, names of maps, stations and things.
 - `public/art/<map>/`: the map's scene and the stations' backgrounds.
 - `public/eltern/`: the parents' page (`#/eltern`), drawn from `engine/report.js`; the backup is `engine/backup.js`
@@ -64,6 +68,7 @@ node tools/serve.mjs        # then open http://localhost:8080 (Node 22 or newer,
 node tools/check-graph.mjs    # the universe: references, reachability by age, ways back, layout vs nearness
 node tools/check-ideas.mjs    # every idea: 1000 tasks per rung, perspective and kind of task
 node tools/check-engine.mjs   # the learning rules, the parents' report, the backup
+node tools/check-offen.mjs    # the open Tal's owl: skills open one after the other, "Wie viele?" gets rarer
 node tools/check-offline.mjs  # sw.js lists every file (after changing any file: --write)
 ```
 

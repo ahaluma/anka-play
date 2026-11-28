@@ -1,0 +1,46 @@
+/* The open Tal: the pond as one scene (offen/teich.js). Water above with two lily pads, the shore below. */
+.offen-door { display: flex; justify-content: center; margin-top: 12px; text-decoration: none; color: var(--ink); }
+.offen-stars { min-width: 64px; padding: 6px 10px; border: 3px solid var(--ink); border-radius: 999px; background: var(--card); font-weight: 900; font-size: 20px; text-align: center; }
+
+.board.offen { display: flex; flex-direction: column; gap: 14px; width: 100%; }
+.offen-pond { display: flex; flex-direction: column; overflow: hidden; padding: 0; touch-action: none; transition: opacity 0.6s; }
+.offen-water { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px; padding: 18px 10px; background: var(--water); }
+.offen-shore { padding: 10px 12px 14px; background: linear-gradient(#e9d39c, #d9bd7a); border-top: 3px solid var(--ink); }
+
+.offen-zone { position: relative; display: grid; place-items: center; min-height: 104px; border: 3px solid var(--ink); border-radius: 50% 50% 50% 50% / 46% 46% 54% 54%; transition: box-shadow 0.2s, transform 0.2s; }
+.offen-zone.z-gruen { background: #6cc46a; }
+.offen-zone.z-rot { background: #e79a8f; }
+.offen-zone.z-shore { min-height: 64px; border: 0; border-radius: 14px; }
+.offen-zone.target { box-shadow: 0 0 0 5px var(--sun); cursor: pointer; }
+.offen-zone.tappable { cursor: pointer; animation: nudge 1.2s ease-in-out infinite; }
+.offen-zone.z-rot.tappable { animation-delay: 0.3s; }
+.offen-zone.asked { box-shadow: 0 0 0 5px var(--sun); }
+.offen-zone.grumble { animation: shake 0.4s ease-in-out 2; }
+.offen-zone.under { background-image: repeating-linear-gradient(90deg, transparent 0 10px, rgba(255, 255, 255, 0.35) 10px 14px); }
+
+.offen-frogs { display: grid; grid-template-columns: repeat(5, clamp(22px, 7.6vw, 44px)); gap: 1px; justify-content: center; padding: 8px 2px; }
+.offen-frog { display: grid; place-items: center; width: 100%; aspect-ratio: 1; padding: 0; border: 0; background: none; font-size: clamp(20px, 6.4vw, 36px); line-height: 1; cursor: grab; touch-action: none; position: relative; }
+span.offen-frog { cursor: default; }
+.offen-frog.lifted { transform: translateY(-8px) scale(1.15); filter: drop-shadow(0 6px 0 rgba(27, 33, 64, 0.35)); }
+.offen-frog.away { opacity: 0.25; }
+.offen-frog.bubble { font-size: clamp(16px, 4.5vw, 24px); opacity: 0.8; }
+.offen-frog.counted::after { content: attr(data-n); position: absolute; top: -6px; right: -4px; min-width: 18px; padding: 0 3px; border-radius: 9px; background: var(--sun); border: 2px solid var(--ink); font-size: 12px; font-weight: 900; }
+.offen-ghost { position: fixed; left: 0; top: 0; z-index: 50; font-size: 44px; pointer-events: none; }
+
+.offen-sign { position: absolute; top: 4px; right: 8px; min-width: 38px; padding: 2px 8px; border: 3px solid var(--ink); border-radius: 12px; background: #fff; font-size: 22px; font-weight: 900; text-align: center; color: var(--muted); }
+.offen-sign.known { color: var(--ink); background: var(--sun); }
+
+.offen-pond.bye .offen-frog { animation: go-away 0.8s ease-in forwards; }
+.offen-below { min-height: 72px; display: flex; justify-content: center; }
+.offen-below .strip { grid-template-columns: repeat(6, 1fr); }
+.offen-done, .offen-next { min-width: 160px; font-size: 24px; }
+
+.offen-parents { margin-top: 18px; padding: 12px 14px; font-size: 15px; }
+.offen-parents summary { font-weight: 800; cursor: pointer; }
+.offen-note { color: var(--muted); }
+.offen-table { width: 100%; border-collapse: collapse; }
+.offen-table th, .offen-table td { padding: 5px 4px; border-bottom: 1px solid var(--grid); text-align: left; }
+.offen-table td:not(:first-child), .offen-table th:not(:first-child) { text-align: center; }
+.offen-table .st-sicher td:last-child, .offen-table .st-lange td:last-child { color: var(--ok); font-weight: 800; }
+.offen-table .st-wackelt td:last-child { color: var(--go); font-weight: 800; }
+.offen-table .st-zu td { color: var(--muted); }

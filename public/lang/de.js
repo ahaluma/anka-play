@@ -104,6 +104,7 @@ export default {
 
   // The map
   mapText: {
+    offen: "🐸 Teich frei spielen (neu)",
     cards: "Deine Denk-Tricks",
     whereTo: "Wohin möchtest du?",
     asleep: "Hier schläft noch alles. Bald gibt es hier etwas zu spielen.",
