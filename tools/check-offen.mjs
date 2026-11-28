@@ -37,7 +37,8 @@ function play(events, skill, seed = 1) {
     const n = plan.n;
     let red, green;
     if (plan.kind === "share" || plan.kind === "rest") {
-      const id = plan.kind === "share" ? "verteilen" : "rest";
+      const id = "verteilen";
+      if (plan.kind === "rest") check(S.isSure(rec, "verteilen", now), "one left over before sharing was sicher");
       check(S.isOpen(rec, id, now), `${id} before it was open`);
       if (plan.kind === "share") check(n % 2 === 0 && (sharedOnce || n <= 4), `sharing ${n} frogs too early`);
       if (plan.kind === "rest") check(n % 2 === 1, "a rest with an even number");

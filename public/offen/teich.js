@@ -520,7 +520,7 @@ export async function render(root) {
     draw();
     const half = Math.floor(n / 2);
     const right = at.rot === half && at.gruen === half;
-    const skill = withRest ? "rest" : "verteilen";
+    const skill = "verteilen"; // the frog left over is only to be seen, not practised here
     if (right) sound.right();
     else sound.wrong();
     count(skill, right);
@@ -550,10 +550,7 @@ export async function render(root) {
     if (!(await askNumber(X.each, Owl.countSkill(half), half, topFor(half)))) await countAlong("rot");
     showSign("rot");
     showSign("gruen");
-    if (withRest) {
-      voice.newTask();
-      if (!(await askNumber(X.left, "rest", n - 2 * half, 3))) await voice.tell(X.leftIs);
-    }
+    if (withRest) await voice.tell(X.leftIs);
   }
 
   // ---- One event, then the next.
