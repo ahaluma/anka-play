@@ -101,7 +101,6 @@ export default {
   },
 
   mapText: {
-    offen: "🐸 Play at the pond (new)",
     cards: "Your thinking tricks",
     whereTo: "Where would you like to go?",
     asleep: "Everything is still asleep here. Soon there will be something to play.",
