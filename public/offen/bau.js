@@ -88,6 +88,9 @@ export async function render(root) {
     world.send({ type: "wohnen", n: p.n });
     for (let i = 0; i < p.n; i++) world.send({ type: "raus" });
     setSign(homeSign, p.n);
+    draw();
+    // A short instruction says what to do (asked for 28.11.: the bobbing alone did not carry it).
+    await voice.ask(Y.sendIn, true, true);
     await new Promise((resolve) => {
       onHare = () => {
         if (!world.send({ type: "rein" })) return;
@@ -98,6 +101,7 @@ export async function render(root) {
       draw();
     });
     onHare = null;
+    voice.newTask();
     draw();
     await wait(600);
     // Some come out, one by one: seen, not told.

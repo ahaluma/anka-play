@@ -120,10 +120,12 @@ export async function render(root) {
     treeSign.textContent = "?";
     treeSign.classList.remove("known");
     scene.classList.remove("bye");
-    // The bare tree: the child taps, the apples grow. No question, no wrong answer.
+    // The bare tree: the child taps, the apples grow. No question, no wrong answer; a short instruction says what
+    // to do (asked for 28.11.: the bobbing alone did not carry it).
     send({ type: "leer" });
     mode = "grow";
     draw();
+    await voice.ask(Y.grow, true, true);
     await new Promise((resolve) => {
       onGrow = () => {
         if (world.state.tree >= p.n || !send({ type: "wachs" })) return;
@@ -134,6 +136,7 @@ export async function render(root) {
       };
     });
     onGrow = null;
+    voice.newTask();
     mode = "wait";
     draw();
     await wait(800);

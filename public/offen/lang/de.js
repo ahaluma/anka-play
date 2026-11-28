@@ -54,6 +54,7 @@ export default {
     apple: "Apfel",
     basket: "Korb",
     hare: "Hase",
+    grow: "Tipp auf den Baum!",
     pick: (k, w) => (k === 1 ? "Pflück einen Apfel!" : `Pflück ${w} Äpfel!`),
     first: "Wie viele Äpfel hängen auf dem Baum?",
     left: "Wie viele hängen noch am Baum?",
@@ -67,6 +68,7 @@ export default {
 
   bau: {
     title: "Bau",
+    sendIn: "Schick die Hasen in den Bau!",
     out: "Wie viele sind draußen?",
     inside: "Wie viele sind noch drin?",
     now: "Wie viele sind jetzt draußen?",
