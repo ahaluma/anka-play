@@ -7,6 +7,7 @@
 import { port, el, button, shake, wait } from "../../engine/ui/ported.js";
 import { sound } from "../../engine/ui/sound.js";
 import { at } from "./tasks.js";
+import { myOwl } from "../../engine/ui/owl.js";
 
 /**
  * A row of things on the forest floor: places 0..n-1 of the endless row of `unit`, then `open` empty
@@ -280,7 +281,7 @@ export function pruefen(host, t, ctx) {
   const isRight = t.wrongAt < 0;
   const scene = el("div", "scene card forest-scene owl-row");
   const row = chain(t.unit, t.icons, t.shown, 0, isRight ? null : { at: t.wrongAt, letter: t.wrong });
-  scene.append(el("span", "owl", "🦉"), row.box);
+  scene.append(myOwl(), row.box);
   let locked = false;
   let fixing = false;
 

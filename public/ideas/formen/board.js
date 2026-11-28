@@ -7,6 +7,7 @@
 
 import { port, el, button, shake, numpad } from "../../engine/ui/ported.js";
 import { CORNERS } from "./tasks.js";
+import { myOwl } from "../../engine/ui/owl.js";
 
 const NS = "http://www.w3.org/2000/svg";
 const svgEl = (tag, attrs = {}) => {
@@ -346,7 +347,7 @@ export function pruefen(host, t, ctx) {
   const scene = el("div", "scene card owl-scene");
   const talk = el("div", "talk");
   const bubble = el("div", "bubble", nameOf(ctx, t.said).name);
-  talk.append(el("span", "owl", "🦉"), bubble);
+  talk.append(myOwl(), bubble);
   const pic = drawShape(t, { size: 150 }).svg;
   scene.append(talk, pic);
   const hintBox = el("div", "hint-box");

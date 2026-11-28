@@ -18,7 +18,8 @@
 
 .kid-list { display: flex; flex-direction: column; gap: 8px; margin: 0; padding: 0; list-style: none; }
 .kid-row { display: flex; align-items: center; gap: 10px; }
-.kid-row .kid-animal { font-size: 34px; line-height: 1; }
+.kid-row .kid-animal { font-size: 40px; line-height: 1; }
+.kid-tab-owl { font-size: 1.5em; margin: -0.2em 0; }
 .kid-info { display: flex; flex: 1; flex-direction: column; min-width: 0; }
 .kid-info strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .kid-buttons { display: flex; gap: 6px; }

@@ -6,6 +6,7 @@
 
 import { port, el, button, group, strip, shake, wait } from "../../engine/ui/ported.js";
 import { PAIRS, MAX_EACH } from "./data.js";
+import { myOwl } from "../../engine/ui/owl.js";
 
 /** One animal with the place for its share: 🐰 above, its things below. → { box, pile, set(n, icon), count } */
 function eaterBox(icon, label) {
@@ -367,7 +368,7 @@ export function pruefen(host, t, ctx) {
   });
   const row = el("div", "eaters");
   row.append(...eaters.map((e) => e.box));
-  scene.append(el("span", "owl", "🦉"), row);
+  scene.append(myOwl(), row);
 
   const judge = el("div", "judge");
   const yes = button("btn ok judge-btn", T.pruefen.yes, "✓");

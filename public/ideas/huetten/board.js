@@ -16,6 +16,7 @@ import { port } from "../../engine/ui/ported.js";
 import { el, button, shake } from "../../engine/ui/ported.js";
 import * as kit from "../../boards/berg/kit.js";
 import { KINDS, PEOPLE, DIGITS } from "./tasks.js";
+import { myOwl } from "../../engine/ui/owl.js";
 
 export const TOOLS = { tabelle: "▦", rest: "☝️", kette: "🔗", reihe: "🪑", luege: "🤥", zaehlen: "🔢", probieren: "🧪" };
 
@@ -215,7 +216,7 @@ function pruefen(host, t, ctx) {
   const talk = el("div", "talk card owl-talk");
   const bubble = el("span", "bubble");
   bubble.append(el("span", "", saidText));
-  talk.append(el("span", "owl", "🦉"), bubble);
+  talk.append(myOwl(), bubble);
   const judge = el("div", "judge");
   const yes = button("btn ok judge-btn", ctx.T.pruefen.yes, "✓");
   const no = button("btn go judge-btn", ctx.T.pruefen.no, "✗");

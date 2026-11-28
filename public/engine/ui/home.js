@@ -12,6 +12,7 @@ import { el, button, link } from "./parts.js";
 import { sound } from "./sound.js";
 import { voice } from "./voice.js";
 import { kidForm } from "./kidform.js";
+import { owl } from "./owl.js";
 
 /** A map can be entered when one of its stations has something to play. */
 const mapReady = (id) => STATIONS.some((s) => s.map === id && s.ideas.every((i) => READY.includes(i)));
@@ -50,17 +51,17 @@ export function render(root) {
   function drawKids() {
     kids.replaceChildren();
     const current = profiles.current();
-    const tile = (animal, name, sub, on, onTap) => {
+    const tile = (face, name, sub, on, onTap) => {
       const b = button("kid" + (on ? " on" : ""), name);
-      b.append(el("span", "kid-animal", animal), el("span", "kid-name", name));
+      b.append(typeof face === "string" ? el("span", "kid-animal", face) : face, el("span", "kid-name", name));
       if (sub) b.append(el("small", "", sub));
       b.addEventListener("click", onTap);
       kids.append(b);
     };
     for (const k of profiles.all()) {
-      tile(k.animal, k.name || k.animal, T.home.years(num(profiles.age(k))), current?.id === k.id, () => pick(k.id));
+      tile(owl(k.hat, "kid-animal"), k.name || "", T.home.years(num(profiles.age(k))), current?.id === k.id, () => pick(k.id));
     }
-    tile("🙂", T.home.guest, "", !current, () => pick(null));
+    tile(owl(null, "kid-animal"), T.home.guest, "", !current, () => pick(null));
     tile("＋", T.home.add, "", false, openForm);
   }
 

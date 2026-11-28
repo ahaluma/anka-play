@@ -2,6 +2,7 @@
 // table of units. Interface of the ported boards (engine/ui/ported.js).
 
 import { port, el, button, shake, numpad, judge } from "../../engine/ui/ported.js";
+import { myOwl } from "../../engine/ui/owl.js";
 
 let current = null;
 function pad(box, ctx, digits, onCheck) {
@@ -222,7 +223,7 @@ export function pruefen(host, t, ctx) {
   const scene = el("div", "scene card owl-scene size-scene");
   const talk = el("div", "talk");
   const bubble = el("div", "bubble", `${left} = ${ctx.num(t.said)} ${t.ask[2]}`);
-  talk.append(el("span", "owl", "🦉"), bubble);
+  talk.append(myOwl(), bubble);
   const rule = el("p", "size-rule");
   scene.append(talk, rule);
   let locked = false;

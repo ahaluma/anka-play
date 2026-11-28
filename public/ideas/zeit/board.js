@@ -6,6 +6,7 @@
 // Texts are in welt/lang/<language>.js under "zeit". The clock is SVG drawn here.
 
 import { port, el, button, shake, numpad } from "../../engine/ui/ported.js";
+import { myOwl } from "../../engine/ui/owl.js";
 
 const NS = "http://www.w3.org/2000/svg";
 const svgEl = (tag, attrs = {}) => {
@@ -310,7 +311,7 @@ export function pruefen(host, t, ctx) {
   const scene = el("div", "scene card owl-scene");
   const talk = el("div", "talk");
   const bubble = el("div", "bubble", clockText(ctx, t.said.h, t.said.m));
-  talk.append(el("span", "owl", "🦉"), bubble);
+  talk.append(myOwl(), bubble);
   const c = clock(ctx, t.h, t.m, 160);
   scene.append(talk, c.svg);
   const judge = el("div", "judge");

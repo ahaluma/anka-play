@@ -18,6 +18,7 @@ import * as backup from "../engine/backup.js";
 import { href, go } from "../engine/router.js";
 import { el, button, link, icons } from "../engine/ui/parts.js";
 import { kidForm } from "../engine/ui/kidform.js";
+import { owl } from "../engine/ui/owl.js";
 import { voice } from "../engine/ui/voice.js";
 import { groupName } from "../engine/ui/station.js";
 
@@ -79,7 +80,7 @@ export async function render(root, route) {
   const list = el("ul", "kid-list");
   for (const kid of kids) {
     const li = el("li", "kid-row");
-    li.append(el("span", "kid-animal", kid.animal));
+    li.append(owl(kid.hat, "kid-animal"));
     const info = el("div", "kid-info");
     info.append(el("strong", "", kidName(kid)), el("span", "muted", T.years(profiles.age(kid))));
     const edit = button("btn small", `${T.edit}: ${kidName(kid)}`, T.edit);
@@ -124,7 +125,8 @@ export async function render(root, route) {
     const tabs = el("nav", "kid-tabs");
     for (const kid of tabsFor) {
       const on = (kid?.id ?? null) === (shown?.id ?? null);
-      const a = link("kid-tab" + (on ? " on" : ""), href.parents(kid?.id ?? "guest"), `${kid?.animal ?? "🙂"} ${kidName(kid)}`);
+      const a = link("kid-tab" + (on ? " on" : ""), href.parents(kid?.id ?? "guest"));
+      a.append(owl(kid?.hat ?? null, "kid-tab-owl"), ` ${kidName(kid)}`);
       if (on) a.setAttribute("aria-current", "page");
       tabs.append(a);
     }

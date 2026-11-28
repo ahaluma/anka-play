@@ -15,6 +15,7 @@ import { el, button, shake, wait } from "../../engine/ui/ported.js";
 import * as kit from "../../boards/berg/kit.js";
 import { DIGITS, DRAWN, REASONS } from "./tasks.js";
 import { waysFor } from "./ways.js";
+import { myOwl } from "../../engine/ui/owl.js";
 
 const SVG = "http://www.w3.org/2000/svg";
 const W = 340;
@@ -822,7 +823,7 @@ export function pruefen(host, t, ctx) {
   const bubble = el("span", "bubble");
   const unitWord = time ? A.unit[t.story] : t.ask === "length" ? Z.metres("").trim() : lookOf(ctx, t).word;
   bubble.append(el("span", "", ctx.num(t.said)), el("small", "bubble-word", " " + unitWord));
-  talk.append(el("span", "owl", "🦉"), bubble);
+  talk.append(myOwl(), bubble);
   scene.append(talk, pic.svg);
   let locked = false;
 

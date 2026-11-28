@@ -6,6 +6,7 @@
 
 import { port, el, button, shake } from "../../engine/ui/ported.js";
 import { ITEMS, RULES, groupFor } from "./tasks.js";
+import { myOwl } from "../../engine/ui/owl.js";
 
 const KIND_ICON = { animal: "🐾", fruit: "🍎", vehicle: "🚗", flower: "🌷" };
 const COLOR = { red: "#ff5a36", yellow: "#ffc83a", green: "#57b86a", blue: "#3a8dde" };
@@ -199,7 +200,7 @@ export function pruefen(host, t, ctx) {
   const S = T.sortieren;
   const P = S.pruefen;
   const talk = el("div", "talk");
-  talk.append(el("span", "owl", "🦉"), el("div", "bubble so-bubble", P.says));
+  talk.append(myOwl(), el("div", "bubble so-bubble", P.says));
   const scene = el("div", "scene card so-scene");
   const row = el("div", "so-baskets");
   let locked = false;

@@ -1,8 +1,10 @@
-// The children on this device: name, age, animal. Nothing leaves the phone. Each child has their own
+// The children on this device: name, age, their owl. Nothing leaves the phone. Each child has their own
 // learner record (engine/learner.js, key "learner:<id>"). Without any child, a guest plays (no age: the Tal).
 //
 // Stored under "anka:profiles":
-//   { v: 1, current: "k1", kids: [{ id, name, age, ageSince: "2026-11-27", animal: "🐰", created, readAloud?, typeAnswers? }] }
+//   { v: 1, current: "k1", kids: [{ id, name, age, ageSince: "2026-11-27", hat: "orange", created, readAloud?, typeAnswers? }] }
+// Each child chooses their owl by the colour of its hat (HATS). Children added before the owls also have an
+// `animal` (an emoji, no longer asked); they get the first hat nobody else has yet.
 // The age counts up by itself one year after the day it was entered (no birthday needed).
 
 import { store } from "./store.js";
@@ -14,11 +16,35 @@ export const MAX_AGE = 12;
 /** Up to this age every sentence is read aloud by itself; later only tasks with numbers up to 20 and on 🔊. */
 export const READ_ALOUD_UNTIL = 8;
 
-export const ANIMALS = ["🐰", "🦊", "🐼", "🐨", "🦁", "🐯", "🐸", "🐢", "🦄", "🐬", "🦒", "🐘", "🦘", "🐧", "🦉", "🐙", "🦖", "🐝", "🦋", "🐞"];
+/** The owls' hats, in the order the form shows them: three colours mostly chosen by girls, one for anyone, three
+ *  mostly chosen by boys. Only the colours are shown: any child takes any owl. */
+export const HATS = [
+  { id: "rosa", color: "#f28cb8" },
+  { id: "lila", color: "#a57ad8" },
+  { id: "tuerkis", color: "#2fbfb8" },
+  { id: "orange", color: "#ff8c3a" },
+  { id: "blau", color: "#2f6fd6" },
+  { id: "gruen", color: "#3aa35f" },
+  { id: "rot", color: "#e5484d" },
+];
+const isHat = (h) => HATS.some((x) => x.id === h);
+/** The first hat none of these children wears yet: orange, then the others in their order. */
+export function freeHat(kids = all()) {
+  const order = ["orange", ...HATS.map((h) => h.id).filter((h) => h !== "orange")]; // the colour for anyone first
+  return order.find((h) => !kids.some((k) => k.hat === h)) ?? "orange";
+}
+
 
 function read() {
   const p = store.get(KEY, null);
-  return p && p.v === 1 && Array.isArray(p.kids) ? p : { v: 1, current: null, kids: [] };
+  if (!(p && p.v === 1 && Array.isArray(p.kids))) return { v: 1, current: null, kids: [] };
+  // Children from before the owls: each gets a hat nobody else has, once.
+  const without = p.kids.filter((k) => !isHat(k.hat));
+  if (without.length) {
+    for (const k of without) k.hat = freeHat(p.kids.filter((x) => isHat(x.hat)));
+    store.set(KEY, p);
+  }
+  return p;
 }
 const write = (p) => store.set(KEY, p);
 
@@ -47,10 +73,10 @@ export function choose(id) {
   write(p);
 }
 
-const clean = ({ name, age: a, animal }) => ({
+const clean = ({ name, age: a, hat }, kids) => ({
   name: String(name || "").trim().slice(0, 20),
   age: Math.min(MAX_AGE, Math.max(MIN_AGE, Math.round(Number(a) || MIN_AGE))),
-  animal: ANIMALS.includes(animal) ? animal : ANIMALS[0],
+  hat: isHat(hat) ? hat : freeHat(kids),
 });
 
 export function add(kid) {
@@ -58,7 +84,7 @@ export function add(kid) {
   let id;
   do id = "k" + Math.random().toString(36).slice(2, 8);
   while (p.kids.some((k) => k.id === id));
-  p.kids.push({ id, ...clean(kid), ageSince: today(), created: today() });
+  p.kids.push({ id, ...clean(kid, p.kids), ageSince: today(), created: today() });
   p.current = id;
   write(p);
   return id;
@@ -69,7 +95,7 @@ export function update(id, changes) {
   const kid = p.kids.find((k) => k.id === id);
   if (!kid) return;
   const newAge = changes.age !== undefined && Number(changes.age) !== age(kid);
-  Object.assign(kid, clean({ ...kid, ...changes, age: newAge ? changes.age : kid.age }));
+  Object.assign(kid, clean({ ...kid, ...changes, age: newAge ? changes.age : kid.age }, p.kids));
   if (newAge) kid.ageSince = today();
   write(p);
 }

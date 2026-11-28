@@ -6,6 +6,7 @@
 
 import { port, el, button, shake, numpad } from "../../engine/ui/ported.js";
 import { MONEY, fewest } from "./tasks.js";
+import { myOwl } from "../../engine/ui/owl.js";
 
 let current = null;
 function pad(box, ctx, digits, onCheck) {
@@ -351,7 +352,7 @@ export function pruefen(host, t, ctx) {
   const said = el("b", "said", euro(ctx, t.said, t.short));
   const bubble = el("div", "bubble");
   bubble.append(said);
-  talk.append(el("span", "owl", "🦉"), bubble);
+  talk.append(myOwl(), bubble);
   scene.append(talk, counter(ctx, t.money));
   const judge = el("div", "judge");
   const yes = button("btn ok judge-btn", T.pruefen.yes, "✓");

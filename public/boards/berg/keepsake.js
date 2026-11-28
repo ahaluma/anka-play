@@ -3,11 +3,13 @@
 //
 // The keepsake of the thinking mountain: when a child reaches a new camp, a picture to save (PNG).
 // It shows the mountain as far as the child has climbed (the rest in fog), the new camp with a flag,
-// the child's animal, and in a few words what it has done. Nothing is sent anywhere: the picture is
+// the child's owl, and in a few words what it has done. Nothing is sent anywhere: the picture is
 // drawn here on a canvas and saved on this device.
 //
-//   keepsake({ title, headline, camp, lines, date, brand, animal, camps: [[x, y], …] }) → <canvas>
+//   keepsake({ title, headline, camp, lines, date, brand, hat, camps: [[x, y], …] }) → <canvas>
 //   camps: the places of the camps reached (map coordinates, 1000 × 600), the last one is new.
+
+import { drawOwl } from "../../engine/ui/owl.js";
 
 const W = 1080;
 const H = 1350;
@@ -39,7 +41,7 @@ function roundRect(g, x, y, w, h, r) {
   g.closePath();
 }
 
-export function keepsake({ title, headline, camp, lines, date, brand, animal, camps }) {
+export function keepsake({ title, headline, camp, lines, date, brand, hat, camps }) {
   const canvas = document.createElement("canvas");
   canvas.width = W;
   canvas.height = H;
@@ -106,7 +108,7 @@ export function keepsake({ title, headline, camp, lines, date, brand, animal, ca
     g.fill();
   }
 
-  // The camps: tents, a flag on the new one, the animal next to it.
+  // The camps: tents, a flag on the new one, the child's owl next to it.
   camps.forEach(([x, y], i) => {
     const [cx, cy] = P(x, y);
     g.fillStyle = "#ff5a36";
@@ -130,7 +132,7 @@ export function keepsake({ title, headline, camp, lines, date, brand, animal, ca
       g.font = font(84, 400);
       g.textAlign = "center";
       g.fillText("🚩", cx + 10, cy - 70);
-      g.fillText(animal, cx + 110, cy + 20);
+      drawOwl(g, cx + 62, cy - 66, 96, hat);
     } else {
       g.font = font(48, 400);
       g.textAlign = "center";

@@ -8,7 +8,7 @@ export default {
 
   // Kinder
   kidsTitle: "Kinder",
-  kidsNote: "Jedes Kind hat seinen eigenen Fortschritt. Name und Tier sieht das Kind beim Spielen.",
+  kidsNote: "Jedes Kind hat seinen eigenen Fortschritt. Name und Eule sieht das Kind beim Spielen.",
   noKids: "Noch kein Kind angelegt. Ohne Kind spielt ein Gast, sein Fortschritt steht unten.",
   addKid: "Kind hinzufügen",
   edit: "Ändern",

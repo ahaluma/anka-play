@@ -4,6 +4,7 @@
 
 import { port, el, button, shake, numpad, judge } from "../../engine/ui/ported.js";
 import { EVENTS } from "./tasks.js";
+import { myOwl } from "../../engine/ui/owl.js";
 
 let current = null;
 function pad(box, ctx, digits, onCheck) {
@@ -341,7 +342,7 @@ export function pruefen(host, t, ctx) {
   const scene = el("div", "scene card owl-scene data-scene");
   const talk = el("div", "talk");
   const bubble = el("div", "bubble", `${ANIMAL[t.ask]} ${ctx.num(t.said)}`);
-  talk.append(el("span", "owl", "🦉"), bubble);
+  talk.append(myOwl(), bubble);
   const c = chart(ctx, t.counts, { step: t.step, max: t.max });
   scene.append(talk, c.box);
   let locked = false;

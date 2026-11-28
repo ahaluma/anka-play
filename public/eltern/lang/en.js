@@ -7,7 +7,7 @@ export default {
   intro: "Here you can see what your child plays and how far they have come. Everything stays on this device, nothing is sent.",
 
   kidsTitle: "Children",
-  kidsNote: "Each child has their own progress. The child sees their name and animal while playing.",
+  kidsNote: "Each child has their own progress. The child sees their name and owl while playing.",
   noKids: "No child added yet. Without a child a guest plays; the guest's progress is below.",
   addKid: "Add a child",
   edit: "Change",

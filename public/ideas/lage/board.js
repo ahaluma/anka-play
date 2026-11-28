@@ -6,6 +6,7 @@
 
 import { port, el, button, shake } from "../../engine/ui/ported.js";
 import { ICONS, fits, wordOf } from "./tasks.js";
+import { myOwl } from "../../engine/ui/owl.js";
 
 const name = (ctx, pet) => ctx.T.lage.pets[pet][0];
 const dat = (ctx, pet) => ctx.T.lage.pets[pet][1];
@@ -198,7 +199,7 @@ export function pruefen(host, t, ctx) {
   scene.classList.add("owl-room");
   const talk = el("div", "talk");
   const bubble = el("div", "bubble", `${ICONS[t.pets[0].pet]} ${L.words[t.said]}`);
-  talk.append(el("span", "owl", "🦉"), bubble);
+  talk.append(myOwl(), bubble);
   for (const { pet, spot } of t.pets) {
     const b = petButton(ctx, pet, spot);
     b.tabIndex = -1;

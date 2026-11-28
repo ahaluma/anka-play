@@ -5,6 +5,7 @@
 // Texts are in welt/lang/<language>.js under "schauen".
 
 import { port, el, button, shake, wait } from "../../engine/ui/ported.js";
+import { myOwl } from "../../engine/ui/owl.js";
 
 /** A grid of places with icons (or empty places to colour). Buttons only where `tap` is given. */
 function grid(size, cells, { tap, cls = "" } = {}) {
@@ -177,7 +178,7 @@ export function pruefen(host, t, ctx) {
   const { T } = ctx;
   const P = T.schauen.pruefen;
   const talk = el("div", "talk");
-  talk.append(el("span", "owl", "🦉"), el("div", "bubble sc-bubble", P.says));
+  talk.append(myOwl(), el("div", "bubble sc-bubble", P.says));
   const scene = el("div", "scene card sc-scene");
   let locked = false;
   let fixing = false;

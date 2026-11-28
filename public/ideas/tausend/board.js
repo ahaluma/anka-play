@@ -4,6 +4,7 @@
 
 import { port, el, button, shake, wait, numpad, judge } from "../../engine/ui/ported.js";
 import { digitsOf, fromDigits } from "./tasks.js";
+import { myOwl } from "../../engine/ui/owl.js";
 
 const NAMES = ["HT", "ZT", "T", "H", "Z", "E"]; // the German school names; other languages bring their own
 
@@ -233,7 +234,7 @@ export function pruefen(host, t, ctx) {
   const scene = el("div", "scene card owl-scene pt-scene");
   const talk = el("div", "talk");
   const bubble = el("div", "bubble", big(ctx, t.said));
-  talk.append(el("span", "owl", "🦉"), bubble);
+  talk.append(myOwl(), bubble);
   const tb = table(ctx, t.places, digitsOf(t.n, t.places));
   scene.append(talk, tb.box);
   const padBox = el("div");

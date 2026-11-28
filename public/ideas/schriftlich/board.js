@@ -4,6 +4,7 @@
 
 import { port, el, button, shake, numpad, judge } from "../../engine/ui/ported.js";
 import { digitsOf, mistakes, resultOf } from "./tasks.js";
+import { myOwl } from "../../engine/ui/owl.js";
 
 let current = null;
 function pad(box, ctx, digits, onCheck) {
@@ -443,7 +444,7 @@ export function pruefen(host, t, ctx) {
   const scene = el("div", "scene card owl-scene sheet-scene");
   const talk = el("div", "talk");
   const bubble = el("div", "bubble", S.pruefen.said(ctx.num(t.a), sign(ctx, t.op), ctx.num(t.b), ctx.num(t.said)));
-  talk.append(el("span", "owl", "🦉"), bubble);
+  talk.append(myOwl(), bubble);
   scene.append(talk, s.node);
   let locked = false;
   const padBox = el("div");

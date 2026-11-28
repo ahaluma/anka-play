@@ -4,6 +4,7 @@
 
 import { port, el, button, shake, numpad, judge } from "../../engine/ui/ported.js";
 import { total, clash, fold } from "./tasks.js";
+import { myOwl } from "../../engine/ui/owl.js";
 
 const NS = "http://www.w3.org/2000/svg";
 const svgEl = (tag, attrs = {}) => {
@@ -233,7 +234,7 @@ export function pruefen(host, t, ctx) {
   const scene = el("div", "scene card owl-scene box-scene");
   const talk = el("div", "talk");
   const bubble = el("div", "bubble", S.pruefen.said(ctx.num(t.said)));
-  talk.append(el("span", "owl", "🦉"), bubble);
+  talk.append(myOwl(), bubble);
   scene.append(talk, building(ctx, t.h));
   const padBox = el("div");
   const box = judge(ctx.T, (yes, b) => {

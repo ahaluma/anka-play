@@ -11,6 +11,7 @@
 
 import { port, el, button, shake, wait, numpad } from "../../engine/ui/ported.js";
 import { DIGITS, NUMBERS, digits } from "./tasks.js";
+import { myOwl } from "../../engine/ui/owl.js";
 
 /** Only one pad listens to the keyboard: a new board removes the pad of the board before. */
 let current = null;
@@ -408,7 +409,7 @@ export function pruefen(host, t, ctx) {
   const said = el("b", "said", ctx.num(t.said));
   const bubble = el("div", "bubble");
   bubble.append(said);
-  talk.append(el("span", "owl", "🦉"), bubble);
+  talk.append(myOwl(), bubble);
   scene.append(talk, pictureOf(t.n, range));
   const hintBox = el("div", "hint-box");
 

@@ -37,6 +37,7 @@ import { voice } from "./voice.js";
 import { sound, celebrate } from "./sound.js";
 import { answers, FRAME_MODES } from "./answer.js";
 import { backdrop, groupName } from "./station.js";
+import { myOwl } from "./owl.js";
 
 const NUDGE_AFTER = 7000; // after this long without a tap, the things to tap wiggle
 const RECENT = 3; // tasks not repeated
@@ -520,13 +521,13 @@ export async function render(root, route) {
         sound.tap();
         startRound();
       });
-      follow.append(el("span", "", "🦉"), el("span", "", PERSPECTIVES.find((x) => x.id === nextWay).icon));
+      follow.append(myOwl("follow-owl"), el("span", "", PERSPECTIVES.find((x) => x.id === nextWay).icon));
       if (!small) follow.append(el("span", "", names[nextWay]));
       follow.setAttribute("aria-label", `${T.round.followShort}: ${names[nextWay]}`);
       done.append(follow);
     } else if (nextId) {
       const follow = link("btn go follow", m.guide === "tour" ? href.map(s.map, `walk=${s.id},${nextId}`) : href.station(nextId));
-      follow.append(el("span", "", "🦉"), el("span", "", small ? stationOf(nextId).icon ?? "" : T.stations[nextId] ?? nextId));
+      follow.append(myOwl("follow-owl"), el("span", "", small ? stationOf(nextId).icon ?? "" : T.stations[nextId] ?? nextId));
       follow.setAttribute("aria-label", `${T.round.followShort}: ${T.stations[nextId] ?? nextId}`);
       done.append(follow);
     }

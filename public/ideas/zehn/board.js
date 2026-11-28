@@ -5,6 +5,7 @@
 // Frogs sit in rows of five, as in a ten-frame: 5 is seen at a glance, and 10 is two rows.
 
 import { port, el, button, strip, shake, wait } from "../../engine/ui/ported.js";
+import { myOwl } from "../../engine/ui/owl.js";
 
 const FROG = "🐸";
 
@@ -305,7 +306,7 @@ export function pruefen(host, t, ctx) {
 
   const box = el("div", "zehn-make");
   const talk = el("div", "talk");
-  talk.append(el("span", "owl", "🦉"), el("div", "bubble", P.says(ctx.word(t.whole))));
+  talk.append(myOwl(), el("div", "bubble", P.says(ctx.word(t.whole))));
   const draw = () => {
     box.innerHTML = "";
     box.append(pond(pad(ctx, t.a), null, pad(ctx, b)));

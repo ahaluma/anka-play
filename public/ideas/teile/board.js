@@ -21,6 +21,7 @@
 // the hint shows the structure, never just the answer.
 
 import { port, el, button, group, sign, strip, shake, wait } from "../../engine/ui/ported.js";
+import { myOwl } from "../../engine/ui/owl.js";
 
 /** The hint of the "missing part" boards: the whole as a row of places, the known part filled in. */
 function partsHint(total, known, icon) {
@@ -442,7 +443,7 @@ export function pruefen(host, t, ctx) {
   };
   drawSaid();
   bubble.append(saidBox, saidDots);
-  talk.append(el("span", "owl", "🦉"), bubble);
+  talk.append(myOwl(), bubble);
   const groups = el("div", "groups" + (t.a + t.b > 6 ? " big" : "")); // two rows of more than three must still fit side by side
   const parts = [t.a, t.b].map((n) => {
     const box = el("div", "part");

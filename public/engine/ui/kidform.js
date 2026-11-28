@@ -1,12 +1,13 @@
-// The form for a child: name, age, animal. Home uses it to add a child, the parents' page to add or change one.
+// The form for a child: name, age, their owl. Home uses it to add a child, the parents' page to add or change one.
 
 import { shared as T, num } from "../i18n.js";
 import * as profiles from "../profiles.js";
 import { el, button } from "./parts.js";
+import { owl } from "./owl.js";
 
 /**
  * Fills `form` (a <form>) and shows it. kid: the child to change, or null for a new one.
- * onSave({ name, age, animal }) when the form is sent; onCancel() when it is closed.
+ * onSave({ name, age, hat }) when the form is sent; onCancel() when it is closed.
  */
 export function kidForm(form, { kid = null, onSave, onCancel, saveText = T.home.save }) {
   form.replaceChildren();
@@ -28,17 +29,25 @@ export function kidForm(form, { kid = null, onSave, onCancel, saveText = T.home.
     });
     ageRow.append(b);
   }
-  const animals = el("div", "animal-row");
-  animals.setAttribute("aria-label", T.home.animal);
-  // A new child gets an animal nobody else has yet.
-  let animal = kid?.animal ?? profiles.ANIMALS.find((a) => !profiles.all().some((k) => k.animal === a)) ?? profiles.ANIMALS[0];
-  for (const a of profiles.ANIMALS) {
-    const b = button("chip animal" + (a === animal ? " on" : ""), a, a);
+  // The owls: the same owl in seven hats, side by side. Only the colour is shown, no word: any child takes any.
+  const owls = el("div", "owl-row");
+  owls.setAttribute("role", "radiogroup");
+  owls.setAttribute("aria-label", T.home.owl);
+  // A new child gets a hat nobody else has yet.
+  let hat = kid?.hat ?? profiles.freeHat();
+  for (const h of profiles.HATS) {
+    const b = button("chip owl-pick-chip" + (h.id === hat ? " on" : ""), T.home.hats[h.id]);
+    b.setAttribute("role", "radio");
+    b.setAttribute("aria-checked", String(h.id === hat));
+    b.append(owl(h.id, ""));
     b.addEventListener("click", () => {
-      animal = a;
-      for (const c of animals.children) c.classList.toggle("on", c === b);
+      hat = h.id;
+      for (const c of owls.children) {
+        c.classList.toggle("on", c === b);
+        c.setAttribute("aria-checked", String(c === b));
+      }
     });
-    animals.append(b);
+    owls.append(b);
   }
   const save = button("btn ok", saveText, saveText);
   save.type = "submit";
@@ -49,11 +58,11 @@ export function kidForm(form, { kid = null, onSave, onCancel, saveText = T.home.
   });
   const row = el("div", "form-row");
   row.append(cancel, save);
-  form.append(name, el("label", "", T.home.age), ageRow, el("label", "", T.home.animal), animals, row);
+  form.append(name, el("label", "", T.home.age), ageRow, owls, row);
   form.onsubmit = (e) => {
     e.preventDefault();
     form.hidden = true;
-    onSave({ name: name.value, age, animal });
+    onSave({ name: name.value, age, hat });
   };
   form.hidden = false;
   name.focus();

@@ -2,6 +2,7 @@
 // a number and the middle marked; digit buttons; the owl. Interface of the ported boards (engine/ui/ported.js).
 
 import { port, el, button, shake, judge } from "../../engine/ui/ported.js";
+import { myOwl } from "../../engine/ui/owl.js";
 
 const NS = "http://www.w3.org/2000/svg";
 const svgEl = (tag, attrs = {}) => {
@@ -210,7 +211,7 @@ export function pruefen(host, t, ctx) {
   const talk = el("div", "talk");
   const said = t.kind === "round" ? `${ctx.num(t.n)} → ${ctx.num(t.said)}` : `${ctx.num(t.a)} ${SIGN[t.op]} ${ctx.num(t.b)} = ${ctx.num(t.said)}`;
   const bubble = el("div", "bubble", said);
-  talk.append(el("span", "owl", "🦉"), bubble);
+  talk.append(myOwl(), bubble);
   scene.append(talk);
   let l = null;
   if (t.kind === "round") {

@@ -17,6 +17,7 @@ import { SIGN, choices, classify, owl, way, inverse, audible } from "./rechnung/
 import { picture, material, el } from "./rechnung/picture.js";
 import { numpad } from "../engine/ui/ported.js";
 import { rng } from "../engine/recipe.js";
+import { myOwl } from "../engine/ui/owl.js";
 
 /** The equation as big text. gap: the number to find shows as a box (returned as .gapBox). */
 export function equation(t, ctx, { fill = null, hide = true } = {}) {
@@ -298,7 +299,7 @@ function pruefen(box, t, ctx) {
   const honest = ctx.r.chance(0.3);
   const [claim, kind] = honest ? [t.answer, null] : owl(t, ctx.r);
   const say = el("div", "owl-says");
-  say.append(el("span", "owl", "🦉"));
+  say.append(myOwl());
   const eq = equation(t, ctx, { fill: claim });
   eq.classList.add("claim");
   say.append(eq);

@@ -4,6 +4,7 @@
 
 import { port, el, button, shake, numpad, judge } from "../../engine/ui/ported.js";
 import { fence, isRect, edgeCells } from "./tasks.js";
+import { myOwl } from "../../engine/ui/owl.js";
 
 let current = null;
 function pad(box, ctx, digits, onCheck) {
@@ -219,7 +220,7 @@ export function pruefen(host, t, ctx) {
   const scene = el("div", "scene card owl-scene garden-scene");
   const talk = el("div", "talk");
   const bubble = el("div", "bubble", S.pruefen.said[t.ask](ctx.num(t.said)));
-  talk.append(el("span", "owl", "🦉"), bubble);
+  talk.append(myOwl(), bubble);
   scene.append(talk, garden(t.w, t.h, t.cells, { showFence: true }).svg);
   let locked = false;
   const padBox = el("div");

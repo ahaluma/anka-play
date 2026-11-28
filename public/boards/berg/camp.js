@@ -24,6 +24,7 @@
 
 import { el, button, shake } from "../../engine/ui/ported.js";
 import * as kit from "./kit.js";
+import { myOwl } from "../../engine/ui/owl.js";
 
 /** The task's numbers in the language's digits (lists too); words stay as they are. */
 export function args(ctx, t) {
@@ -157,7 +158,7 @@ export function campBoards(camp, { TOOLS = {}, DIGITS = 3, machen, picture: draw
     const unit = C.units?.[t.story] ?? "";
     const saidText = t.choices ? choiceLabel(ctx, camp, t, t.said) : ctx.num(t.said);
     bubble.append(el("span", "", saidText), el("small", "bubble-word", unit && !t.choices ? " " + unit : ""));
-    talk.append(el("span", "owl", "🦉"), bubble);
+    talk.append(myOwl(), bubble);
     scene.prepend(talk);
     const judge = el("div", "judge");
     const yes = button("btn ok judge-btn", ctx.T.pruefen.yes, "✓");

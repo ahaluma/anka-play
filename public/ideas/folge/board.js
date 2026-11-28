@@ -6,6 +6,7 @@
 
 import { port, el, button, shake } from "../../engine/ui/ported.js";
 import { STORIES, ICONS, placeOf } from "./tasks.js";
+import { myOwl } from "../../engine/ui/owl.js";
 
 const pic = (story, step) => STORIES[story][step];
 
@@ -195,7 +196,7 @@ export function pruefen(host, t, ctx) {
   const F = T.folge;
   const P = F.pruefen;
   const talk = el("div", "talk");
-  talk.append(el("span", "owl", "🦉"), el("div", "bubble fo-bubble", P.says));
+  talk.append(myOwl(), el("div", "bubble fo-bubble", P.says));
   const scene = el("div", "scene card fo-scene");
   const owlRow = el("div", "fo-slots");
   for (const step of t.shown) owlRow.append(el("span", "fo-card filled", pic(t.story, step)));

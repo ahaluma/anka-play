@@ -24,6 +24,7 @@ import { CARDS } from "../../content/perspectives.js";
 import { BED, FLOWERS, flowersAt } from "./flowers.js";
 import { voice } from "./voice.js";
 import { sound, celebrate } from "./sound.js";
+import { myOwl } from "./owl.js";
 
 const SVG = "http://www.w3.org/2000/svg";
 const W = 1000;
@@ -177,7 +178,8 @@ export async function render(root, route) {
   const last = stationOf(store.get("last", null))?.map === m.id ? store.get("last", null) : m.entry;
   const stay = f.ready(last) && stationOpen(last, f) && !f.mastered(last) && !stationOf(last).game;
   const target = walkTo && nodes[walkTo] ? walkTo : stay ? last : nextOf(last, f);
-  const owl = button("owl-guide", T.mapText.owl, "🦉");
+  const owl = button("owl-guide", T.mapText.owl);
+  owl.append(myOwl(""));
   const place = (id) => {
     const p = stationOf(id).pos;
     owl.style.left = `${(p.x / W) * 100}%`;
@@ -256,7 +258,7 @@ async function keepsake(root, m, drawn, f) {
     lines: [...(tools.length ? [K.tools(tools)] : []), K.solved(num(solved))],
     date: new Date().toLocaleDateString(K.locale, { day: "numeric", month: "long", year: "numeric" }),
     brand: T.app,
-    animal: state.kid?.animal || "🐰",
+    hat: state.kid?.hat ?? null,
     camps: reached.map((s) => [s.pos.x, s.pos.y]),
   });
   const title = top ? K.summitTitle : K.title;

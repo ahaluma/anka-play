@@ -15,6 +15,7 @@
 // Texts of the task (ideas/<id>/lang): ask, and look / start / change as above; hint, right, miss.
 
 import { el, button, group, dots, wait } from "../engine/ui/parts.js";
+import { myOwl } from "../engine/ui/owl.js";
 
 export function draw(host, t, ctx) {
   const s = t.show;
@@ -219,7 +220,7 @@ function owl(host, t, ctx) {
   show(t.show.owl.says);
   bubble.append(said, saidDots);
   const talk = el("div", "talk");
-  talk.append(el("span", "owl", "🦉"), bubble);
+  talk.append(myOwl(), bubble);
   const part = el("div", "part");
   const things = group(n, ctx.icon(t.show.things));
   part.append(things);

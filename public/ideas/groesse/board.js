@@ -5,6 +5,7 @@
 // Texts are in welt/lang/<language>.js under "groesse".
 
 import { port, el, button, shake } from "../../engine/ui/ported.js";
+import { myOwl } from "../../engine/ui/owl.js";
 
 const COLORS = ["#ff5a36", "#3a8dde", "#57b86a", "#e8488a", "#ffc83a"];
 const ITEM_ICONS = { bett: "🛏️", stuhl: "🪑", schuessel: "🥣", pulli: "👕", schuh: "👟" };
@@ -197,7 +198,7 @@ export function pruefen(host, t, ctx) {
   const G = T.groesse;
   const P = G.pruefen;
   const talk = el("div", "talk");
-  talk.append(el("span", "owl", "🦉"), el("div", "bubble gr-bubble", P.says));
+  talk.append(myOwl(), el("div", "bubble gr-bubble", P.says));
   let locked = false;
   let fixing = false;
   const { box, buttons } = row("lang", t.sizes, t.offsets, G.kinds.lang.one, (i, b) => {
@@ -209,6 +210,7 @@ export function pruefen(host, t, ctx) {
     ctx.solved(P.fixed);
   });
   buttons[t.said].classList.add("owl-pick");
+  buttons[t.said].append(myOwl("owl-badge"));
   buttons.forEach((b) => (b.tabIndex = -1));
   const judge = el("div", "judge");
   const yes = button("btn ok judge-btn", T.pruefen.yes, "✓");
