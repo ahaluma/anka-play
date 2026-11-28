@@ -1,12 +1,17 @@
-// The children on this device: name, age, animal. Nothing leaves the phone. Each child has their own
-// learner record (engine/learner.js, key "learner:<id>"). Without any child, a guest plays (no age: the Tal).
+// The children on this device: name, age, animal. Nothing leaves the phone. Each place keeps its own
+// record per child (the pond: key "offen:<id>"). Without any child, a guest plays (no age: the Tal).
 //
 // Stored under "anka:profiles":
 //   { v: 1, current: "k1", kids: [{ id, name, age, ageSince: "2026-11-27", animal: "🐰", created, readAloud?, typeAnswers? }] }
 // The age counts up by itself one year after the day it was entered (no birthday needed).
 
 import { store } from "./store.js";
-import { today } from "./learner.js";
+
+/** Today as "2026-11-28" (local time). */
+export function today(date = new Date()) {
+  const z = (n) => String(n).padStart(2, "0");
+  return `${date.getFullYear()}-${z(date.getMonth() + 1)}-${z(date.getDate())}`;
+}
 
 const KEY = "profiles";
 export const MIN_AGE = 3;

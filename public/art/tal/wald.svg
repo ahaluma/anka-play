@@ -1,8 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 800" preserveAspectRatio="xMidYMax slice">
-  <!-- The forest: fir trees in rows, darker grass. -->
-  <rect width="400" height="800" fill="#cfeaff"/>
-  <path d="M0 400 Q140 350 260 390 T400 370 V800 H0Z" fill="#b9e5a0"/>
-  <path d="M0 470 Q200 430 400 470 V800 H0Z" fill="#addc93"/>
-  <g fill="#3f8f4f"><path d="M40 420 l40 -140 l40 140Z"/><path d="M140 410 l45 -170 l45 170Z"/><path d="M290 400 l40 -150 l40 150Z"/></g>
-  <g fill="#2f7a40"><path d="M-20 520 l50 -170 l50 170Z"/><path d="M330 520 l50 -180 l50 180Z"/></g>
-</svg>

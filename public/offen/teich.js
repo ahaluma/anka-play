@@ -40,7 +40,7 @@ export async function render(root) {
   const starNum = el("b", "", num(rec.stars));
   starBox.append(figure("star"), starNum);
   starBox.setAttribute("aria-label", X.stars);
-  root.append(topbar({ back: { href: href.map("tal"), label: T.labels.map, icon: undefined }, middle: el("h1", "title", X.title), extra: [starBox] }));
+  root.append(topbar({ back: { href: href.home(), label: T.labels.home, icon: undefined }, middle: el("h1", "title", X.title), extra: [starBox] }));
   const question = el("p", "question card");
   question.hidden = true;
   const caption = el("p", "caption");

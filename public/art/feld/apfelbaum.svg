@@ -1,8 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 800" preserveAspectRatio="xMidYMax slice">
-  <!-- The apple tree in the orchard: a big tree above, apples in it, grass below. -->
-  <rect width="400" height="800" fill="#cfeaff"/>
-  <path d="M0 430 Q140 390 260 420 T400 410 V800 H0Z" fill="#b9e5a0"/>
-  <rect x="300" y="300" width="36" height="150" rx="8" fill="#8a5a33" stroke="#1b2140" stroke-width="4"/>
-  <circle cx="318" cy="250" r="95" fill="#57b86a" stroke="#1b2140" stroke-width="4"/>
-  <g fill="#ff5a36" stroke="#1b2140" stroke-width="2"><circle cx="280" cy="230" r="11"/><circle cx="340" cy="270" r="11"/><circle cx="320" cy="200" r="11"/><circle cx="370" cy="235" r="11"/></g>
-</svg>
