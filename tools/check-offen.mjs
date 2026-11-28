@@ -30,13 +30,27 @@ function play(events, skill, seed = 1) {
   const now = Date.now();
   const blocks = [];
   const sureAt = {};
+  let sharedOnce = false;
+  let sharedAt;
   for (let e = 0; e < events; e++) {
-    const n = Owl.frogs(rec, rnd, now);
-    const goal = Owl.target(rec, n, rnd, now);
-    if (goal) S.answer(rec, "legen", rnd() < skill, now);
-    const a = Math.floor(rnd() * (n + 1)); // the child spreads the frogs somehow
-    let red = a;
-    let green = n - a;
+    const plan = Owl.placement(rec, rnd, now);
+    const n = plan.n;
+    let red, green;
+    if (plan.kind === "share" || plan.kind === "rest") {
+      const id = plan.kind === "share" ? "verteilen" : "rest";
+      check(S.isOpen(rec, id, now), `${id} before it was open`);
+      if (plan.kind === "share") check(n % 2 === 0 && (sharedOnce || n <= 4), `sharing ${n} frogs too early`);
+      if (plan.kind === "rest") check(n % 2 === 1, "a rest with an even number");
+      S.answer(rec, id, rnd() < skill, now);
+      if (plan.kind === "share") sharedOnce = (rec.skills.verteilen.right + rec.skills.verteilen.wrong) >= 10;
+      red = green = Math.floor(n / 2);
+    } else {
+      if (plan.kind === "make") S.answer(rec, "legen", rnd() < skill, now);
+      const a = Math.floor(rnd() * (n + 1)); // the child spreads the frogs somehow
+      red = a;
+      green = n - a;
+    }
+    const firstShare = plan.kind === "share" && sharedAt === undefined ? (sharedAt = e + 1) : 0;
     const steps = Owl.steps(rec, red, green, rnd, now);
     check(steps.length > 0, "an event without a question");
     const block = (blocks[Math.floor(e / 20)] ??= { events: 0, withCount: 0, questions: 0 });
@@ -59,7 +73,7 @@ function play(events, skill, seed = 1) {
     }
     for (const { id } of S.SKILLS) if (S.isSure(rec, id, now) && sureAt[id] === undefined) sureAt[id] = e + 1;
   }
-  return { rec, blocks, sureAt };
+  return { rec, blocks, sureAt, sharedAt };
 }
 
 // The stand rule.
@@ -79,10 +93,11 @@ function play(events, skill, seed = 1) {
   check(rec.stars === 20, "one star for every right answer");
 }
 
-const good = play(400, 0.95);
-console.log("A child with 95 % right, 400 events at the pond:");
+const good = play(600, 0.95);
+console.log("A child with 95 % right, 600 events at the pond:");
 console.log("  sicher after event: " + S.SKILLS.map(({ id }) => `${id} ${good.sureAt[id] ?? "–"}`).join(", "));
 console.log("  events with \"Wie viele?\" per block of 20: " + good.blocks.map((b) => b.withCount).join(" "));
+console.log("  first \"Verteil gerecht\" at event " + good.sharedAt);
 for (const { id } of S.SKILLS) check(good.sureAt[id] !== undefined, `${id} never became sicher`);
 const firstPlay = play(5, 0.95, 3);
 const first = firstPlay.blocks[0].withCount / firstPlay.blocks[0].events;

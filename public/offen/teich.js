@@ -505,6 +505,57 @@ export async function render(root) {
     if (at.shore) await voice.ask(X.rest(OTHER[pad]), true, true);
   }
 
+  /** "Verteil die Frösche gerecht auf die zwei Seerosen." From the shore onto both pads, the same on each; with an
+   *  odd number one frog stays on the shore. Then Fertig, and a question about what came out. */
+  async function shareOut(withRest) {
+    const n = at.shore;
+    await voice.ask(withRest ? X.shareOutRest : X.shareOut, true, true);
+    if (!rec.stars) voice.tell(X.how);
+    const done = button("btn ok offen-done", X.done, X.done);
+    below.replaceChildren(done);
+    await new Promise((resolve) => done.addEventListener("click", resolve));
+    below.replaceChildren();
+    mode = "wait";
+    selected = null;
+    draw();
+    const half = Math.floor(n / 2);
+    const right = at.rot === half && at.gruen === half;
+    const skill = withRest ? "rest" : "verteilen";
+    if (right) sound.right();
+    else sound.wrong();
+    count(skill, right);
+    await (right ? praise() : oops());
+    if (!right) {
+      // The owl puts it right, one frog at a time: back to the shore what is too many, then onto the pad with fewer.
+      const step = async () => {
+        sound.tap();
+        draw();
+        await wait(600);
+      };
+      for (const p of ["rot", "gruen"])
+        while (at[p] > half) {
+          at[p]--;
+          at.shore++;
+          await step();
+        }
+      while (at.shore > n - 2 * half) {
+        const p = at.rot <= at.gruen ? "rot" : "gruen";
+        at.shore--;
+        at[p]++;
+        await step();
+      }
+    }
+    // Ask instead of telling.
+    voice.newTask();
+    if (!(await askNumber(X.each, Owl.countSkill(half), half, topFor(half)))) await countAlong("rot");
+    showSign("rot");
+    showSign("gruen");
+    if (withRest) {
+      voice.newTask();
+      if (!(await askNumber(X.left, "rest", n - 2 * half, 3))) await voice.tell(X.leftIs);
+    }
+  }
+
   // ---- One event, then the next.
   async function event() {
     voice.newTask();
@@ -517,20 +568,21 @@ export async function render(root) {
       signs[p].textContent = "?";
       signs[p].classList.remove("known");
     }
-    at.shore = Owl.frogs(rec);
+    const plan = Owl.placement(rec);
+    at.shore = plan.n;
     mode = "wait";
     draw();
     pond.classList.remove("bye");
     await voice.tell(X.arrive(at.shore));
     mode = "place";
     draw();
-    const goal = Owl.target(rec, at.shore);
-    if (goal) await makeAmount(goal);
+    if (plan.kind === "make") await makeAmount(plan);
+    else if (plan.kind === "share" || plan.kind === "rest") await shareOut(plan.kind === "rest");
     else {
       await voice.ask(X.place, true, true);
       if (!rec.stars) voice.tell(X.how);
     }
-    if (at.shore) await new Promise((resolve) => (onMoved = () => at.shore === 0 && resolve()));
+    if (at.shore && plan.kind !== "rest") await new Promise((resolve) => (onMoved = () => at.shore === 0 && resolve()));
     onMoved = () => {};
     mode = "wait";
     draw();

@@ -39,7 +39,36 @@ export function target(rec, n, rnd = Math.random, now = Date.now()) {
   const want = isOpen(rec, "legen", now) && rnd() < often(rec, "legen", now);
   if (!want || n < 2) return null;
   const most = Math.min(n - 1, isOpen(rec, "zaehlen10", now) ? 10 : 5);
-  return { pad: rnd() < 0.5 ? "rot" : "gruen", k: between(rnd, 1, most) };
+  return { n, pad: rnd() < 0.5 ? "rot" : "gruen", k: between(rnd, 1, most) };
+}
+
+/**
+ * How the frogs get onto the pads, and how many come:
+ *   { kind: "free", n }           "Setz die Frösche auf die Seerosen."
+ *   { kind: "make", n, pad, k }   "Setz drei Frösche auf die rote Seerose."            legen
+ *   { kind: "share", n }          "Verteil die Frösche gerecht auf die zwei Seerosen."  verteilen
+ *   { kind: "rest", n }           the same with an odd number: one stays on the shore    rest
+ * Sharing comes in slowly: 2 and 4 frogs for the first ten answers, then 6, and up to 10 once counting to 10
+ * is open; an odd number (one left over) only once sharing was sicher.
+ */
+export function placement(rec, rnd = Math.random, now = Date.now()) {
+  const want = (id) => isOpen(rec, id, now) && rnd() < often(rec, id, now);
+  const kinds = [];
+  if (rec.wrongRow < 3 && want("verteilen")) kinds.push("share");
+  if (rec.wrongRow < 3 && want("rest")) kinds.push("rest");
+  const goal = target(rec, frogs(rec, rnd, now), rnd, now);
+  if (goal) kinds.push("make");
+  const kind = kinds.length ? kinds[Math.floor(rnd() * kinds.length)] : "free";
+  const big = isOpen(rec, "zaehlen10", now);
+  if (kind === "share") {
+    const s = rec.skills.verteilen;
+    const answers = s ? s.right + s.wrong : 0;
+    const most = answers < 10 ? 4 : big ? 10 : 6;
+    return { kind, n: 2 * between(rnd, 1, most / 2) };
+  }
+  if (kind === "rest") return { kind, n: 2 * between(rnd, 1, big ? 4 : 2) + 1 };
+  if (kind === "make") return { kind, n: goal.n, pad: goal.pad, k: goal.k };
+  return { kind, n: frogs(rec, rnd, now) };
 }
 
 /** A difference a child sees without counting, while the comparing words are still practised. */
