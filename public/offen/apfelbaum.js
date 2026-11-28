@@ -53,7 +53,9 @@ export async function render(root) {
 
   // Growing: every tap on the crown lets one apple grow, until the owl's number is reached. The crown bobs while
   // it waits for taps, so no words are needed.
+  // Pale apple buds show how many still grow, so the child sees that tapping goes on and when it is done.
   let onGrow = null;
+  let growTo = 0;
   crown.addEventListener("click", () => {
     if (mode !== "grow" || document.body.classList.contains("listening")) return;
     onGrow?.();
@@ -64,6 +66,7 @@ export async function render(root) {
     crown.classList.toggle("offer", mode === "grow");
     crown.replaceChildren();
     for (let i = 0; i < s.tree; i++) crown.append(apple("on-tree", Y.apple, mode === "pick" ? tapped({ type: "pflueck" }) : null));
+    if (mode === "grow") for (let i = s.tree; i < growTo; i++) crown.append(apple(`bud${i === s.tree ? " next" : ""}`, Y.apple, null));
     basket.replaceChildren(el("span", "apfel-basket-bowl"));
     const inBasket = el("div", "apfel-pile");
     for (let i = 0; i < s.basket; i++) inBasket.append(apple("", Y.apple, mode === "pick" ? tapped({ type: "zurueck" }) : null));
@@ -123,6 +126,7 @@ export async function render(root) {
     // The bare tree: the child taps, the apples grow. No question, no wrong answer; a short instruction says what
     // to do (asked for 28.11.: the bobbing alone did not carry it).
     send({ type: "leer" });
+    growTo = p.n;
     mode = "grow";
     draw();
     await voice.ask(Y.grow, true, true);
@@ -131,7 +135,7 @@ export async function render(root) {
         if (world.state.tree >= p.n || !send({ type: "wachs" })) return;
         sound.tap();
         draw();
-        crown.lastChild?.classList.add("pop");
+        crown.querySelectorAll(".on-tree")[world.state.tree - 1]?.classList.add("pop");
         if (world.state.tree >= p.n) resolve();
       };
     });
