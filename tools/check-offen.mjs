@@ -19,6 +19,7 @@ import { QUESTIONS, byId, skillOf, answerOf } from "../public/offen/questions.js
 import { PLACES, placeById } from "../public/offen/places.js";
 import * as A from "../public/offen/apfel.js";
 import * as H from "../public/offen/hasen.js";
+import * as Tal from "../public/offen/tal.js";
 
 const RUN = RUNS.teich;
 
@@ -238,6 +239,53 @@ check(lucky <= 1, `a child with 60 % right is sicher in counting in ${lucky} of 
     check(bp.steps.every((st) => S.isOpen(fresh, st.skill, now)), "burrow: a new child is asked for a skill that is not open");
   }
   for (const id of ["teilen", "rest", "zerlegen5", "zerlegen10"]) check(rec.skills[id]?.wasSure, `${id} never became sicher at its place`);
+}
+
+// ---- The seven newer places (tal.js): plans of the right length, only open skills, and a good child becomes
+// sicher in every skill of every place. Counting is sure already (as after the pond).
+{
+  const rnd = seeded(7);
+  const now = Date.now();
+  const PLAN = { wiese: Tal.wiese, waldrand: Tal.waldrand, himmel: Tal.himmel, nester: Tal.nester, pfuetze: Tal.pfuetze, huegel: Tal.huegel, bach: Tal.bach };
+  const fresh = S.valid(null);
+  for (const [place, plan] of Object.entries(PLAN))
+    for (let e = 0; e < 100; e++) {
+      const p = plan(fresh, rnd, now);
+      check(p.steps.length >= Tal.MIN_Q && p.steps.length <= Tal.MAX_Q, `${place}: ${p.steps.length} questions for a new child`);
+      check(p.steps.every((st) => S.isOpen(fresh, st.skill, now)), `${place}: a new child is asked for a skill that is not open`);
+      check(p.steps.every((st) => Tal.SKILLS_AT[place].includes(st.skill)), `${place}: a question for a skill of another place`);
+    }
+  const rec = S.valid(null);
+  for (const id of ["zaehlen5", "zaehlen10"]) for (let i = 0; i < 20; i++) S.answer(rec, id, true, now);
+  const sureAt = {};
+  for (let e = 0; e < 400; e++)
+    for (const [place, plan] of Object.entries(PLAN)) {
+      const p = plan(rec, rnd, now);
+      check(p.steps.length >= Tal.MIN_Q && p.steps.length <= Tal.MAX_Q, `${place}: ${p.steps.length} questions in one event`);
+      for (const st of p.steps) {
+        check(S.isOpen(rec, st.skill, now), `${place}: ${st.skill} asked before it was open`);
+        if (st.ask === "nach") check(st.answer === st.at + 1 && st.answer <= p.top, "wiese: a wrong number after");
+        if (st.ask === "vor") check(st.answer === st.at - 1 && st.answer >= 1, "wiese: a wrong number before");
+        if (st.ask === "falter") check(st.n >= 1 && st.n <= 20 && (st.n <= 10 || st.skill === "zaehlen20"), `wiese: ${st.n} butterflies for ${st.skill}`);
+        if (st.ask === "fehler") check(st.row.at(st.wrong) !== Tal.nth(p.unit, st.wrong) && st.row.every((k, i) => i === st.wrong || k === Tal.nth(p.unit, i)), "waldrand: the row has not exactly one mistake");
+        if (st.ask === "rang") check(st.rank >= 0 && st.rank < p.birds, "himmel: a place in the flight that does not exist");
+        if (st.ask === "geschichte") check(Tal.STORIES[st.story][st.dir === "vorher" ? st.at - 1 : st.at + 1] !== undefined, "himmel: no picture before or after");
+        if (st.ask === "nest") check(st.nest < p.nests.length && (p.by === "farbe" ? p.birds[st.bird].farbe === p.nests[st.nest] : p.birds[st.bird].gross === (p.nests[st.nest] === "gross")), "nester: the bird's nest does not match");
+        if (st.ask === "anders") {
+          const key = (b) => `${b.farbe}${b.gross}`;
+          const same = st.four.filter((b, i) => i !== st.odd).map(key);
+          check(new Set(same).size === 1 && key(st.four[st.odd]) !== same[0], "nester: the odd bird is not the only different one");
+        }
+        if (st.ask === "stock") check(Math.abs(st.a - st.b) >= 2 && st.b >= 1 && st.b <= 12, `bach: sticks ${st.a} and ${st.b}`);
+        if (st.ask === "noch") check(st.choices.includes(st.form) && new Set(st.choices).size === st.choices.length, "bach: the shape is not among the choices");
+        S.answer(rec, st.skill, rnd() < 0.95, now);
+      }
+      for (const id of Tal.SKILLS_AT[place]) if (S.isSure(rec, id, now) && sureAt[id] === undefined) sureAt[id] = e + 1;
+    }
+  const ids = [...new Set(Object.values(Tal.SKILLS_AT).flat())].filter((id) => !id.startsWith("zaehlen") || id === "zaehlen20");
+  console.log("The seven newer places, a good counter, sicher after event: " + ids.map((id) => `${id} ${sureAt[id] ?? "–"}`).join(", "));
+  for (const id of ids) check(rec.skills[id]?.wasSure, `${id} never became sicher at its place`);
+  for (const k of S.SKILLS) check(Tal.SKILLS_AT[k.places?.[0]] === undefined || Tal.SKILLS_AT[k.places[0]].includes(k.id), `${k.id} missing from its place's list`);
 }
 
 if (failed) process.exit(1);

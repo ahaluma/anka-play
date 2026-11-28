@@ -45,7 +45,7 @@ export async function render(root, route) {
     const f = el("span", `front f-${c.kind}`);
     if (c.kind === "zahl" || c.kind === "ergebnis") f.append(el("span", "big", num(c.value)));
     else if (c.kind === "punkte") {
-      const d = el("span", "mem-dots" + (c.value > 5 ? " two" : ""));
+      const d = el("span", "mem-dots" + (c.value > 5 ? " two" : "") + (c.value > 10 ? " big" : ""));
       for (let i = 0; i < c.value; i++) d.append(el("i"));
       f.append(d);
     } else if (c.kind === "aufgabe") {

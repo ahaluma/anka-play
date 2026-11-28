@@ -11,6 +11,13 @@ const screens = {
   teich: () => import("../offen/teich.js"),
   apfelbaum: () => import("../offen/apfelbaum.js"),
   bau: () => import("../offen/bau.js"),
+  wiese: () => import("../offen/wiese.js"),
+  waldrand: () => import("../offen/waldrand.js"),
+  himmel: () => import("../offen/himmel.js"),
+  nester: () => import("../offen/nester.js"),
+  pfuetze: () => import("../offen/pfuetze.js"),
+  huegel: () => import("../offen/huegel.js"),
+  bach: () => import("../offen/bach.js"),
   memory: () => import("../memory/memory.js"),
 };
 

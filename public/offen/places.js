@@ -4,9 +4,18 @@
 // tools/check-offen.mjs checks both rules.
 
 export const PLACES = [
-  { id: "teich", links: ["apfelbaum", "bau"] },
-  { id: "apfelbaum", links: ["bau", "teich"] },
-  { id: "bau", links: ["teich", "apfelbaum"] },
+  // The ring follows the old paths of the Tal, so related places stand side by side (decided 28.11.):
+  // Teich, Bau, Wiese, Apfelbaum, Waldrand, Himmel, Nester, Pfütze, Hügel, Bach, and back to the pond.
+  { id: "teich", links: ["bach", "bau"] },
+  { id: "bau", links: ["teich", "wiese"] },
+  { id: "wiese", links: ["bau", "apfelbaum"] },
+  { id: "apfelbaum", links: ["wiese", "waldrand"] },
+  { id: "waldrand", links: ["apfelbaum", "himmel"] },
+  { id: "himmel", links: ["waldrand", "nester"] },
+  { id: "nester", links: ["himmel", "pfuetze"] },
+  { id: "pfuetze", links: ["nester", "huegel"] },
+  { id: "huegel", links: ["pfuetze", "bach"] },
+  { id: "bach", links: ["huegel", "teich"] },
 ];
 
 /** The memory world (memory/): three tables in a ring, the same rule. */

@@ -1,7 +1,7 @@
 // The memory world: three tables, each a memory game with its own kind of pairs. Pure: the decks and the
 // level rule, no screen (memory.js draws them, tools/check-memory.mjs checks them).
 //
-//   zahlen   a number and that many dots: 4 and ••••
+//   zahlen   a number and that many dots: 4 and ••••, later up to 20
 //   formen   the same shape twice; later the second one turned, smaller or in another colour
 //   rechnen  a sum and its result: 2 + 3 and 5. Plus first, then minus, then both up to 20, later times and
 //            divided
@@ -23,6 +23,10 @@ export const LADDERS = {
     L(4, { from: 1, to: 6 }),
     L(5, { from: 1, to: 8 }),
     L(6, { from: 1, to: 10 }),
+    // Beyond ten, as the old number memory had it (asked for 28.11.): the dots in rows of five.
+    L(6, { from: 5, to: 12 }),
+    L(6, { from: 8, to: 15 }),
+    L(6, { from: 11, to: 20 }),
   ],
   formen: [
     L(3, { shapes: 4, same: true, open: true }),

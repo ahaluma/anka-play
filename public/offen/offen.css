@@ -157,3 +157,161 @@ button.apfel-apple { cursor: pointer; }
 .m-num { font: 900 17px system-ui, sans-serif; text-anchor: middle; fill: var(--o-ink); }
 .m-sum { font: 900 11px system-ui, sans-serif; text-anchor: middle; fill: var(--o-ink); }
 .m-dot { fill: var(--o-ink); } .m-blue { fill: #2f6fd6; }
+
+/* ==== The seven newer places (offen/tal.js and offen/<place>.js). ==== */
+:root { --o-stone: #b9b4aa; --o-sky: #d9ecf2; --o-grass: #dcebc4; --o-wood: #a07a52; --o-bird-blau: #4d86d6; --o-bird-gelb: #e8c23a; --o-bird-rot: #d9604f; --o-bird-gruen: #5aa260; }
+.offen-scene .choosable { cursor: pointer; }
+.offen-scene .answer, .tal-card.answer { box-shadow: 0 0 0 5px var(--ok); border-radius: 12px; }
+.offen-scene .away { animation: go-away 0.5s ease-in forwards; }
+.offen-scene.offer, .offen-scene .offer { cursor: pointer; }
+.tal-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(76px, 1fr)); gap: 10px; }
+.tal-card { min-height: 86px; padding: 8px; }
+.tal-card .fig { width: 58px; height: 58px; }
+.tal-card .fig.turned { transition: none; }
+
+/* Figure colours. */
+.f-wing { fill: #f1a54a; } .f-wing2 { fill: #f6c77c; }
+.f-stem { fill: #efe4d0; } .f-cap { fill: #d65b4a; } .f-dot { fill: #fff; }
+.f-leafbig { fill: #79b35f; } .f-vein { fill: none; stroke: #4f8a3c; stroke-width: 1.6; stroke-linecap: round; }
+.f-berry { fill: #5b5fb8; }
+.f-cone { fill: #a8774b; } .f-scale { fill: none; stroke: #7a5232; stroke-width: 1.6; stroke-linecap: round; }
+.f-bird { fill: var(--bird, var(--o-bird-blau)); } .f-beak { fill: #f0a830; } .f-wingline { fill: none; stroke: rgba(0, 0, 0, 0.25); stroke-width: 2.4; stroke-linecap: round; }
+.f-mouse { fill: #a9a3a0; }
+.f-slug { fill: none; stroke: #c7b07f; stroke-width: 5; stroke-linecap: round; } .f-shell { fill: #c98b4e; } .f-curl { fill: none; stroke: #8a5a2e; stroke-width: 1.8; }
+.f-petal { fill: #f2c94c; } .f-heart { fill: #d9804a; }
+.f-stone { fill: var(--o-stone); } .f-grass { fill: #7fb36a; }
+.f-pumpkin { fill: #e68a2e; } .f-pumpkin2 { fill: #f09d3d; }
+.f-cloud { fill: #fff; } .f-cloud.dark { fill: #b8c2cf; } .f-rain { fill: none; stroke: #4d86d6; stroke-width: 2.4; stroke-linecap: round; }
+.f-rb1, .f-rb2, .f-rb3 { fill: none; stroke-width: 4.5; } .f-rb1 { stroke: #e0604f; } .f-rb2 { stroke: #f2c94c; } .f-rb3 { stroke: #4d86d6; }
+.f-egg { fill: var(--egg, #f4ecdc); stroke: rgba(0, 0, 0, 0.18); stroke-width: 1.2; } .f-crack { fill: none; stroke: #8a6a3e; stroke-width: 1.8; stroke-linejoin: round; }
+.f-chick { fill: #f2d04c; } .f-soil { fill: #9a7656; } .f-seed { fill: #e9d9a8; }
+.f-shape { fill: #9fa8b8; stroke: #6c768a; stroke-width: 1.5; }
+.c-blau { --bird: var(--o-bird-blau); } .c-gelb { --bird: var(--o-bird-gelb); } .c-rot { --bird: var(--o-bird-rot); } .c-gruen { --bird: var(--o-bird-gruen); }
+.fig-ei.c-blau { --egg: var(--o-bird-blau); } .fig-ei.c-gelb { --egg: var(--o-bird-gelb); } .fig-ei.c-rot { --egg: var(--o-bird-rot); }
+/* Portal pictures. */
+.m-stone { fill: var(--o-stone); } .m-wing { fill: #f1a54a; } .m-fir { fill: #5f9a5a; } .m-sky { fill: var(--o-sky); } .m-sun { fill: var(--o-star); }
+.m-flight { fill: none; stroke: var(--o-ink); stroke-width: 1.8; stroke-linecap: round; } .m-branch { stroke: var(--o-trunk); stroke-width: 3; stroke-linecap: round; }
+.m-nest { fill: #b08758; } .m-yellow { fill: #e8c23a; } .m-stalk { stroke: #5f9a5a; stroke-width: 2; } .m-faint { opacity: 0.45; }
+
+/* Wiese: the path of number stones above, the grass with the butterflies below. */
+.scene-wiese { background: linear-gradient(var(--o-sky) 0 18%, var(--o-grass) 18%); }
+.wiese-path { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; padding: 26px 14px 12px; }
+.wiese-stone { position: relative; display: grid; place-items: center; aspect-ratio: 1; border-radius: 46% 54% 50% 50%; background: var(--o-stone); color: var(--o-ink); font-size: 24px; font-weight: 900; box-shadow: inset 0 -5px 0 rgba(0, 0, 0, 0.12); }
+.wiese-stone.bud { background: rgba(255, 255, 255, 0.5); box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.12); }
+.wiese-stone.covered { color: transparent; }
+.wiese-falter { display: block; width: clamp(28px, 9vw, 40px); height: clamp(28px, 9vw, 40px); }
+.wiese-falter.on-stone { position: absolute; inset: 8%; width: auto; height: auto; }
+.wiese-falter.away { animation: go-away 0.5s ease-in forwards; }
+.wiese-grass { display: flex; flex-direction: column; align-items: center; gap: 4px; min-height: 150px; padding: 10px 10px 16px; }
+.wiese-grass.away { animation: go-away 0.6s ease-in forwards; }
+.wiese-row { display: flex; gap: 4px; }
+
+/* Waldrand: fir trees at the back, the row on the moss in front. */
+.scene-waldrand { background: linear-gradient(var(--o-sky) 0 30%, #cfe3b5 30%); }
+.wald-trees { display: flex; justify-content: space-around; padding: 10px 8px 0; }
+.wald-tree { width: 46px; height: 70px; background: #5f9a5a; clip-path: polygon(50% 0, 100% 100%, 0 100%); }
+.wald-row { display: flex; flex-wrap: wrap; justify-content: center; align-content: flex-start; gap: 4px; min-height: 160px; padding: 18px 10px; }
+.wald-row.away { animation: go-away 0.5s ease-in forwards; }
+.wald-thing { display: grid; place-items: center; width: clamp(34px, 10.5vw, 48px); height: clamp(34px, 10.5vw, 48px); padding: 0; border: 0; border-radius: 10px; background: none; }
+.wald-thing .fig { width: 100%; height: 100%; }
+.wald-thing.bud { opacity: 0.25; }
+.wald-thing.gap { border: 3px dashed var(--o-ink); color: var(--o-ink); font-size: 22px; font-weight: 900; }
+
+/* Himmel: the sky with the birds flying (the first in front, on the right), the branch below. */
+.scene-himmel { background: linear-gradient(#cfe6f2 0 72%, var(--o-grass) 72%); }
+.himmel-sky { position: relative; min-height: 230px; padding: 14px 10px 0; }
+.himmel-sun { position: absolute; top: 12px; left: 14px; width: 42px; height: 42px; border-radius: 50%; background: var(--o-star); }
+.himmel-flock { display: flex; flex-direction: row-reverse; justify-content: center; align-items: flex-end; gap: 6px; min-height: 70px; margin-top: 110px; }
+.himmel-bird { display: block; width: clamp(48px, 15vw, 66px); height: clamp(48px, 15vw, 66px); padding: 0; border: 0; background: none; border-radius: 12px; }
+.himmel-flock .himmel-bird:nth-child(2n) { transform: translateY(-14px); }
+.himmel-story { position: absolute; top: 10px; left: 50%; display: flex; gap: 6px; transform: translateX(-50%); }
+.himmel-pic { display: block; width: 86px; height: 86px; padding: 6px; border-radius: 14px; background: rgba(255, 255, 255, 0.8); }
+.himmel-branch { position: relative; display: flex; justify-content: center; align-items: flex-end; gap: 6px; min-height: 90px; padding: 8px 10px 26px; }
+.himmel-wood { position: absolute; left: 8%; right: 8%; bottom: 18px; height: 12px; border-radius: 6px; background: var(--o-wood); }
+.himmel-bird.gone { visibility: hidden; }
+.himmel-branch.offer .himmel-bird:not(.gone) { animation: nudge 1.6s ease-in-out infinite; }
+
+/* Nester: birds on a branch in the sky, the nests below with their signs. */
+.scene-nester { background: linear-gradient(#cfe6f2 0 50%, var(--o-grass) 50%); }
+.nester-sky { min-height: 150px; padding: 18px 10px 0; }
+.nester-branch { display: flex; justify-content: center; align-items: flex-end; gap: 6px; min-height: 100px; border-bottom: 12px solid var(--o-wood); border-radius: 0 0 8px 8px; }
+.nester-bird { display: block; padding: 0; border: 0; background: none; border-radius: 12px; }
+.nester-bird.big { width: clamp(54px, 16vw, 70px); height: clamp(54px, 16vw, 70px); }
+.nester-bird.small { width: clamp(32px, 9.5vw, 42px); height: clamp(32px, 9.5vw, 42px); }
+.nester-nests { display: flex; justify-content: space-around; align-items: flex-end; gap: 8px; padding: 22px 8px 16px; }
+.nester-nest { position: relative; display: flex; flex-direction: column; align-items: center; flex: 1; max-width: 130px; min-height: 120px; padding: 6px 4px 30px; border: 0; background: none; border-radius: 18px; }
+.nester-in { display: flex; flex-wrap: wrap; justify-content: center; align-items: flex-end; min-height: 50px; }
+.nester-in .nester-bird.big { width: 40px; height: 40px; } .nester-in .nester-bird.small { width: 26px; height: 26px; }
+.nester-bowl { width: 100%; height: 34px; border-radius: 0 0 60px 60px; background: #b08758; box-shadow: inset 0 6px 0 #8f6a40; }
+.nester-nest.n-klein .nester-bowl { width: 60%; height: 24px; }
+.nester-sign { position: absolute; bottom: -4px; width: 38px; height: 38px; }
+
+/* Pfütze: things at the edge above, the puddle with their mirror image and the places for the leaf. */
+.scene-pfuetze { background: var(--o-grass); }
+.pf-edge, .pf-mirror { display: flex; justify-content: space-around; align-items: flex-end; padding: 12px 14px 0; }
+.pf-thing { display: block; width: clamp(40px, 12vw, 54px); height: clamp(40px, 12vw, 54px); padding: 0; border: 0; background: none; border-radius: 10px; }
+.pf-mirror { align-items: flex-start; padding-top: 6px; }
+.pf-mirror .pf-thing .fig { transform: scaleY(-1); opacity: 0.6; }
+.pf-thing.other .fig { filter: hue-rotate(150deg) saturate(1.6); }
+.pf-water { position: relative; min-height: 230px; margin: 0 10px 14px; border-radius: 50% / 34%; background: #bcdcea; }
+.pf-water.ripple .pf-mirror { animation: wobble 0.7s ease-in-out; }
+@keyframes wobble { 25% { transform: skewX(6deg) scaleY(0.94); } 60% { transform: skewX(-5deg); } }
+.pf-spots { position: absolute; inset: 26% 12% 10%; display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; pointer-events: none; }
+.pf-spot { position: relative; display: grid; place-items: center; padding: 0; border: 0; border-radius: 50%; background: none; pointer-events: none; }
+.pf-spots.open .pf-spot { background: rgba(255, 255, 255, 0.35); box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.8); }
+.pf-spot.choosable { pointer-events: auto; }
+.pf-leaf { display: block; width: 44px; height: 44px; }
+.pf-leaf.blown { animation: blown 0.7s ease-in forwards; }
+@keyframes blown { to { transform: translate(140px, -60px) rotate(220deg); opacity: 0; } }
+
+/* Hügel: a bench and a stone on the hill; the places around the bench. */
+.scene-huegel { background: linear-gradient(var(--o-sky) 0 22%, var(--o-grass) 22%); }
+.hg-hill { position: relative; height: 290px; margin: 0 6px; }
+.hg-stone { position: absolute; left: 1%; bottom: 60px; width: 21%; height: 80px; z-index: 2; pointer-events: none; }
+.hg-stone .fig { width: 100%; height: 100%; }
+.hg-bench { position: absolute; left: 42%; bottom: 70px; width: 32%; height: 70px; z-index: 2; pointer-events: none; }
+.hg-seat { position: absolute; top: 0; left: 0; right: 0; height: 14px; border-radius: 4px; background: var(--o-wood); }
+.hg-leg { position: absolute; top: 12px; bottom: 0; width: 10px; background: #8a6644; } .hg-leg.l { left: 8%; } .hg-leg.r { right: 8%; }
+.hg-spot, .hg-animal { position: absolute; width: 56px; height: 56px; margin: -28px 0 0 -28px; padding: 0; border: 0; border-radius: 50%; background: none; }
+.hg-spot { z-index: 1; }
+.hg-hill.offer .hg-spot, .hg-spot.choosable { background: rgba(255, 255, 255, 0.45); box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.9); }
+.hg-hill:not(.offer) .hg-spot:not(.choosable) { pointer-events: none; }
+.hg-animal { z-index: 3; transition: left 0.6s, top 0.6s; }
+.hg-animal .fig { width: 100%; height: 100%; }
+.at-auf { left: 58%; top: calc(100% - 166px); }
+.at-hinter { left: 11.5%; top: calc(100% - 124px); }
+.hg-animal.at-hinter { z-index: 1; width: 48px; height: 48px; margin: -24px 0 0 -24px; }
+.at-unter { left: 58%; top: calc(100% - 92px); }
+.hg-animal.at-unter { width: 44px; height: 44px; margin: -22px 0 0 -22px; }
+.at-vor { left: 58%; top: calc(100% - 36px); z-index: 4; }
+.at-neben { left: 89%; top: calc(100% - 96px); }
+.at-zwischen { left: 32%; top: calc(100% - 96px); }
+.hg-animal.hop { animation: nudge 0.6s ease-out; }
+.hg-animal.a-vogel { --bird: var(--o-bird-blau); }
+
+/* Bach: the stream on top, the bank below. */
+.scene-bach { background: var(--o-grass); }
+.bach-water { display: flex; justify-content: center; align-items: center; min-height: 92px; background: linear-gradient(#bcdcea, #9fcbe0); cursor: default; }
+.bach-water.offer { cursor: pointer; }
+.bach-bank { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 12px; min-height: 200px; padding: 16px 10px; background: #e9dcc0; }
+.bach-bank.away { animation: go-away 0.45s ease-in forwards; }
+.bach-stone { display: block; width: clamp(54px, 17vw, 74px); height: clamp(54px, 17vw, 74px); padding: 0; border: 0; background: none; border-radius: 12px; }
+.bach-stone .fig { width: 100%; height: 100%; }
+.bach-water .bach-stone { width: 60px; height: 60px; }
+.bach-stone.wash { animation: wash 0.5s ease-out; }
+@keyframes wash { from { transform: translateY(-80px); opacity: 0; } }
+.bach-sticks, .bach-line { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; width: 100%; }
+.bach-line { min-height: 20px; padding-top: 10px; border-top: 2px dashed rgba(0, 0, 0, 0.2); }
+.bach-stick { width: calc(var(--len) * 10%); min-width: 40px; height: 26px; padding: 4px 0; border: 0; background: none; border-radius: 8px; }
+.bach-wood { display: block; width: 100%; height: 100%; border-radius: 9px; background: var(--o-wood); box-shadow: inset 0 -4px 0 #7f5d3c; }
+.bach-scale { position: relative; width: min(92%, 320px); height: 170px; }
+.bach-post { position: absolute; left: 50%; bottom: 0; width: 14px; height: 90px; margin-left: -7px; background: #7f6a55; border-radius: 4px; }
+.bach-beam { position: absolute; left: 0; right: 0; top: 60px; height: 10px; border-radius: 5px; background: #7f6a55; }
+.bach-scale.down-l .bach-beam { transform: rotate(-12deg); } .bach-scale.down-r .bach-beam { transform: rotate(12deg); }
+.bach-pan { position: absolute; bottom: 8px; width: 70px; height: 70px; padding: 0; border: 0; background: none; border-radius: 12px; }
+.bach-pan.l { left: 0; } .bach-pan.r { right: 0; }
+.bach-pan .fig { width: 100%; height: 100%; }
+.bach-towers { display: flex; justify-content: center; align-items: flex-end; gap: 40px; }
+.bach-tower { display: flex; flex-direction: column-reverse; align-items: center; padding: 4px; border: 0; background: none; border-radius: 12px; }
+.bach-pebble { display: block; width: 58px; height: 24px; margin-top: -3px; border-radius: 50%; background: var(--o-stone); box-shadow: inset 0 -5px 0 rgba(0, 0, 0, 0.12); }
+@media (prefers-reduced-motion: reduce) { .himmel-branch.offer .himmel-bird, .bach-stone.wash, .pf-water.ripple .pf-mirror { animation: none; } }
