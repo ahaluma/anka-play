@@ -21,13 +21,17 @@ const sum = (list) => list.reduce((a, b) => a + b, 0);
 let CENT = false;
 /** An amount: 7 € in whole euros; 2,50 € with cents (short: 2,5 €, the owl's way of writing it). */
 function euro(ctx, n, short = false) {
-  if (!CENT) return `${ctx.num(n)} €`;
+  const money = ctx.T.geld.money ?? ((x) => `${x} €`); // a language may count in its own money (Nepali: rupees)
+  if (!CENT) return money(ctx.num(n));
   const sep = ctx.T.geld.sep ?? ",";
   const c = String(n % 100).padStart(2, "0");
-  return `${ctx.num(Math.floor(n / 100))}${sep}${ctx.num(short ? c.replace(/0$/, "") : c)} €`;
+  return money(`${ctx.num(Math.floor(n / 100))}${sep}${ctx.num(short ? c.replace(/0$/, "") : c)}`);
 }
 /** What is written on a coin: 50 ct, 2 €. */
-const face = (ctx, v) => (CENT ? (v >= 100 ? `${ctx.num(v / 100)} €` : `${ctx.num(v)} ${ctx.T.geld.cent ?? "ct"}`) : `${ctx.num(v)} €`);
+function face(ctx, v) {
+  const big = ctx.T.geld.face ?? ((x) => `${x} €`);
+  return CENT ? (v >= 100 ? big(ctx.num(v / 100)) : `${ctx.num(v)} ${ctx.T.geld.cent ?? "ct"}`) : big(ctx.num(v));
+}
 const kind = (v) => (CENT ? (v >= 500 ? "note v5" : v >= 100 ? `coin v${v / 100}` : `coin cent c${v}`) : `${v >= 5 ? "note" : "coin"} v${v}`);
 
 /** One coin or note. */
