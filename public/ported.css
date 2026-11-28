@@ -1585,3 +1585,134 @@ button.sc-cell { cursor: pointer; }
   box-shadow: 0 5px 0 var(--ok);
   cursor: default;
 }
+
+/* ---------- Idea zehn, forschen: the frog hops between two lily pads (ideas/zehn/board.js huepfen) */
+.zehn-hop {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 4px;
+  min-height: 150px;
+  padding: 14px 8px;
+  background: #8fd3ff;
+}
+
+.hop-leaf {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  padding: 10px 4px;
+  border: 3px solid var(--ink);
+  border-radius: 50% / 42%;
+  background: #6cc070;
+}
+
+.hop-leaf.asked {
+  box-shadow: 0 0 0 5px var(--sun);
+}
+
+.hop-frogs {
+  display: grid;
+  grid-template-columns: repeat(5, clamp(18px, 5.4vw, 30px));
+  justify-content: center;
+  gap: 2px;
+  min-height: clamp(18px, 5.4vw, 30px);
+}
+
+.hop-frog {
+  display: grid;
+  place-items: center;
+  font-size: clamp(15px, 4.8vw, 25px);
+  line-height: 1;
+}
+
+.hop-frog.jumper {
+  animation: nudge 1.1s ease-in-out infinite;
+}
+
+.hop-frog.ghost {
+  border: 2px dashed var(--ink);
+  border-radius: 50%;
+  opacity: 0.45;
+}
+
+.hop-arrow {
+  font-size: 30px;
+  font-weight: 900;
+  color: var(--ink);
+}
+
+.hop-arrow.done {
+  opacity: 0.3;
+}
+
+.hop-count {
+  min-width: 1.6em;
+  padding: 0 6px;
+  border-radius: 10px;
+  background: #fff;
+  font-size: 24px;
+  text-align: center;
+}
+
+/* ---------- Idea zehn, forschen: the stone stairs, red below and blue above (ideas/zehn/board.js treppe) */
+.zehn-towers {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: clamp(10px, 4vw, 22px);
+  min-height: 150px;
+  padding: 14px 8px;
+  background: linear-gradient(var(--sky) 0 55%, var(--grass) 55%);
+}
+
+.stone-tower {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 2px;
+  padding: 4px;
+  border-radius: 10px;
+}
+
+.zstone {
+  width: clamp(40px, 12vw, 56px);
+  height: 28px;
+  padding: 0;
+  border: 2px solid var(--ink);
+  border-radius: 7px;
+  background: #c8c8c8;
+}
+
+.zehn-towers.ten .zstone {
+  height: 17px;
+}
+
+.zstone.red {
+  background: var(--go);
+}
+
+.zstone.blue {
+  background: var(--blue);
+}
+
+.stone-tower.build {
+  outline: 3px dashed var(--ink);
+  background: #fff3c4;
+}
+
+.stone-tower.build .zstone {
+  cursor: pointer;
+}
+
+.stone-tower.build .zstone.open {
+  background: #fff;
+  animation: pulse 1.4s ease-in-out infinite;
+}
+
+.stone-tower.build.found {
+  outline: 4px solid var(--ok);
+}
+
+.stone-tower.glow {
+  outline: 4px solid var(--sun);
+}

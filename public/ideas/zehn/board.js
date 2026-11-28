@@ -240,6 +240,150 @@ export function forschen(host, t, ctx) {
   };
 }
 
+// ---------- Forschen, first kind: the frog hops. Frogs sit on two lily pads; one hops across.
+// How many sit on one pad then? One more where it lands, one fewer where it left: together it stays the same.
+
+/** One lily pad with n frogs in rows of five; `jumper` is the place of the frog that will hop off it (-1: none). */
+function leaf(ctx, n, { jumper = -1, ghost = false } = {}) {
+  const pad = el("div", "hop-leaf");
+  const frogs = el("div", "hop-frogs");
+  for (let i = 0; i < n; i++) frogs.append(el("span", "hop-frog" + (i === jumper ? " jumper" : ""), "🐸"));
+  if (ghost) frogs.append(el("span", "hop-frog ghost", "🐸"));
+  pad.append(frogs);
+  return pad;
+}
+
+export function huepfen(host, t, ctx) {
+  const { T } = ctx;
+  const H = T.zehn.huepfen;
+  const side = t.left ? "left" : "right"; // where the frog lands
+  const pond = el("div", "scene card zehn-hop");
+  const hintBox = el("div", "hint-box");
+  let locked = true;
+
+  // left pad, arrow, right pad: the frog that hops sits on the other pad and bobs
+  const draw = (after = false, ghost = false) => {
+    pond.innerHTML = "";
+    const a = after ? t.a + (t.left ? 1 : -1) : t.a;
+    const b = after ? t.whole - a : t.b;
+    // the frog that hops sits nearest to the other pad
+    const L = leaf(ctx, a, { jumper: !after && !t.left ? Math.min(a, 5) - 1 : -1, ghost: ghost && t.left });
+    const R = leaf(ctx, b, { jumper: !after && t.left ? 0 : -1, ghost: ghost && !t.left });
+    const asked = t.left ? L : R;
+    if (t.more) asked.classList.add("asked");
+    else (t.left ? R : L).classList.add("asked");
+    if (after) {
+      L.append(el("b", "hop-count pop", ctx.num(a)));
+      R.append(el("b", "hop-count pop", ctx.num(b)));
+    }
+    pond.append(L, el("span", "hop-arrow" + (after ? " done" : ""), t.left ? "←" : "→"), R);
+  };
+  draw();
+
+  const pick = answers(ctx, t, (n, b) => {
+    if (locked) return;
+    if (n !== t.answer) {
+      shake(b);
+      b.disabled = true;
+      const now = t.more ? (t.left ? t.a : t.b) : t.left ? t.b : t.a; // on the asked pad before the hop
+      if (t.more) ctx.miss(n <= now ? H.more : H.onlyOneIn);
+      else ctx.miss(n >= now ? H.fewer : H.onlyOneOut);
+      return;
+    }
+    locked = true;
+    b.classList.add("right");
+    draw(true);
+    ctx.solved(H.done(ctx.word(t.whole)));
+  });
+  pick.classList.add("waiting");
+  host.append(pond, hintBox, pick);
+
+  (async () => {
+    await ctx.tell(H.story(ctx.word(t.whole)));
+    if (!host.isConnected) return;
+    await ctx.tell(H.jump[side]);
+    if (!host.isConnected) return;
+    locked = false;
+    pick.classList.remove("waiting");
+    ctx.ready();
+    ctx.tell(H.ask[t.more ? side : side === "left" ? "right" : "left"]);
+  })();
+
+  return {
+    hint() {
+      // the frog is seen on both pads at once: where it sits now, and dashed where it lands
+      draw(false, true);
+      if (!hintBox.firstChild) hintBox.append(el("p", "hint-text pop", H.hintShown));
+      return H.hint;
+    },
+  };
+}
+
+// ---------- Forschen, second kind: the stone stairs. Every tower has the whole number of stones, red below,
+// blue above; from tower to tower one more is red and one fewer blue. One tower is missing: build it.
+
+/** A tower of `whole` stones, `red` of them red from below; red === null: still grey. */
+function tower(whole, red, className = "") {
+  const box = el("div", `stone-tower ${className}`);
+  for (let i = 0; i < whole; i++) box.append(el("span", "zstone" + (red === null ? "" : i < red ? " red" : " blue")));
+  return box;
+}
+
+export function treppe(host, t, ctx) {
+  const { T } = ctx;
+  const S = T.zehn.treppe;
+  const stairs = el("div", "scene card zehn-towers" + (t.whole > 5 ? " ten" : ""));
+  let red = null;
+  let locked = false;
+
+  const gapTower = el("div", "stone-tower build");
+  const drawGap = () => {
+    gapTower.innerHTML = "";
+    for (let i = 0; i < t.whole; i++) {
+      const stone = button("zstone" + (red === null ? " open" : i < red ? " red" : " blue"), S.stone(ctx.num(i + 1)));
+      stone.addEventListener("click", () => {
+        if (locked) return;
+        ctx.tap();
+        red = red === i + 1 ? i : i + 1; // tap the top red stone again: it turns blue
+        drawGap();
+        check.disabled = false;
+      });
+      gapTower.append(stone);
+    }
+  };
+  t.rows.forEach(([a], i) => stairs.append(i === t.gap ? gapTower : tower(t.whole, a)));
+  drawGap();
+
+  const check = button("btn ok check-btn", T.labels?.check ?? "✓", "✓");
+  check.disabled = true;
+  check.addEventListener("click", () => {
+    if (locked || red === null) return;
+    if (red === t.answer) {
+      locked = true;
+      gapTower.classList.add("found");
+      ctx.solved(S.done(ctx.word(t.whole), t.step > 0));
+      return;
+    }
+    // the tower stays as it is built: the child changes it and checks again
+    shake(gapTower);
+    ctx.miss(S.miss(ctx.word(red), ctx.word(t.whole - red), red, t.whole - red));
+  });
+  const tools = el("div", "zehn-tools");
+  tools.append(check);
+
+  host.append(stairs, tools);
+  ctx.tell(S.question(ctx.word(t.whole)));
+
+  return {
+    hint() {
+      // the tower before the gap glows (after it, when the gap is the first)
+      const near = stairs.children[t.gap > 0 ? t.gap - 1 : t.gap + 1];
+      near.classList.add("glow");
+      return t.step > 0 ? S.hintUp : S.hintDown;
+    },
+  };
+}
+
 // ---------- Anwenden: just the numbers. 7 + ? = 10, ? + 4 = 10, 13 + ? = 20.
 
 export function anwenden(host, t, ctx) {
@@ -352,4 +496,4 @@ export function pruefen(host, t, ctx) {
   };
 }
 
-export const draw = port({ sehen, machen, forschen, anwenden, pruefen });
+export const draw = port({ sehen, machen, forschen, huepfen, treppe, anwenden, pruefen });

@@ -23,27 +23,80 @@ export const IDEA = {
     sehen: { board: "zehn", vars: { n: N, answer: ["-", "$whole", "$n"] }, answer: OWN, ask: "zehn.sehen", key: ["n"] },
     // Make: n nuts are in the box. Take as many as still fit.
     machen: { board: "zehn", vars: { n: N, answer: ["-", "$whole", "$n"] }, answer: OWN, ask: "zehn.machen", key: ["n"] },
-    // Explore: a staircase of four pairs of friends, one more here, one less there; one partner is missing.
+    // Explore: one more here, one fewer there, together it stays the same. Three kinds of task, from the
+    // picture to the numbers: the frog hops (mostly at five), the stone stairs, and the staircase of pairs
+    // with a missing number (mostly at ten).
     forschen: {
-      board: "zehn",
-      vars: {
-        start: ["int", 0, ["-", "$whole", 3]],
-        back: ["chance", 0.4],
-        first: ["if", "$back", ["+", "$start", 3], "$start"],
-        step: ["if", "$back", -1, 1],
-        rows: [
-          ["$first", ["-", "$whole", "$first"]],
-          [["+", "$first", "$step"], ["-", "$whole", ["+", "$first", "$step"]]],
-          [["+", "$first", ["*", 2, "$step"]], ["-", "$whole", ["+", "$first", ["*", 2, "$step"]]]],
-          [["+", "$first", ["*", 3, "$step"]], ["-", "$whole", ["+", "$first", ["*", 3, "$step"]]]],
-        ],
-        gap: ["int", 1, 3],
-        answer: ["-", "$whole", ["+", "$first", ["*", "$gap", "$step"]]],
-      },
-      where: [[">=", "$answer", 1], ["<=", "$answer", "$most"]],
-      answer: OWN,
-      ask: "zehn.forschen",
-      key: ["first", "step", "gap"],
+      variants: [
+        // A frog hops from one lily pad to the other. How many sit on one of them then? Both pads keep a frog.
+        {
+          weight: ["if", ["==", "$whole", 5], 3, 1],
+          when: ["<=", "$whole", 10],
+          board: "zehn",
+          vars: {
+            a: ["int", 1, ["-", "$whole", 1]],
+            b: ["-", "$whole", "$a"],
+            left: ["chance", 0.5], // it hops to the left pad
+            more: ["chance", 0.5], // asked: the pad it lands on (else the one it leaves)
+            from: ["if", "$left", "$b", "$a"],
+            to: ["if", "$left", "$a", "$b"],
+            answer: ["if", "$more", ["+", "$to", 1], ["-", "$from", 1]],
+          },
+          where: [[">=", "$from", 2]],
+          show: { as: "huepfen" },
+          answer: OWN,
+          ask: "zehn.forschen",
+          key: ["a", "left", "more"],
+        },
+        // Towers of the whole number of stones, red below and blue above, one more red each time. One is missing.
+        {
+          weight: 2,
+          when: ["<=", "$whole", 10],
+          board: "zehn",
+          vars: {
+            start: ["int", 0, ["-", "$whole", 3]],
+            back: ["chance", 0.4],
+            first: ["if", "$back", ["+", "$start", 3], "$start"],
+            step: ["if", "$back", -1, 1],
+            rows: [
+              ["$first", ["-", "$whole", "$first"]],
+              [["+", "$first", "$step"], ["-", "$whole", ["+", "$first", "$step"]]],
+              [["+", "$first", ["*", 2, "$step"]], ["-", "$whole", ["+", "$first", ["*", 2, "$step"]]]],
+              [["+", "$first", ["*", 3, "$step"]], ["-", "$whole", ["+", "$first", ["*", 3, "$step"]]]],
+            ],
+            gap: ["int", 1, 3],
+            answer: ["+", "$first", ["*", "$gap", "$step"]],
+          },
+          where: [[">=", "$answer", 1], ["<=", "$answer", "$most"]],
+          show: { as: "treppe" },
+          answer: OWN,
+          ask: "zehn.forschen",
+          key: ["first", "step", "gap"],
+        },
+        // The staircase of pairs as numbers: 5 + 0, 4 + 1, 3 + ?, 2 + 3. One partner is missing.
+        {
+          weight: ["if", ["==", "$whole", 5], 1, 2],
+          board: "zehn",
+          vars: {
+            start: ["int", 0, ["-", "$whole", 3]],
+            back: ["chance", 0.4],
+            first: ["if", "$back", ["+", "$start", 3], "$start"],
+            step: ["if", "$back", -1, 1],
+            rows: [
+              ["$first", ["-", "$whole", "$first"]],
+              [["+", "$first", "$step"], ["-", "$whole", ["+", "$first", "$step"]]],
+              [["+", "$first", ["*", 2, "$step"]], ["-", "$whole", ["+", "$first", ["*", 2, "$step"]]]],
+              [["+", "$first", ["*", 3, "$step"]], ["-", "$whole", ["+", "$first", ["*", 3, "$step"]]]],
+            ],
+            gap: ["int", 1, 3],
+            answer: ["-", "$whole", ["+", "$first", ["*", "$gap", "$step"]]],
+          },
+          where: [[">=", "$answer", 1], ["<=", "$answer", "$most"]],
+          answer: OWN,
+          ask: "zehn.forschen",
+          key: ["first", "step", "gap"],
+        },
+      ],
     },
     // Use: which number makes it full? The gap is mostly the second friend.
     anwenden: {

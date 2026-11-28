@@ -121,7 +121,7 @@ export default {
       ways: {
         sehen: "Frösche sitzen auf Seerosen. Wie viele Blätter sind noch frei?",
         machen: "In der Nusskiste liegen schon einige Nüsse. Füll sie ganz voll.",
-        forschen: "Eine Treppe aus Paaren: Hier einer mehr, dort einer weniger. Welche Zahl fehlt?",
+        forschen: "Hier einer mehr, dort einer weniger, zusammen bleibt es gleich. Erst im Bild: Ein Frosch hüpft von einer Seerose zur anderen, und in einer Treppe aus Steintürmen baut Ihr Kind den fehlenden Turm. Dann mit Zahlen: In der Treppe aus Paaren fehlt eine Zahl.",
         anwenden: "Welche Zahl macht voll?",
         pruefen: "Die Eule nennt zwei Zahlen. Machen sie zusammen voll?",
       },
