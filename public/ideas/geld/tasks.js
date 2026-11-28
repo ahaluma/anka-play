@@ -9,6 +9,9 @@
 //     10   coins of 1 € and 2 €, the 5 € note
 //     20   also the 10 € note
 //     100  also 20 € and 50 € notes
+//     500  euros and cents (docs/GRUNDSCHULE.md 3.9): coins of 1, 2, 5, 10, 20, 50 cent, 1 € and 2 €, up to 5 €.
+//          Every amount is in cents here (250 = 2,50 €). Typed answers become three choices (`options`), since the
+//          comma is the point: 2,05 € next to 2,50 €. The owl's new mistake "comma": she writes 2 € 5 ct as 2,5 €.
 //
 //   sehen     { range, money: [values], answer }          coins and notes on the counter: how much?
 //   machen    { range, price }                            pay exactly `price` with coins and notes
@@ -21,20 +24,36 @@
 //                                                           kind "pieces": she counted coins, not euros
 //   key – short text that tells tasks apart, for "not the same task again".
 
-export const RANGES = [10, 20, 100];
+export const RANGES = [10, 20, 100, 500];
 /** The coins and notes of each range, biggest first. */
-export const MONEY = { 10: [5, 2, 1], 20: [10, 5, 2, 1], 100: [50, 20, 10, 5, 2, 1] };
+export const MONEY = { 10: [5, 2, 1], 20: [10, 5, 2, 1], 100: [50, 20, 10, 5, 2, 1], 500: [200, 100, 50, 20, 10, 5, 2, 1] };
 export const THINGS = ["bread", "cheese", "honey", "melon", "pumpkin", "cake", "ball", "book"];
 
 const rangeOf = (range) => (RANGES.includes(range) ? range : 10);
 const sum = (list) => list.reduce((a, b) => a + b, 0);
+
+/** The comma read wrong: 2,05 € ↔ 2,5 € (that is 2,50 €). null when the cents have no such twin. */
+export function commaTwin(n) {
+  const e = Math.floor(n / 100), c = n % 100;
+  if (c > 0 && c < 10) return e * 100 + c * 10;
+  if (c >= 10 && c % 10 === 0) return e * 100 + c / 10;
+  return null;
+}
+
+/** Three amounts to choose from: the right one, its comma twin, and one a coin away. */
+function choices(n, r) {
+  const near = r.shuffle([n + 10, n - 10, n + 100, n - 100, n + 50, n - 50].filter((x) => x > 0 && x <= 1000));
+  const twin = commaTwin(n);
+  const others = [...new Set([...(twin ? [twin] : []), ...near])].filter((x) => x !== n);
+  return r.shuffle([n, ...others.slice(0, 2)]);
+}
 
 /** Some coins and notes worth between lo and hi, a few of each, biggest first. */
 function purse(R, r, lo, hi) {
   for (;;) {
     const kinds = MONEY[R];
     const money = [];
-    const n = r.int(2, R === 10 ? 5 : 6);
+    const n = r.int(2, R === 10 ? 5 : R === 500 ? 7 : 6);
     for (let i = 0; i < n; i++) money.push(r.pick(kinds));
     const s = sum(money);
     if (s >= lo && s <= hi) return money.sort((a, b) => b - a);
@@ -50,20 +69,34 @@ export function fewest(n, R) {
 
 const makers = {
   sehen(R, r) {
-    const money = purse(R, r, R === 10 ? 3 : R === 20 ? 8 : 25, R);
-    return { range: R, money, answer: sum(money), key: money.join("+") };
+    const money = purse(R, r, R === 10 ? 3 : R === 20 ? 8 : R === 500 ? 30 : 25, R);
+    const answer = sum(money);
+    return { range: R, money, answer, ...(R === 500 && { options: choices(answer, r) }), key: money.join("+") };
   },
   machen(R, r) {
-    const price = R === 10 ? r.int(3, 10) : R === 20 ? r.int(8, 20) : r.int(23, 99);
+    const price = R === 10 ? r.int(3, 10) : R === 20 ? r.int(8, 20) : R === 500 ? 5 * r.int(4, 80) : r.int(23, 99);
     return { range: R, price, key: `${price}` };
   },
   forschen(R, r) {
-    const price = R === 10 ? r.int(4, 9) : R === 20 ? r.int(7, 18) : r.int(15, 60);
+    const price = R === 10 ? r.int(4, 9) : R === 20 ? r.int(7, 18) : R === 500 ? 10 * r.int(3, 25) : r.int(15, 60);
     return { range: R, price, ways: 2, key: `${price}` };
   },
   anwenden(R, r) {
     const kind = R === 10 ? r.pick(["total", "total", "enough"]) : r.pick(["total", "change", "change", "enough"]);
     const things = r.shuffle(THINGS);
+    if (R === 500 && kind !== "enough") {
+      // prices in cents, in steps of 5 cents
+      if (kind === "total") {
+        const a = 5 * r.int(4, 50);
+        const b = 5 * r.int(4, Math.min(60, 100 - a / 5));
+        const answer = a + b;
+        return { range: R, kind, items: [{ thing: things[0], price: a }, { thing: things[1], price: b }], answer, options: choices(answer, r), key: `t${a}+${b}` };
+      }
+      const paid = r.pick([200, 500]);
+      const price = 5 * r.int(paid / 20, paid / 5 - 1);
+      const answer = paid - price;
+      return { range: R, kind, thing: things[0], price, paid, answer, options: choices(answer, r), key: `c${price}/${paid}` };
+    }
     if (kind === "total") {
       const top = R === 10 ? 10 : R === 20 ? 20 : 100;
       const a = r.int(1, Math.floor(top / 2) - (R === 100 ? 5 : 0));
@@ -77,20 +110,27 @@ const makers = {
     }
     const money = purse(R, r, 3, R);
     const have = sum(money);
-    const price = Math.max(1, Math.min(R, have + r.pick([-3, -2, -1, 0, 1, 2, 3])));
+    const near = R === 500 ? r.pick([-30, -20, -10, -5, 0, 5, 10, 20, 30]) : r.pick([-3, -2, -1, 0, 1, 2, 3]);
+    const price = Math.max(1, Math.min(R, have + near));
     return { range: R, kind, thing: things[0], price, money, answer: have >= price, key: `e${money.join("+")}:${price}` };
   },
   pruefen(R, r) {
     let money;
-    do money = purse(R, r, R === 10 ? 3 : 8, R);
-    while (new Set(money).size < 2);
+    const few = R === 500 && r.chance(0.6); // mostly a few cents: 2 € and 5 ct, the comma's trap
+    do money = purse(R, r, R === 10 ? 3 : R === 500 ? 101 : 8, R);
+    while (new Set(money).size < 2 || (R === 500 && !commaTwin(sum(money))) || (few && sum(money) % 100 >= 10));
     const total = sum(money);
     const right = r.chance(0.4);
-    if (right) return { range: R, money, said: total, right, kind: null, key: `${money.join("+")}=` };
+    const extra = R === 500 ? { options: choices(total, r) } : {};
+    if (right) return { range: R, money, said: total, right, kind: null, ...extra, key: `${money.join("+")}=` };
+    if (R === 500 && total % 100 < 10 && r.chance(0.7)) {
+      // 2 € and 5 ct, and she writes 2,5 €
+      return { range: R, money, said: commaTwin(total), short: true, right, kind: "comma", ...extra, key: `${money.join("+")}=,` };
+    }
     // Her mistakes: she counts the pieces, not the euros; or she misses one coin.
     const options = [[money.length, "pieces"], [total - money[money.length - 1], "missed"], [total + money[money.length - 1], "twice"]];
-    const [said, kind] = r.pick(options.filter(([x]) => x !== total && x > 0));
-    return { range: R, money, said, right, kind, key: `${money.join("+")}=${said}` };
+    const [said, kind] = r.pick(options.filter(([x, k]) => x !== total && x > 0 && !(R === 500 && k === "pieces")));
+    return { range: R, money, said, right, kind, ...extra, key: `${money.join("+")}=${said}` };
   },
 };
 
@@ -105,6 +145,8 @@ export function check(t, level) {
   const R = rangeOf(level.range);
   const problems = [];
   const legal = (list) => list.every((v) => MONEY[R].includes(v));
+  if (R === 500 && t.options && (t.options.length !== 3 || new Set(t.options).size !== 3 || !t.options.includes(t.answer ?? sum(t.money)))) problems.push("options");
+  if (R === 500 && level.p === "pruefen" && t.kind === "comma" && (!t.short || t.said !== commaTwin(sum(t.money)) || sum(t.money) % 100 >= 10)) problems.push("comma");
   if (level.p === "sehen") {
     if (!legal(t.money) || sum(t.money) !== t.answer || t.answer > R) problems.push("money");
   } else if (level.p === "machen" || level.p === "forschen") {

@@ -3,6 +3,7 @@
 
 export default {
   geld: {
+    sep: ".",
     intro: {
       sehen: "कति पैसा छ?",
       machen: "ठ्याक्कै तिर।",

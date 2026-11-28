@@ -1,6 +1,7 @@
 // Ported from think-lab (welt/ideas/zeit/boards.js) with only its imports changed: engine/ui/ported.js gives it
 // the round it knew there. The task is what ideas/zeit/tasks.js made.
-// The five boards of the idea "Zeit" (clock, calendar, charts, chance): one per perspective.
+// The five boards of the idea "Zeit" (clock and calendar): one per perspective. The bag of balls and the weather
+// chart moved to the willow (ideas/daten/board.js).
 // Same contract as every idea (see ideas/teile/boards.js): board(host, task, ctx) → { hint() }.
 // Texts are in welt/lang/<language>.js under "zeit". The clock is SVG drawn here.
 
@@ -20,8 +21,6 @@ function pad(box, ctx, digits, onCheck) {
   return current;
 }
 
-const ICON = { sun: "☀️", cloud: "☁️", rain: "🌧️", snow: "❄️" };
-const BALL = { red: "#ff5a36", blue: "#2456b8", yellow: "#ffc83a", green: "#12a564" };
 
 /** "3:05" in the digits of the language. */
 const clockText = (ctx, h, m) => `${ctx.num(h)}:${ctx.num(Math.floor(m / 10))}${ctx.num(m % 10)}`;
@@ -157,109 +156,99 @@ export function machen(host, t, ctx) {
   };
 }
 
-// ---------- Forschen: a bag of balls. Take one out (as often as you like), then think.
+// ---------- Forschen: how long from one time to the other? Two clocks.
 
 export function forschen(host, t, ctx) {
   const Z = ctx.T.zeit.forschen;
-  const scene = el("div", "scene card bag-scene");
-  const bag = el("div", "bag");
-  const all = [];
-  for (const [colour, n] of Object.entries(t.bag)) for (let i = 0; i < n; i++) all.push(colour);
-  for (const colour of all) {
-    const b = el("span", "ball");
-    b.style.background = BALL[colour];
-    bag.append(b);
-  }
-  scene.append(el("span", "bag-icon", "👜"), bag);
-  const tally = el("div", "tally");
-  const counts = {};
-  const draw = button("btn sun draw-btn", Z.draw, `✋ ${Z.draw}`);
-  draw.addEventListener("click", () => {
-    const c = all[Math.floor(Math.random() * all.length)];
-    counts[c] = (counts[c] || 0) + 1;
-    ctx.tap();
-    tally.innerHTML = "";
-    for (const [col, n] of Object.entries(counts)) {
-      const chip = el("span", "chip pop");
-      const dot = el("i", "ball small");
-      dot.style.background = BALL[col];
-      chip.append(dot, el("b", "", ctx.num(n)));
-      tally.append(chip);
-    }
-  });
+  const scene = el("div", "scene card clock-scene two-clocks");
+  const a = clock(ctx, t.from.h, t.from.m, 140);
+  const b = clock(ctx, t.to.h, t.to.m, 140);
+  const box = (label, c, time) => {
+    const d = el("div", "clock-half");
+    d.append(el("b", "", label), c.svg, el("span", "clock-text", clockText(ctx, time.h, time.m)));
+    return d;
+  };
+  scene.append(box(Z.from, a, t.from), box(Z.to, b, t.to));
   let locked = false;
-  const answers = el("div", "name-row");
-  const opts = t.kind === "most" ? [...Object.keys(t.bag), "same"] : ["sure", "maybe", "never"];
-  for (const o of opts) {
-    const label = t.kind === "most" ? (o === "same" ? Z.same : Z.colours[o]) : Z.chance[o];
-    const b = button("btn name-btn", label, "");
-    if (t.kind === "most" && o !== "same") {
-      const dot = el("i", "ball small");
-      dot.style.background = BALL[o];
-      b.append(dot);
+  const padBox = el("div");
+  const p = pad(padBox, ctx, 3, (n) => {
+    if (locked) return false;
+    if (n !== t.answer) {
+      p.clear();
+      ctx.miss(t.unit === "min" && n === t.answer / 60 ? Z.inMinutes : Z.miss);
+      return false;
     }
-    b.append(el("span", "", label));
-    b.addEventListener("click", () => {
-      if (locked) return;
-      if (o !== t.answer) {
-        shake(b);
-        b.disabled = true;
-        ctx.miss(t.kind === "most" ? Z.missMost : Z.missChance[o]);
-        return;
-      }
-      locked = true;
-      b.classList.add("right");
-      ctx.solved(t.kind === "most" ? (o === "same" ? Z.doneSame : Z.doneMost(Z.colours[o])) : Z.doneChance[o](Z.colours[t.colour]));
-    });
-    answers.append(b);
-  }
-  host.append(scene, draw, tally, answers);
-  ctx.tell(t.kind === "most" ? Z.askMost : Z.askChance(Z.colours[t.colour]));
+    p.show(n);
+    p.lock(true);
+    locked = true;
+    ctx.solved(Z.done(clockText(ctx, t.from.h, t.from.m), clockText(ctx, t.to.h, t.to.m), ctx.num(n), t.unit));
+    return true;
+  });
+  host.append(scene, el("p", "size-unit", Z.unit[t.unit]), padBox);
+  ctx.tell(Z.ask(clockText(ctx, t.from.h, t.from.m), clockText(ctx, t.to.h, t.to.m), t.unit));
   return {
     hint() {
-      bag.classList.add("sorted");
-      [...bag.children].sort((a, b) => a.style.background.localeCompare(b.style.background)).forEach((b) => bag.append(b));
-      return t.kind === "most" ? Z.hintMost : Z.hintChance;
+      a.minutes();
+      b.minutes();
+      return t.unit === "h" ? Z.hintHours : t.range === 2 ? Z.hintQuarter : Z.hintFive;
     },
   };
 }
 
-// ---------- Anwenden: two weeks of weather as a chart; later the clock and the calendar.
-
-function chart(ctx, days, scale) {
-  const box = el("div", "chart" + (scale ? " scaled" : ""));
-  for (const [w, n] of Object.entries(days)) {
-    const row = el("div", "chart-row");
-    row.append(el("span", "chart-key", ICON[w]));
-    const bar = el("span", "chart-bar");
-    if (scale) {
-      const fill = el("span", "bar-fill");
-      fill.style.width = `${(100 * n) / 14}%`;
-      bar.append(fill);
-    } else for (let i = 0; i < n; i++) bar.append(el("span", "pic", ICON[w]));
-    row.append(bar);
-    box.append(row);
-  }
-  if (scale) {
-    const axis = el("div", "chart-axis");
-    for (let i = 0; i <= 14; i += 2) {
-      const s = el("span", "", ctx.num(i));
-      s.style.left = `${(100 * i) / 14}%`;
-      axis.append(s);
-    }
-    box.append(axis);
-  }
-  return box;
-}
+// ---------- Anwenden: the clock and the calendar: in n hours, in n days, in n months, days of a month.
 
 export function anwenden(host, t, ctx) {
   const Z = ctx.T.zeit.anwenden;
   let locked = false;
-  const hintBox = el("div", "hint-box");
   const win = (text) => {
     locked = true;
     ctx.solved(text);
   };
+
+  if (t.kind === "month" || t.kind === "monthDays") {
+    const scene = el("div", "scene card week-scene");
+    const year = el("div", "week months");
+    Z.monthShort.forEach((m, i) => year.append(el("span", i === t.month ? "day today" : "day", m)));
+    scene.append(year);
+    if (t.kind === "monthDays") {
+      const row = el("div", "name-row");
+      for (const n of [28, 30, 31]) {
+        const b = button("btn name-btn", ctx.num(n), ctx.num(n));
+        b.addEventListener("click", () => {
+          if (locked) return;
+          if (n !== t.answer) return void (shake(b), (b.disabled = true), ctx.miss(Z.monthDaysMiss));
+          b.classList.add("right");
+          win(Z.monthDaysDone(Z.months[t.month], ctx.num(n)));
+        });
+        row.append(b);
+      }
+      host.append(scene, row);
+      ctx.tell(Z.monthDaysAsk(Z.months[t.month]));
+      return { hint: () => Z.monthDaysHint };
+    }
+    const row = el("div", "name-row days-row");
+    Z.months.forEach((m, i) => {
+      const b = button("btn name-btn", m, Z.monthShort[i]);
+      b.addEventListener("click", () => {
+        if (locked) return;
+        if (i !== t.answer) return void (shake(b), (b.disabled = true), ctx.miss(Z.monthMiss));
+        b.classList.add("right");
+        win(Z.monthDone(m));
+      });
+      row.append(b);
+    });
+    host.append(scene, row);
+    ctx.tell(Z.monthAsk(Z.months[t.month], ctx.num(t.add), t.add));
+    return {
+      hint() {
+        [...year.children].forEach((s, i) => {
+          const k = (i - t.month + 12) % 12;
+          if (k > 0 && k <= t.add) s.append(el("small", "pop", `+${ctx.num(k)}`));
+        });
+        return Z.monthHint;
+      },
+    };
+  }
 
   if (t.kind === "day") {
     const scene = el("div", "scene card week-scene");
@@ -277,7 +266,7 @@ export function anwenden(host, t, ctx) {
       });
       row.append(b);
     });
-    host.append(scene, row, hintBox);
+    host.append(scene, row);
     ctx.tell(Z.dayAsk(Z.days[t.today], ctx.word(t.add), t.add));
     return {
       hint() {
@@ -290,76 +279,26 @@ export function anwenden(host, t, ctx) {
     };
   }
 
-  if (t.kind === "later") {
-    const scene = el("div", "scene card clock-scene");
-    const c = clock(ctx, t.h, 0, 170);
-    scene.append(c.svg);
-    const padBox = el("div");
-    const p = pad(padBox, ctx, 2, (n) => {
-      if (locked) return false;
-      if (n !== t.answer) {
-        p.clear();
-        ctx.miss(n === t.h + t.add ? Z.laterOver : Z.laterMiss);
-        return false;
-      }
-      p.show(n);
-      p.lock(true);
-      c.set(t.answer, 0);
-      win(Z.laterDone(ctx.word(t.answer)));
-      return true;
-    });
-    host.append(scene, padBox);
-    ctx.tell(Z.laterAsk(ctx.word(t.h), ctx.word(t.add), t.add));
-    return {
-      hint() {
-        return Z.laterHint;
-      },
-    };
-  }
-
-  const scene = el("div", "scene card chart-scene");
-  scene.append(el("p", "chart-title", Z.chartTitle), chart(ctx, t.days, t.range > 1));
-  if (t.kind === "most") {
-    const row = el("div", "name-row");
-    for (const w of Object.keys(t.days)) {
-      const b = button("btn name-btn weather-btn", Z.weather[w], ICON[w]);
-      b.addEventListener("click", () => {
-        if (locked) return;
-        if (w !== t.answer) return void (shake(b), (b.disabled = true), ctx.miss(Z.mostMiss));
-        b.classList.add("right");
-        win(Z.mostDone(Z.weather[w], ctx.word(t.days[w])));
-      });
-      row.append(b);
-    }
-    host.append(scene, row);
-    ctx.tell(Z.mostAsk);
-    return { hint: () => Z.mostHint };
-  }
+  const scene = el("div", "scene card clock-scene");
+  const c = clock(ctx, t.h, 0, 170);
+  scene.append(c.svg);
   const padBox = el("div");
   const p = pad(padBox, ctx, 2, (n) => {
     if (locked) return false;
     if (n !== t.answer) {
       p.clear();
-      ctx.miss(t.kind === "diff" ? (n === t.days[t.a] + t.days[t.b] ? Z.diffSum : Z.diffMiss) : Z.countMiss);
+      ctx.miss(n === t.h + t.add ? Z.laterOver : Z.laterMiss);
       return false;
     }
     p.show(n);
     p.lock(true);
-    win(t.kind === "diff" ? Z.diffDone(Z.weather[t.a], Z.weather[t.b], ctx.word(n)) : Z.countDone(Z.weather[t.ask], ctx.word(n), n));
+    c.set(t.answer, 0);
+    win(Z.laterDone(ctx.word(t.answer)));
     return true;
   });
-  host.append(scene, hintBox, padBox);
-  ctx.tell(t.kind === "diff" ? Z.diffAsk(Z.weather[t.a], Z.weather[t.b]) : Z.countAsk(Z.weather[t.ask]));
-  return {
-    hint() {
-      if (!hintBox.firstChild && t.range > 1) {
-        const row = el("div", "count-row pop");
-        for (const w of Object.keys(t.days)) if (t.kind === "count" ? w === t.ask : w === t.a || w === t.b) row.append(el("span", "chip", `${ICON[w]} ${ctx.num(t.days[w])}`));
-        hintBox.append(row);
-      }
-      return t.kind === "diff" ? Z.diffHint : Z.countHint;
-    },
-  };
+  host.append(scene, padBox);
+  ctx.tell(Z.laterAsk(ctx.word(t.h), ctx.word(t.add), t.add));
+  return { hint: () => Z.laterHint };
 }
 
 // ---------- Prüfen: the owl reads the clock.

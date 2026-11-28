@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 800" preserveAspectRatio="xMidYMax slice">
+  <!-- The garden by the river: square beds with a low fence, carrots and lettuce, a path of slabs. -->
+  <rect width="400" height="800" fill="#cfeaff"/>
+  <path d="M0 420 Q140 380 260 410 T400 400 V800 H0Z" fill="#b9e5a0"/>
+  <g stroke="#1b2140" stroke-width="4">
+    <rect x="40" y="480" width="130" height="90" fill="#8a5a33"/>
+    <rect x="210" y="470" width="150" height="110" fill="#8a5a33"/>
+  </g>
+  <path d="M40 480 h130 v90 h-130z M210 470 h150 v110 h-150z" fill="none" stroke="#c48a4e" stroke-width="6" stroke-dasharray="20 6"/>
+  <g fill="#ff8a3a" stroke="#1b2140" stroke-width="2"><path d="M70 520 l8 30 l8 -30z"/><path d="M110 520 l8 30 l8 -30z"/><path d="M140 520 l8 30 l8 -30z"/></g>
+  <g fill="#57b86a" stroke="#1b2140" stroke-width="2"><circle cx="250" cy="510" r="14"/><circle cx="300" cy="510" r="14"/><circle cx="250" cy="550" r="14"/><circle cx="300" cy="550" r="14"/></g>
+</svg>

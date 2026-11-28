@@ -6,16 +6,18 @@ and everything else (maps, stations, paths, portals, rules, tasks, texts) is dat
 
 **Status:** the engine runs, and three maps can be played on a phone. The Tal (the valley, ages 3 to 6):
 twelve stations, eleven ideas in all five ways of playing each, and number memory at the tree stump. The
-Fluss (the river, school): the number line at the footbridge, tens and ones in the flower field, shapes at the
-gravel bank, clock and charts at the sunny rock. The Feld (the field edge, school): plus, minus, times and
-divide at the apple tree, the berries, the hen yard and the nut tree, money at the farm stand, and stories at
-the clearing, with the learning box and the bridges of think-lab's market. The Berg (the mountain, 9 to 12): the
+Fluss (the river, school): the number line and rounding at the footbridge, tens and ones and big numbers up to
+a million in the flower field, shapes at the gravel bank, clock and calendar at the sunny rock, units at the mill,
+area and plans in the garden, data and chance at the willow, buildings of cubes and nets at the boxes. The Feld
+(the field edge, school): plus, minus, times and divide at the apple tree, the berries, the hen yard and the nut
+tree, written sums in the barn, money with euros and cents at the farm stand, and stories at the clearing, with the learning box and the bridges of think-lab's market. The Berg (the mountain, 9 to 12): the
 twelve camps of think-lab's Denk-Berg from the fence at the foot to the number wall, and the summit with its
 competition rounds; camps come out of the fog as the ones below are mastered. For parents (the „Eltern“ button at the
 bottom of Home): the children, each child's progress map by map and station by station, reading aloud, the switch
 that opens the Berg before 9, a backup to a file and back, and the privacy policy at `/datenschutz/`. After the first
 visit everything works without internet. The design is in [docs/DESIGN.md](docs/DESIGN.md); section 11 is the
-order of work.
+order of work. Which primary-school skills were missing and how the new stations teach them is in
+[docs/GRUNDSCHULE.md](docs/GRUNDSCHULE.md) (German).
 
 ## Try it
 

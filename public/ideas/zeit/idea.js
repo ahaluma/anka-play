@@ -1,4 +1,5 @@
-// Idea "zeit" (station sonnenfels, map fluss): the clock, the calendar, reading charts, chance.
+// Idea "zeit" (station sonnenfels, map fluss): the clock and the calendar (charts and chance moved to the willow,
+// idea "daten", docs/GRUNDSCHULE.md 3.8).
 // At the big rock in the sun: the weather of two weeks, a bag of balls, the clock.
 // Ported from think-lab's welt/ideas/zeit: the task code stays code (tasks.js, it picks from tables with
 // rules), the five boards are ideas/zeit/board.js, the sentences lang/<language>.js.

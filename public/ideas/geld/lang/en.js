@@ -4,6 +4,8 @@ const big = (text) => text[0].toUpperCase() + text.slice(1);
 
 export default {
   geld: {
+    sep: ".", // between euros and cents: 2.50 €
+    cent: "c",
     intro: {
       sehen: "How much money is there?",
       machen: "Pay exactly.",
@@ -17,6 +19,8 @@ export default {
       pieces: "That is how many pieces. But a 2 € coin is worth 2 €!",
       done: (e) => `That is ${e}.`,
       hint: "Start with the biggest and count on, piece by piece.",
+      missCent: "Count the euros first, then the cents. A hundred cents make one euro.",
+      hintCent: "First the euro coins, then the cents, from the biggest to the smallest. After the point come the cents, always two digits.",
     },
     machen: {
       question: (e) => `It costs ${e}. Put down exactly that much!`,
@@ -68,6 +72,8 @@ export default {
       fixed: (e) => `Now it is right: ${e}.`,
       hint: "The owl forgot a piece or counted one twice.",
       hintPieces: "Every piece has its value. A 5 € note is 5 €, not 1.",
+      fixComma: (said, e, c) => `Well spotted! ${said} means ${e} euros and ${c}0 cents. Here lie ${e} euros and ${c} cents. How do you write that?`,
+      hintComma: "After the point there are always two digits for the cents. 5 cents is written 0.05 €.",
     },
   },
 };

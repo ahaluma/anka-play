@@ -1,0 +1,227 @@
+/* The pictures of the stations added for the rest of primary school (docs/GRUNDSCHULE.md): written calculation,
+   rounding, big numbers, sizes and units, area and plans, cube buildings, data and chance. */
+
+/* ====================== Idea "schriftlich": the written sum on squared paper ====================== */
+.sheet-scene {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  background: #fff;
+  background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
+.sheet {
+  display: grid;
+  grid-template-columns: repeat(var(--cols), 44px);
+  justify-content: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.sheet-row { display: contents; }
+
+.sheet-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 44px;
+  font-size: 30px;
+  font-weight: 800;
+  border-radius: 8px;
+}
+
+.sheet-cell.tail, .sheet-cell.times { justify-content: flex-start; white-space: nowrap; font-size: 26px; padding-left: 4px; }
+.sheet-cell.off { color: var(--go); }
+
+.sheet-row.names .sheet-cell { height: 22px; font-size: 13px; font-weight: 700; color: var(--muted); }
+.sheet-row.carry .sheet-cell { height: 26px; font-size: 18px; color: var(--blue); }
+.sheet-row.carry .sheet-cell.traded { color: var(--go); }
+.sheet-row.carry .sheet-cell.rest { justify-content: flex-start; padding-left: 2px; }
+.sheet-row.line .sheet-cell { border-top: 4px solid var(--ink); border-radius: 0; }
+.sheet-row.line .sheet-cell.lead, .sheet-row.line .sheet-cell.tail { border-top-color: transparent; }
+.sheet-cell.struck { text-decoration: line-through; text-decoration-color: var(--go); text-decoration-thickness: 3px; color: var(--muted); }
+.sheet-cell.on { background: rgba(255, 200, 58, 0.35); }
+.sheet-row.line .sheet-cell.on { border-radius: 0 0 8px 8px; }
+.sheet-cell.gap { color: var(--go); outline: 3px dashed var(--go); outline-offset: -4px; }
+.sheet-cell.found { color: var(--ok); }
+
+.sheet-say { margin: 0; min-height: 26px; font-size: 18px; font-weight: 800; text-align: center; }
+.sheet-tools { display: flex; justify-content: center; min-height: 0; }
+.sheet-tools .trade-btn { font-size: 18px; padding: 10px 16px; }
+.sheet-options .name-btn { font-size: 18px; }
+
+.sheet-choice { display: flex; flex-direction: column; align-items: center; gap: 10px; width: 100%; }
+.sheet-pick { width: 100%; max-width: 360px; padding: 6px; background: #fff; }
+.sheet-pick .sheet { grid-template-columns: repeat(var(--cols), 36px); }
+.sheet-pick .sheet-cell { height: 36px; font-size: 24px; }
+.sheet-pick .sheet-row.names .sheet-cell { height: 18px; font-size: 12px; }
+.sheet-pick .sheet-row.carry .sheet-cell { height: 6px; }
+.sheet-pick.right { outline: 5px solid var(--ok); }
+
+/* ====================== Idea "runden": a stretch of the footbridge, the frog, the middle ====================== */
+.round-scene { display: flex; flex-direction: column; align-items: center; gap: 10px; position: relative; background: linear-gradient(var(--sky) 0 50%, var(--water) 50%); }
+.round-line { width: 100%; max-width: 360px; height: auto; overflow: visible; }
+.round-no { font-size: 17px; font-weight: 800; fill: var(--ink); }
+.round-mid { font-size: 12px; font-weight: 800; fill: var(--pink); }
+.round-tag { font-size: 16px; font-weight: 800; fill: var(--ink); paint-order: stroke; stroke: #fff; stroke-width: 4px; }
+.round-frog { transition: transform 0.5s cubic-bezier(0.3, 1.6, 0.5, 1); }
+.round-taps { position: relative; width: 100%; max-width: 360px; height: 52px; margin-top: -56px; }
+.round-spot { position: absolute; top: 0; width: 46px; height: 46px; margin-left: -23px; border: 3px dashed var(--ink); border-radius: 50%; background: rgba(255, 255, 255, 0.35); cursor: pointer; }
+.round-spot.right { border-style: solid; background: rgba(18, 165, 100, 0.35); }
+.round-big { margin: 6px 0; font-size: 34px; font-weight: 800; letter-spacing: 1px; }
+.round-way { margin: 0; min-height: 26px; font-size: 20px; font-weight: 800; color: var(--blue); }
+.round-btn { min-width: 96px; font-size: 26px; }
+.round-digits { display: grid; grid-template-columns: repeat(5, 56px); gap: 8px; justify-content: center; }
+.round-digit { height: 56px; font-size: 26px; font-weight: 800; }
+.round-digit.on { background: var(--sun); }
+
+/* ====================== Idea "masse": things, pieces to measure with, the table of units ====================== */
+.size-scene { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.size-thing { font-size: 84px; line-height: 1; }
+.size-guess { margin: 0; font-size: 30px; font-weight: 800; }
+.size-btn { min-width: 100px; font-size: 22px; }
+.size-unit { margin: 4px 0 0; text-align: center; font-weight: 800; color: var(--muted); }
+.size-pan { position: relative; display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: center; gap: 6px; width: 100%; min-height: 76px; padding: 10px 8px 10px 52px; border: 3px solid var(--ink); border-radius: 14px; background: #fff; }
+.size-pan::before { content: attr(data-tool); position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font-size: 30px; }
+.size-piece, .size-add { min-height: 46px; padding: 0 10px; border: 3px solid var(--ink); border-radius: 10px; font-size: 16px; font-weight: 800; cursor: pointer; }
+.size-piece { min-width: calc(34px * var(--w, 1)); }
+.size-piece.len, .size-add.len { background: #ffe39a; }
+.size-piece.mass, .size-add.mass { background: #d6dbe6; }
+.size-piece.vol, .size-add.vol { background: #bfe6ff; }
+.size-shelf { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+.size-sum { margin: 0; min-height: 24px; font-weight: 800; color: var(--blue); }
+.size-table { display: flex; flex-direction: column; gap: 6px; font-size: 24px; font-weight: 800; text-align: center; }
+.size-table p { margin: 0; }
+.size-table p.ask { padding: 4px 12px; border-radius: 10px; background: rgba(255, 200, 58, 0.4); }
+.size-table p.ask.right { background: rgba(18, 165, 100, 0.25); }
+.size-rule { margin: 0; min-height: 26px; font-size: 20px; font-weight: 800; color: var(--blue); }
+
+/* ====================== Idea "flaeche": the garden on squares ====================== */
+.garden-scene { display: flex; flex-direction: column; align-items: center; gap: 8px; background: linear-gradient(var(--sky) 0 20%, var(--grass) 20%); }
+.garden-scene.two { flex-direction: row; justify-content: center; gap: 10px; }
+.garden-half { display: flex; flex-direction: column; align-items: center; gap: 4px; flex: 1; min-width: 0; }
+.garden { width: 100%; max-width: 340px; height: auto; }
+.g-cell { fill: #d7c08f; stroke: rgba(27, 33, 64, 0.25); stroke-width: 1; }
+.g-cell.tap { cursor: pointer; }
+.g-slab { fill: #7cc46a; stroke: #3f7d3a; stroke-width: 2; cursor: pointer; }
+.g-slab.plain { fill: #9fd68f; }
+.g-line { stroke: #3f7d3a; stroke-width: 2; }
+.g-fence { stroke: #7a4f2c; stroke-width: 6; stroke-linecap: round; }
+.g-label { font-size: 18px; font-weight: 800; fill: var(--ink); }
+.garden-counts { margin: 0; min-height: 24px; font-weight: 800; color: var(--blue); text-align: center; }
+
+/* ====================== Idea "plan": the garden from above ====================== */
+.plan-scene { display: flex; flex-direction: column; align-items: center; gap: 8px; background: var(--grass); }
+.plan-grid { display: grid; grid-template-columns: 26px repeat(var(--n), minmax(0, 52px)); justify-content: center; gap: 3px; width: 100%; max-width: 360px; }
+.plan-head { display: flex; align-items: center; justify-content: center; font-weight: 800; color: var(--ink); }
+.plan-cell { position: relative; display: flex; align-items: center; justify-content: center; aspect-ratio: 1; padding: 0; border: 2px solid rgba(27, 33, 64, 0.35); border-radius: 6px; background: #d4efb9; font-size: 26px; overflow: hidden; }
+button.plan-cell { cursor: pointer; }
+.plan-cell.glow { outline: 4px solid var(--sun); outline-offset: -2px; }
+.plan-cell.picked { background: #ffe39a; }
+.plan-thing { display: block; font-size: 26px; line-height: 1; max-width: 100%; overflow: hidden; }
+.plan-way { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; min-height: 40px; }
+.plan-step { display: flex; align-items: center; justify-content: center; width: 34px; height: 34px; border: 3px solid var(--ink); border-radius: 8px; background: #fff; font-size: 22px; font-weight: 800; }
+.plan-empty { align-self: center; color: var(--muted); font-weight: 700; }
+.plan-keys { display: flex; justify-content: center; gap: 8px; }
+.plan-key { width: 58px; height: 58px; font-size: 28px; font-weight: 800; }
+.plan-btn { min-width: 84px; font-size: 24px; }
+.plan-scale { margin: 0; font-size: 20px; font-weight: 800; color: var(--blue); }
+.plan-thing.nest { font-size: 21px; }
+
+/* ====================== Idea "daten": tally marks, charts, dice ====================== */
+.data-scene { display: flex; flex-direction: column; align-items: center; gap: 10px; background: #fff; }
+.tally-list { display: flex; flex-direction: column; gap: 8px; width: 100%; max-width: 330px; }
+.tally-row { display: flex; align-items: center; gap: 10px; padding: 4px 8px; border-radius: 10px; }
+.tally-row.on { background: rgba(255, 200, 58, 0.35); }
+.tally-list.small .tally-row { padding: 0 8px; }
+.tally-marks { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.tally-five { width: 40px; height: 36px; }
+.tally-rest { height: 36px; }
+.tally-five line, .tally-rest line { stroke: var(--ink); stroke-width: 3.5; stroke-linecap: round; }
+.dchart { width: 100%; max-width: 340px; }
+.dchart-row { display: flex; align-items: center; gap: 6px; min-height: 40px; border-radius: 10px; }
+.dchart-row.glow { background: rgba(255, 200, 58, 0.35); }
+.dchart-key { width: 34px; font-size: 26px; text-align: center; }
+.dchart-bar { position: relative; display: grid; grid-template-columns: repeat(var(--cells), 1fr); flex: 1; height: 28px; border-left: 3px solid var(--ink); background-image: linear-gradient(90deg, rgba(27, 33, 64, 0.15) 1px, transparent 1px); background-size: calc(100% / var(--cells)) 100%; }
+.dchart.pics .dchart-bar { height: 32px; background-image: none; }
+.dchart-cell { margin: 3px 1px; border: 2px solid var(--ink); border-radius: 4px; background: var(--blue); }
+.dchart-pic { font-size: 18px; line-height: 32px; text-align: center; }
+.dchart-btn { width: 40px; height: 40px; padding: 0; font-size: 24px; font-weight: 800; }
+.dchart-axis { position: relative; height: 22px; margin-left: 43px; font-size: 13px; font-weight: 800; }
+.dchart-axis span { position: absolute; transform: translateX(-50%); }
+.dchart:has(.dchart-btn) .dchart-axis { margin-right: 92px; }
+.data-step { margin: 0; font-weight: 800; color: var(--blue); }
+.dice-faces { display: flex; gap: 6px; font-size: 46px; line-height: 1; }
+.die { padding: 2px; border-radius: 8px; }
+.die.on-a { background: var(--sun); }
+.die.on-b { box-shadow: inset 0 -8px 0 var(--blue); }
+.die.on-a.on-b { box-shadow: inset 0 -8px 0 var(--blue); }
+
+/* ====================== Idea "zeit": two clocks, the months ====================== */
+.clock-scene.two-clocks { display: flex; flex-direction: row; justify-content: center; gap: 12px; }
+.clock-half { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.clock-text { font-size: 20px; font-weight: 800; }
+.week.months { display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; }
+
+/* ====================== Idea "wuerfel": boxes, the plan from above, nets ====================== */
+.box-scene { display: flex; flex-direction: column; align-items: center; gap: 10px; background: #fff; }
+.box-building { width: 100%; height: auto; max-height: 230px; }
+.box-front { fill: #e8b46a; stroke: var(--ink); stroke-width: 2; stroke-linejoin: round; }
+.box-top { fill: #f8dca6; stroke: var(--ink); stroke-width: 2; stroke-linejoin: round; }
+.box-side { fill: #c4874a; stroke: var(--ink); stroke-width: 2; stroke-linejoin: round; }
+.box-slat { stroke: rgba(27, 33, 64, 0.35); stroke-width: 1.5; }
+.box-no { display: none; font-size: 15px; font-weight: 900; fill: var(--ink); }
+.show-tops .box-no { display: inline; }
+.box-plan { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.box-side-label { font-size: 12px; font-weight: 800; color: #6b7390; }
+.box-grid { display: grid; gap: 3px; }
+.box-cell { display: grid; place-items: center; width: 42px; height: 42px; padding: 0; border: 3px solid var(--ink); border-radius: 6px; background: #f8dca6; font-size: 22px; font-weight: 900; color: var(--ink); }
+button.box-cell { cursor: pointer; }
+.box-cell.wrong { background: #ffb4a2; }
+.box-cell.right { background: #b6ecc4; }
+.box-work { display: flex; justify-content: center; align-items: flex-end; gap: 18px; width: 100%; }
+.box-own { display: flex; flex-direction: column; align-items: center; gap: 4px; min-width: 120px; }
+.box-own .box-building { max-width: 150px; max-height: 150px; }
+.box-caption { font-size: 14px; font-weight: 800; color: #6b7390; }
+.box-options { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+.box-option { padding: 8px; }
+.box-option .box-cell { width: 30px; height: 30px; font-size: 17px; border-width: 2px; }
+.box-option.right { background: #b6ecc4; }
+.box-net { width: 100%; height: auto; }
+.net-square { fill: #fff; stroke: var(--ink); stroke-width: 3; stroke-linejoin: round; transition: fill 0.3s; }
+.net-square.clash { fill: #ff8a73; }
+
+/* ====================== Idea "tausend": the place-value table with counters ====================== */
+.pt-scene { display: flex; flex-direction: column; align-items: center; gap: 8px; background: #fff; }
+.pt-table, .pt-foot, .pt-digits { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; width: 100%; max-width: 340px; }
+.pt-table { border: 3px solid var(--ink); border-radius: 10px; overflow: hidden; }
+.pt-col { display: flex; flex-direction: column; border-left: 2px solid var(--ink); transition: background 0.3s; }
+.pt-col:first-child { border-left: 0; }
+.pt-col.on { background: rgba(255, 200, 58, 0.35); }
+.pt-col.bundle .pt-chip { background: var(--sun); transform: scale(1.15); }
+.pt-head { padding: 3px 0; border-bottom: 2px solid var(--ink); background: #e6ecff; font-size: 15px; font-weight: 900; text-align: center; }
+.pt-body { display: grid; grid-template-columns: repeat(2, 16px); justify-content: center; align-content: start; gap: 4px; min-height: 104px; padding: 6px 0; }
+.pt-6 .pt-body { grid-template-columns: repeat(2, 13px); }
+.pt-chip { width: 16px; height: 16px; border: 2px solid var(--ink); border-radius: 50%; background: var(--blue); transition: transform 0.3s, background 0.3s; }
+.pt-6 .pt-chip { width: 13px; height: 13px; }
+.pt-btns { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.pt-btn { width: 40px; height: 36px; padding: 0; font-size: 22px; font-weight: 900; }
+.pt-6 .pt-btn { width: 36px; }
+.pt-digit { font-size: 24px; font-weight: 900; text-align: center; color: var(--blue); }
+.pt-big { margin: 0; font-size: 30px; font-weight: 900; }
+.pt-option { min-width: 104px; font-size: 22px; }
+.pt-col:nth-last-child(1) .pt-head { background: #ffd0e0; }
+.pt-col:nth-last-child(2) .pt-head { background: #c9efb4; }
+.pt-col:nth-last-child(3) .pt-head { background: #f6d7b0; }
+.pt-col:nth-last-child(4) .pt-head { background: #e6ecff; }
+.pt-col:nth-last-child(5) .pt-head { background: #fff1b8; }
+.pt-col:nth-last-child(6) .pt-head { background: #e4d4ff; }
+
+/* ====================== Idea "geld", level "cent": the cent coins ====================== */
+.coin.cent { width: 34px; height: 34px; font-size: 10px; }
+.coin.cent.c1, .coin.cent.c2, .coin.cent.c5 { background: radial-gradient(circle, #e0995e 60%, #b8693a 61%); }
+.coin.cent.c1 { width: 30px; height: 30px; }
+.coin.cent.c10, .coin.cent.c20, .coin.cent.c50 { background: radial-gradient(circle, #f4d36b 60%, #c9a227 61%); }
+.coin.cent.c50 { width: 38px; height: 38px; }
+.money-choice .name-btn { min-width: 100px; font-size: 22px; }
