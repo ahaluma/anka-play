@@ -17,6 +17,8 @@
 .f-ink { fill: var(--o-ink); }
 .f-line { fill: none; stroke: var(--o-ink); stroke-width: 1.6; stroke-linecap: round; }
 .f-star { fill: var(--o-star); }
+.f-sign { fill: none; stroke: currentColor; stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; }
+.btn-sign { width: 34px; height: 34px; margin: 0 auto; }
 .f-mask { fill: var(--o-ink); }
 .f-ring { fill: none; stroke: #fff; stroke-width: 1.8; opacity: 0.9; }
 

@@ -172,14 +172,20 @@ export async function render(root) {
       if (selected && selected !== z) move(selected, z);
     });
 
-  // ---- Answers under the pond.
+  // ---- Answers under the pond. Buttons carry a sign, not a word (a child who cannot read); the word stays as
+  // the label for screen readers.
+  const signButton = (cls, label, sign) => {
+    const b = button(cls, label);
+    b.append(figure(sign, "btn-sign"));
+    return b;
+  };
   const choose = (options, labels = null) =>
     new Promise((resolve) => {
       below.replaceChildren();
       const box = el("div", labels ? "answers words" : "answers strip");
       for (const o of options) {
         const b = button(labels ? "btn word-btn" : "btn num-btn", labels ? labels[o] : w(o));
-        if (labels) b.textContent = labels[o];
+        if (labels) b.append(figure(o === "ja" ? "ok" : "no", "btn-sign"));
         else b.append(el("b", "", num(o)), dots(o));
         b.addEventListener("click", () => resolve({ value: o, node: b }));
         box.append(b);
@@ -329,7 +335,7 @@ export async function render(root) {
     if (more && frogs.length) frogs[frogs.length - 1].classList.add("pop");
     await wait(500);
     const k = answerOf(q, at, pad);
-    if (!(await askNumber(X.now, skillOf(q, at, pad), k, q.choices(at, pad)))) {
+    if (!(await askNumber(X.now(pad), skillOf(q, at, pad), k, q.choices(at, pad)))) {
       await countAlong(pad);
     }
     showSign(pad);
@@ -423,7 +429,7 @@ export async function render(root) {
     mode = "share";
     signs.rot.textContent = signs.gruen.textContent = "?";
     draw();
-    const done = button("btn ok offen-done", X.done, X.done);
+    const done = signButton("btn ok offen-done", X.done, "ok");
     below.replaceChildren(done);
     await new Promise((resolve) => done.addEventListener("click", resolve));
     mode = "wait";
@@ -487,7 +493,7 @@ export async function render(root) {
     masked.on = true;
     draw();
     zone[pad].box.classList.remove("asked");
-    const right = await askNumber(X.masked, skillOf(q, at, pad), k, q.choices(at, pad));
+    const right = await askNumber(X.masked(pad), skillOf(q, at, pad), k, q.choices(at, pad));
     masked.on = false;
     draw();
     await wait(700);
@@ -531,7 +537,7 @@ export async function render(root) {
   async function makeAmount({ pad, k }) {
     await voice.ask(X.make(pad, k, w(k)), true, true);
     if (!rec.stars) voice.tell(X.how);
-    const done = button("btn ok offen-done", X.done, X.done);
+    const done = signButton("btn ok offen-done", X.done, "ok");
     below.replaceChildren(done);
     await new Promise((resolve) => done.addEventListener("click", resolve));
     below.replaceChildren();
@@ -565,7 +571,7 @@ export async function render(root) {
     const n = at.shore;
     await voice.ask(withRest ? X.shareOutRest : X.shareOut, true, true);
     if (!rec.stars) voice.tell(X.how);
-    const done = button("btn ok offen-done", X.done, X.done);
+    const done = signButton("btn ok offen-done", X.done, "ok");
     below.replaceChildren(done);
     await new Promise((resolve) => done.addEventListener("click", resolve));
     below.replaceChildren();
@@ -671,7 +677,7 @@ export async function render(root) {
     pond.classList.add("bye");
     await wait(900);
     if (rec.stars && rec.stars % 10 === 0) celebrate(40);
-    const next = button("btn go offen-next", X.next, X.next);
+    const next = signButton("btn go offen-next", X.next, "next");
     below.replaceChildren(next);
     next.addEventListener("click", () => event());
   }
