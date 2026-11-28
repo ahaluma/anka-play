@@ -1,7 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 800" preserveAspectRatio="xMidYMax slice">
-  <!-- The background of a Tal station without its own picture: sky, a soft hill, grass. -->
-  <rect width="400" height="800" fill="#cfeaff"/>
-  <path d="M0 430 Q120 360 230 400 T400 380 V800 H0Z" fill="#a6d98f"/>
-  <path d="M0 480 Q200 440 400 480 V800 H0Z" fill="#b9e5a0"/>
-  <g fill="#fff"><ellipse cx="90" cy="110" rx="56" ry="20"/><ellipse cx="122" cy="96" rx="34" ry="20"/></g>
-</svg>

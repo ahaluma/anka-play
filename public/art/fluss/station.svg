@@ -1,8 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 800" preserveAspectRatio="xMidYMax slice">
-  <!-- The background of a Fluss station without its own picture: sky, the far bank, the river, grass. -->
-  <rect width="400" height="800" fill="#cfeaff"/>
-  <path d="M0 400 Q140 360 260 390 T400 380 V800 H0Z" fill="#b9e5a0"/>
-  <path d="M-10 470 C120 450 280 500 410 470 V540 C280 560 120 520 -10 545Z" fill="#8fd3ff"/>
-  <path d="M0 545 C120 520 280 560 400 540 V800 H0Z" fill="#addc93"/>
-  <g fill="#fff"><ellipse cx="90" cy="110" rx="56" ry="20"/><ellipse cx="122" cy="96" rx="34" ry="20"/></g>
-</svg>

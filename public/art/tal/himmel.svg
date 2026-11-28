@@ -1,9 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 800" preserveAspectRatio="xMidYMax slice">
-  <!-- The sky: big clouds, the sun, the hills far below. -->
-  <rect width="400" height="800" fill="#cfeaff"/>
-  <circle cx="320" cy="110" r="46" fill="#ffc83a"/>
-  <g fill="#fff"><ellipse cx="110" cy="200" rx="60" ry="22"/><ellipse cx="80" cy="184" rx="36" ry="22"/></g>
-  <g fill="#fff"><ellipse cx="290" cy="300" rx="60" ry="22"/><ellipse cx="260" cy="284" rx="36" ry="22"/></g>
-  <g fill="#fff"><ellipse cx="150" cy="420" rx="60" ry="22"/><ellipse cx="120" cy="404" rx="36" ry="22"/></g>
-  <path d="M0 640 Q140 590 260 630 T400 610 V800 H0Z" fill="#b9e5a0"/>
-</svg>
