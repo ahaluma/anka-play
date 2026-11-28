@@ -47,7 +47,7 @@ export default {
 
   // Die Orte und ihre Portale (places.js): jeder Ort führt direkt zu zwei anderen.
   places: {
-    teich: "Teich", apfelbaum: "Apfelbaum", bau: "Bau", wiese: "Wiese", waldrand: "Waldrand", himmel: "Himmel",
+    home: "Zuhause", teich: "Teich", apfelbaum: "Apfelbaum", bau: "Bau", wiese: "Wiese", waldrand: "Waldrand", himmel: "Himmel",
     nester: "Nester", pfuetze: "Pfütze", huegel: "Hügel", bach: "Bach",
   },
   portals: "Wege zu anderen Orten",

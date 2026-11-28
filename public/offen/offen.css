@@ -94,15 +94,17 @@ span.offen-frog { cursor: default; }
 /* ---- The portals (offen/portals.js): two doors at the bottom of every place, each with a small picture of
    where it leads beside it. */
 :root { --o-trunk: #9a7656; --o-crown: #8fbf82; --o-apple: #e0604f; --o-hill: #b9a06c; --o-hole: #4a3b2a; --o-fur: #c9b8a2; }
-.portals { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px; }
-.portal { display: grid; grid-template-columns: auto 1fr; grid-template-rows: 1fr auto; align-items: end; gap: 4px 8px; padding: 10px; border: 3px solid var(--ink); border-radius: 18px; background: var(--card); box-shadow: 0 4px 0 var(--ink); color: var(--ink); text-decoration: none; }
-.portal:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--ink); }
-.portal-door { position: relative; grid-row: 1 / 3; width: 40px; height: 62px; border: 3px solid var(--ink); border-bottom-width: 4px; border-radius: 20px 20px 4px 4px; background: linear-gradient(#b6a3e0, #7d6bc2); overflow: hidden; }
-.portal-light { position: absolute; inset: 8px 7px 0; border-radius: 14px 14px 0 0; background: radial-gradient(circle at 50% 35%, #fff8, #fff0 70%); animation: glow 2.6s ease-in-out infinite; }
+.portals { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 12px; }
+.portal { display: grid; grid-template-columns: auto minmax(0, 1fr); grid-template-rows: auto auto; align-items: center; gap: 1px 4px; min-width: 0; padding: 5px 5px; border: 3px solid var(--ink); border-radius: 14px; background: var(--card); box-shadow: 0 3px 0 var(--ink); color: var(--ink); text-decoration: none; }
+.portal:active { transform: translateY(3px); box-shadow: 0 0 0 var(--ink); }
+.portal-door { position: relative; grid-row: 1 / 3; width: 18px; height: 32px; border: 2px solid var(--ink); border-bottom-width: 3px; border-radius: 10px 10px 3px 3px; background: linear-gradient(#b6a3e0, #7d6bc2); overflow: hidden; }
+.portal-home .portal-door { background: linear-gradient(#ffd98a, #f0b232); }
+.portal-light { position: absolute; inset: 4px 3px 0; border-radius: 7px 7px 0 0; background: radial-gradient(circle at 50% 35%, #fff8, #fff0 70%); animation: glow 2.6s ease-in-out infinite; }
 @keyframes glow { 50% { opacity: 0.4; } }
-.portal-mini { display: block; width: 100%; max-width: 90px; }
+.portal-mini { display: block; width: 100%; max-width: 42px; }
 .portal-mini svg, .mini svg { display: block; width: 100%; height: auto; }
-.portal-name { font-weight: 900; font-size: 17px; overflow-wrap: anywhere; }
+.portal-name { font-weight: 900; font-size: clamp(10px, 3.2vw, 13px); line-height: 1.1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.m-wall { fill: #f4ecdc; stroke: var(--o-ink); stroke-width: 1.2; } .m-roof { fill: #d9604f; }
 .m-water { fill: var(--o-water); } .m-pad { fill: var(--o-pad); } .m-pad-rose { fill: var(--o-pad-rose); }
 .m-trunk { fill: var(--o-trunk); } .m-crown { fill: var(--o-crown); } .m-apple { fill: var(--o-apple); } .m-grass { fill: #cfe3b5; }
 .m-hill { fill: var(--o-hill); } .m-hole { fill: var(--o-hole); } .m-ear { fill: var(--o-fur); }
