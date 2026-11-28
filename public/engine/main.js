@@ -7,6 +7,7 @@ import { voice } from "./ui/voice.js";
 
 const root = document.getElementById("app");
 const screens = {
+  home: () => import("./ui/home.js"),
   teich: () => import("../offen/teich.js"),
 };
 

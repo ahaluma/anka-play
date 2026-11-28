@@ -1,6 +1,6 @@
 // The routes after "#", one page for everything:
 //
-//   #/            the start: for now straight to the pond
+//   #/            Home: who plays, the language, the door to the pond (engine/ui/home.js)
 //   #/teich       the pond (offen/teich.js)
 
 export function parse(hash = location.hash) {
@@ -8,7 +8,7 @@ export function parse(hash = location.hash) {
   const parts = path.split("/").filter(Boolean).map(decodeURIComponent);
   const q = Object.fromEntries(new URLSearchParams(query));
   if (parts[0] === "teich") return { screen: "teich", q };
-  return { screen: "teich", q };
+  return { screen: "home", q };
 }
 
 export const go = (hash) => {

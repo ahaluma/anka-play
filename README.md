@@ -16,6 +16,8 @@ node tools/serve.mjs        # then open http://localhost:8080 (Node 22 or newer,
 ## What is where
 
 - `public/index.html`, `public/app.css`: the one page. Routes after `#`, see `engine/router.js`.
+- `public/engine/ui/home.js`: Home: who plays (each child chooses an owl with a hat, `ui/owl.js`), the language,
+  the door to the pond.
 - `public/engine/`: what every place shares: who plays (`profiles.js`), languages (`i18n.js`, texts in
   `public/lang/`), the saved data on this device (`store.js`), and the screen parts in `ui/` (top bar, voice,
   sounds, buttons).
