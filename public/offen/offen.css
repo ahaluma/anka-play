@@ -44,6 +44,8 @@ span.offen-frog { cursor: default; }
 .offen-masked { display: block; width: calc(var(--frog) * 1.4); height: calc(var(--frog) * 1.4); animation: mask-float 2.4s ease-in-out infinite alternate; }
 @keyframes mask-on { from { transform: translateY(-60%) scale(1.4); opacity: 0; } }
 @keyframes mask-float { from { transform: translateY(-3px) rotate(-6deg); } to { transform: translateY(3px) rotate(6deg); } }
+@keyframes leave { to { transform: translateY(14px) scale(0.5); opacity: 0; } }
+.offen-frog.leave { animation: leave 0.45s ease-in forwards; }
 @keyframes hop-won { 50% { transform: translateY(-10px); } }
 .offen-zone.won .offen-frog { animation: hop-won 0.4s ease-in-out 3; }
 @media (prefers-reduced-motion: reduce) { .offen-frog .on-frog, .offen-masked, .offen-zone.won .offen-frog { animation: none; } }

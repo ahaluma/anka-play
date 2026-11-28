@@ -265,7 +265,6 @@ export async function render(root) {
       await oops();
       await countAlong(pad);
       showSign(pad);
-      await voice.tell(X.countMiss(pad, k, w(k)));
     }
     zone[pad].box.classList.remove("asked");
   }
@@ -295,7 +294,6 @@ export async function render(root) {
     zone.gruen.box.classList.add("asked");
     if (!(await askNumber(X.total, skillOf(q, at), n, topFor(n)))) {
       await countAll();
-      await voice.tell(X.totalIs(n, w(n)));
     }
     zone.rot.box.classList.remove("asked");
     zone.gruen.box.classList.remove("asked");
@@ -316,6 +314,12 @@ export async function render(root) {
     showSign(pad);
     zone[pad].box.classList.add("asked");
     await wait(600);
+    if (!more) {
+      // The frog jumps off the pad: seen, not told.
+      const frogs = zone[pad].frogs.children;
+      frogs[frogs.length - 1]?.classList.add("leave");
+      await wait(500);
+    }
     for (const e of q.events(at, pad)) world.send(e);
     signs[pad].textContent = "?";
     signs[pad].classList.remove("known");
@@ -323,7 +327,7 @@ export async function render(root) {
     draw();
     const frogs = zone[pad].frogs.children;
     if (more && frogs.length) frogs[frogs.length - 1].classList.add("pop");
-    await voice.tell(more ? X.hopOn(pad) : X.hopOff(pad));
+    await wait(500);
     const k = answerOf(q, at, pad);
     if (!(await askNumber(X.now, skillOf(q, at, pad), k, q.choices(at, pad)))) {
       await countAlong(pad);
@@ -355,7 +359,9 @@ export async function render(root) {
     if (a === b) return voice.tell(X.sameMiss(a, w(a)));
     const big = a > b ? "rot" : "gruen";
     const pad = word === "weniger" ? OTHER[big] : big;
+    zone[pad].box.classList.add("asked");
     await voice.tell(X.diffMiss(pad, at[pad], w(at[pad]), at[OTHER[pad]], w(at[OTHER[pad]]), word ?? "mehr"));
+    zone[pad].box.classList.remove("asked");
   }
 
   async function askSame(q) {
@@ -378,7 +384,7 @@ export async function render(root) {
       else {
         showSign("rot");
         showSign("gruen");
-        await voice.tell(X.notSame(num(at.rot), num(at.gruen)));
+        await wait(1200);
       }
     }
   }
@@ -477,7 +483,6 @@ export async function render(root) {
     masked = { pad, on: false };
     sound.tap();
     draw();
-    await voice.tell(X.maskOn);
     await wait(500);
     masked.on = true;
     draw();
@@ -503,7 +508,7 @@ export async function render(root) {
     signs[pad].classList.remove("known");
     showSign(shown);
     draw();
-    await voice.tell(X.dive(pad));
+    await wait(800);
     await voice.ask(X.partner(n, shown, at[shown], w(at[shown]), pad), true, true);
     const { value, node } = await choose(Array.from({ length: n + 1 }, (_, i) => i));
     below.replaceChildren();
@@ -547,7 +552,7 @@ export async function render(root) {
         await wait(600);
       }
       showSign(pad);
-      await voice.tell(X.madeIs(pad, k, w(k)));
+      await wait(600);
       mode = "place";
       draw();
     }
@@ -618,7 +623,7 @@ export async function render(root) {
     mode = "wait";
     draw();
     pond.classList.remove("bye");
-    await voice.tell(X.arrive(at.shore));
+    await wait(700);
     mode = "place";
     draw();
     if (plan.kind === "make") await makeAmount(plan);
@@ -664,7 +669,7 @@ export async function render(root) {
 
     voice.newTask();
     pond.classList.add("bye");
-    await voice.tell(X.bye);
+    await wait(900);
     if (rec.stars && rec.stars % 10 === 0) celebrate(40);
     const next = button("btn go offen-next", X.next, X.next);
     below.replaceChildren(next);
