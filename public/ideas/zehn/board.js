@@ -57,12 +57,15 @@ function places(whole, a, b = 0) {
 export function machen(host, t, ctx) {
   const { T } = ctx;
   const M = T.zehn.machen;
-  let left = t.whole; // all start on the left pad
+  // the frogs start on one pad: for a given number, on the other pad than the one asked for
+  let left = t.all || !t.left ? t.whole : 0;
   let locked = false;
   const found = []; // the ways found (left counts), for the kind "all"
 
   const box = el("div", "zehn-make");
   const shelf = el("div", "hop-ways");
+  // the ways still to find are empty frames: the picture says how many, not the sentence
+  if (t.all) for (let i = 0; i < t.ways; i++) shelf.append(el("div", "hop-way empty"));
   const hop = (fromLeft) => {
     if (locked) return;
     left += fromLeft ? -1 : 1;
@@ -92,37 +95,37 @@ export function machen(host, t, ctx) {
         return void ctx.solved(T.zehn.friends(ctx.word(left), ctx.word(right), ctx.word(t.whole)));
       }
       shake(box);
-      return void ctx.miss(M.miss(t.left ? "left" : "right", ctx.word(has), ctx.word(t.target), has, t.target));
+      return void ctx.miss(M.miss(ctx.word(has), ctx.word(t.target), has, t.target));
     }
     // every way: both pads keep a frog, and a way counts once
     if (left === 0 || right === 0) return void (shake(box), ctx.tell(M.both, undefined, true));
     const seen = shelf.querySelector(`[data-left="${left}"]`);
     if (seen) return void (shake(seen), ctx.tell(M.again, undefined, true));
     found.push(left);
-    const way = el("div", "hop-way pop");
+    const way = shelf.querySelector(".hop-way.empty");
+    way.className = "hop-way pop";
     way.dataset.left = left;
     way.append(places(t.whole, left, right));
-    shelf.append(way);
     ctx.tap();
     if (found.length >= t.ways) {
       locked = true;
       ctx.solved(M.allDone(ctx.word(t.whole)));
-    } else ctx.tell(M.more(ctx.word(t.ways - found.length), t.ways - found.length), undefined, true);
+    } else ctx.tell(M.more, undefined, true);
   });
   const tools = el("div", "zehn-tools");
   tools.append(check);
 
   host.append(box, shelf, tools);
   (async () => {
-    await ctx.tell(t.all ? M.allQuestion(ctx.word(t.whole), ctx.word(t.ways)) : M.question(ctx.word(t.whole), t.left ? "left" : "right", ctx.word(t.target), t.target));
-    if (host.isConnected) ctx.tell(M.how);
+    await ctx.tell(t.all ? M.allQuestion(ctx.word(t.whole)) : M.question(t.left ? "left" : "right", ctx.word(t.target), t.target));
+    if (host.isConnected) ctx.tell(t.all ? M.allHow : M.how);
   })();
 
   return {
     hint() {
       if (t.all) return M.hintAll;
       box.querySelector(".zehn-hop").children[t.left ? 0 : 2].classList.add("asked");
-      return M.hint(t.left ? "left" : "right", ctx.word(t.target), t.target);
+      return M.hint(t.left ? "left" : "right");
     },
   };
 }

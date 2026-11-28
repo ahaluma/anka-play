@@ -987,10 +987,17 @@
 }
 
 .hop-way {
+  min-width: 48px;
+  min-height: 30px;
   padding: 4px;
   border: 2px solid var(--ink);
   border-radius: 10px;
   background: #fff3c4;
+}
+
+.hop-way.empty {
+  border-style: dashed;
+  background: rgba(255, 255, 255, 0.6);
 }
 
 .ten-frames {
