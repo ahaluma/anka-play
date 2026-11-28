@@ -139,9 +139,10 @@ button.apfel-apple { cursor: pointer; }
 .bau-hill { position: relative; height: 170px; margin: 16px 12px 0; border-radius: 50% 50% 0 0 / 100% 100% 0 0; background: var(--o-hill); }
 .bau-hole { position: absolute; left: 50%; bottom: 0; display: flex; flex-wrap: wrap; justify-content: center; align-content: center; width: 150px; height: 90px; margin-left: -75px; border-radius: 75px 75px 0 0; background: var(--o-hole); }
 .bau-hole .bau-hare { --h: 30px; }
-.bau-home { top: 12px; left: 50%; right: auto; transform: translateX(-50%); }
+/* The number of hares that live here sits on the line between the burrow and the meadow, in the middle (asked for 28.11.). */
+.bau-home { top: auto; bottom: 0; left: 50%; right: auto; z-index: 2; transform: translate(-50%, 50%); }
 .bau-in { top: auto; bottom: 96px; right: 14px; }
-.bau-meadow { --h: clamp(42px, 12vw, 58px); display: flex; flex-wrap: wrap; justify-content: center; align-content: flex-start; gap: 4px; min-height: 120px; padding: 14px 10px; }
+.bau-meadow { --h: clamp(42px, 12vw, 58px); display: flex; flex-wrap: wrap; justify-content: center; align-content: flex-start; gap: 4px; min-height: 120px; padding: 32px 10px 14px; }
 .bau-hare { display: block; width: var(--h); height: var(--h); }
 .bau-hare.leave { animation: leave 0.45s ease-in forwards; }
 @keyframes apple-fall { from { transform: translateY(-150px) rotate(-30deg); } 80% { transform: translateY(6px); } }
