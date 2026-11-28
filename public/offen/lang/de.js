@@ -32,7 +32,7 @@ export default {
 
   grumble: "Hier ist es zu voll!",
   joke: "Nur Spaß!",
-  same: "Auf beiden gleich viele?",
+  same: "Sitzen auf beiden gleich viele?",
   yes: "Ja",
   no: "Nein",
   sameMiss: (k, w) => `Doch, gleich viele: auf jeder ${k === 1 ? "einer" : w}.`,
