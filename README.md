@@ -50,7 +50,12 @@ node tools/serve.mjs        # then open http://localhost:8080 (Node 22 or newer,
   (`skills.js`: sicher after 20 answers with 18 of the last 20 right; one star for every right answer, which
   flies to the stars in the top bar; feedback is only „Richtig!" or „Falsch."). The figures (frog, lily pad, star)
   are light vector shapes drawn once in `figures.js` and reused: few colours, no emoji, no picture files.
-  `node tools/check-offen.mjs` plays it with a simulated child. German only, on purpose for now.
+  Three building blocks: `world.js` is the simulated world (frogs on the shore and the pads), whose state changes
+  only through events (a frog comes, hops, jumps into the water); `questions.js` is the question catalogue, each
+  question with its answer or a method that reads the answer from the world; `runs.js` is the GameRun of a
+  place, an ordered list of positions, each with the questions that fit there. The owl plans a run ahead on a
+  copy of the world and may skip positions.
+  `node tools/check-offen.mjs` plays it with a simulated child in the same world. German only, on purpose for now.
 - `public/lang/`: shared words: numbers, praise, buttons, names of maps, stations and things.
 - `public/art/<map>/`: the map's scene and the stations' backgrounds.
 - `public/eltern/`: the parents' page (`#/eltern`), drawn from `engine/report.js`; the backup is `engine/backup.js`

@@ -1,6 +1,7 @@
 // The pond of the open Tal (#/offen/teich): the first scene of the concept "Das offene Tal". No round, no
 // station: frogs come to the shore, the child sets them on two lily pads, and the owl (owl.js) asks what the
-// skills need (skills.js). One star for every right answer. The current Tal stays as it is beside it.
+// skills need (skills.js). The frogs live in a simulated world (world.js): every move is an event sent to it,
+// the screen draws its state, and the questions of the catalogue (questions.js) read their answers from it. One star for every right answer. The current Tal stays as it is beside it.
 //
 // Moving a frog: drag it, or tap it and then tap where it should go. While the voice reads a question, the
 // board takes no taps (body.listening, engine/ui/voice.js).
@@ -16,6 +17,9 @@ import { voice } from "../engine/ui/voice.js";
 import { sound, celebrate } from "../engine/ui/sound.js";
 import * as S from "./skills.js";
 import * as Owl from "./owl.js";
+import * as World from "./world.js";
+import { RUNS } from "./runs.js";
+import { skillOf, answerOf } from "./questions.js";
 import { mountFigures, figure } from "./figures.js";
 const ZONES = ["gruen", "rot", "shore"];
 const OTHER = { rot: "gruen", gruen: "rot" };
@@ -53,7 +57,9 @@ export async function render(root) {
   voice.mount({ caption, question });
 
   // ---- The frogs: how many sit where, and the zones that draw them.
-  const at = { rot: 0, gruen: 0, shore: 0 };
+  const world = World.create();
+  const at = world.state; // read only: every change is an event sent to the world
+  const hop = (from, to) => world.send({ type: "huepf", from, to });
   const zone = {};
   const signs = {};
   for (const z of ZONES) {
@@ -105,9 +111,8 @@ export async function render(root) {
   };
 
   const move = (from, to) => {
-    if (from === to || !at[from] || (mode === "share" && to === "shore")) return;
-    at[from]--;
-    at[to]++;
+    if (mode === "share" && to === "shore") return;
+    if (!hop(from, to)) return;
     selected = null;
     sound.tap();
     draw();
@@ -231,9 +236,9 @@ export async function render(root) {
   }
 
   // ---- The steps of an event.
-  async function askCount(pad) {
-    const k = at[pad];
-    const skill = Owl.countSkill(k);
+  async function askCount(q, pad) {
+    const k = answerOf(q, at, pad);
+    const skill = skillOf(q, at, pad);
     zone[pad].box.classList.add("asked");
     await voice.ask(X.count(pad), true, true);
     const top = skill === "zaehlen5" ? 5 : 10;
@@ -275,11 +280,11 @@ export async function render(root) {
   const topFor = (n) => (n <= 5 ? 5 : 10);
 
   /** "Wie viele sind es insgesamt?" Both pads together; on a miss the owl counts all of them. */
-  async function askTotal() {
-    const n = at.rot + at.gruen;
+  async function askTotal(q) {
+    const n = answerOf(q, at);
     zone.rot.box.classList.add("asked");
     zone.gruen.box.classList.add("asked");
-    if (!(await askNumber(X.total, Owl.countSkill(n), n, topFor(n)))) {
+    if (!(await askNumber(X.total, skillOf(q, at), n, topFor(n)))) {
       await countAll();
       await voice.tell(X.totalIs(n, w(n)));
     }
@@ -297,11 +302,12 @@ export async function render(root) {
   }
 
   /** One more or one fewer: the pad's number is shown, a frog hops on or jumps off, "Wie viele sind es jetzt?" */
-  async function askOne(pad, more) {
+  async function askOne(q, pad) {
+    const more = q.id === "einer-dazu";
     showSign(pad);
     zone[pad].box.classList.add("asked");
     await wait(600);
-    at[pad] += more ? 1 : -1;
+    for (const e of q.events(at, pad)) world.send(e);
     signs[pad].textContent = "?";
     signs[pad].classList.remove("known");
     sound.tap();
@@ -309,8 +315,8 @@ export async function render(root) {
     const frogs = zone[pad].frogs.children;
     if (more && frogs.length) frogs[frogs.length - 1].classList.add("pop");
     await voice.tell(more ? X.hopOn(pad) : X.hopOff(pad));
-    const k = at[pad];
-    if (!(await askNumber(X.now, more ? "dazu" : "weg", k, topFor(Math.max(k, k + (more ? 0 : 1)))))) {
+    const k = answerOf(q, at, pad);
+    if (!(await askNumber(X.now, skillOf(q, at, pad), k, q.choices(at, pad)))) {
       await countAlong(pad);
     }
     showSign(pad);
@@ -343,21 +349,22 @@ export async function render(root) {
     await voice.tell(X.diffMiss(pad, at[pad], w(at[pad]), at[OTHER[pad]], w(at[OTHER[pad]]), word ?? "mehr"));
   }
 
-  async function askSame() {
+  async function askSame(q) {
     await grumble();
     await voice.ask(X.same, true, true);
     const { value, node } = await choose(["ja", "nein"], { ja: X.yes, nein: X.no });
     below.replaceChildren();
-    const same = at.rot === at.gruen;
+    const same = answerOf(q, at);
+    const skill = skillOf(q, at);
     if ((value === "ja") === same) {
       sound.right();
-      count("gleich", true);
+      count(skill, true);
       await praise();
       if (same) await voice.tell(X.joke);
     } else {
       sound.wrong();
       shake(node);
-      count("gleich", false);
+      count(skill, false);
       if (same) await explain();
       else {
         showSign("rot");
@@ -368,7 +375,10 @@ export async function render(root) {
   }
 
   /** "Zeig das Blatt, wo mehr (weniger) Frösche sitzen." word: "mehr" | "weniger" */
-  async function askPoint(word) {
+  async function askPoint(q) {
+    const word = q.id === "zeig-mehr" ? "mehr" : "weniger";
+    const truth = answerOf(q, at);
+    const skill = skillOf(q, at);
     await grumble();
     await voice.ask(X.point(word), true, true);
     mode = "pick";
@@ -377,23 +387,22 @@ export async function render(root) {
     onPad = null;
     mode = "wait";
     draw();
-    const big = at.rot > at.gruen ? "rot" : "gruen";
-    const truth = word === "mehr" ? big : OTHER[big];
     if (pad === truth) {
       sound.right();
-      count(word, true);
+      count(skill, true);
       zone[pad].box.classList.add("asked");
       await praise();
       zone[pad].box.classList.remove("asked");
     } else {
       sound.wrong();
       shake(zone[pad].box);
-      count(word, false);
+      count(skill, false);
       await explain(word);
     }
   }
 
-  async function askShare() {
+  async function askShare(q) {
+    const skill = skillOf(q, at);
     await voice.ask(X.share, true, true);
     await voice.tell(X.shareHow);
     mode = "share";
@@ -406,21 +415,20 @@ export async function render(root) {
     selected = null;
     below.replaceChildren();
     draw();
-    if (at.rot === at.gruen) {
+    if (answerOf(q, at)) {
       sound.right();
-      count("umverteilen", true);
+      count(skill, true);
       await praise();
     } else {
       sound.wrong();
-      count("umverteilen", false);
+      count(skill, false);
       await oops();
       showSign("rot");
       showSign("gruen");
       // The owl lets one frog hop at a time until it is fair.
       while (at.rot !== at.gruen) {
         const from = at.rot > at.gruen ? "rot" : "gruen";
-        at[from]--;
-        at[OTHER[from]]++;
+        hop(from, OTHER[from]);
         sound.tap();
         draw();
         showSign("rot");
@@ -432,15 +440,16 @@ export async function render(root) {
     signs.rot.textContent = signs.gruen.textContent = "?";
     signs.rot.classList.remove("known");
     signs.gruen.classList.remove("known");
-    const k = at.rot;
+    const k = q.each(at);
     if (!(await askNumber(X.each, Owl.countSkill(k), k, topFor(k)))) await countAlong("rot");
     showSign("rot");
     showSign("gruen");
   }
 
-  async function askPartner(shown) {
-    const n = at.rot + at.gruen;
-    const skill = Owl.partnerSkill(n);
+  async function askPartner(q, shown) {
+    const n = world.total;
+    const skill = skillOf(q, at, shown);
+    const truth = answerOf(q, at, shown);
     const pad = OTHER[shown];
     hidden = pad;
     signs[pad].textContent = "?";
@@ -451,7 +460,7 @@ export async function render(root) {
     await voice.ask(X.partner(n, shown, at[shown], w(at[shown]), pad), true, true);
     const { value, node } = await choose(Array.from({ length: n + 1 }, (_, i) => i));
     below.replaceChildren();
-    const right = value === at[pad];
+    const right = value === truth;
     if (right) sound.right();
     else {
       sound.wrong();
@@ -483,16 +492,9 @@ export async function render(root) {
       // The owl puts it right, one frog at a time, and the child sees the number.
       mode = "wait";
       while (at[pad] !== k) {
-        if (at[pad] > k) {
-          at[pad]--;
-          at.shore++;
-        } else if (at.shore) {
-          at.shore--;
-          at[pad]++;
-        } else {
-          at[OTHER[pad]]--;
-          at[pad]++;
-        }
+        if (at[pad] > k) hop(pad, "shore");
+        else if (at.shore) hop("shore", pad);
+        else hop(OTHER[pad], pad);
         sound.tap();
         draw();
         await wait(600);
@@ -534,14 +536,12 @@ export async function render(root) {
       };
       for (const p of ["rot", "gruen"])
         while (at[p] > half) {
-          at[p]--;
-          at.shore++;
+          hop(p, "shore");
           await step();
         }
       while (at.shore > n - 2 * half) {
         const p = at.rot <= at.gruen ? "rot" : "gruen";
-        at.shore--;
-        at[p]++;
+        hop("shore", p);
         await step();
       }
     }
@@ -560,13 +560,13 @@ export async function render(root) {
     hidden = null;
     selected = null;
     grumbled = false;
-    at.rot = at.gruen = 0;
+    world.send({ type: "platsch" });
     for (const p of ["rot", "gruen"]) {
       signs[p].textContent = "?";
       signs[p].classList.remove("known");
     }
     const plan = Owl.placement(rec);
-    at.shore = plan.n;
+    world.send({ type: "kommen", n: plan.n });
     mode = "wait";
     draw();
     pond.classList.remove("bye");
@@ -590,17 +590,24 @@ export async function render(root) {
       signs[p].textContent = "?";
       signs[p].classList.remove("known");
     }
-    const steps = Owl.steps(rec, at.rot, at.gruen);
-    for (const step of steps) {
+    // The GameRun of the pond: the owl picks questions of the catalogue per position, or skips a position. Each
+    // is checked again against the world as it is now, since the child's answers and the owl's help change it.
+    const ASK = {
+      "wie-viele": askCount,
+      zusammen: askTotal,
+      "gleich-viele": askSame,
+      "zeig-mehr": askPoint,
+      "zeig-weniger": askPoint,
+      "einer-dazu": askOne,
+      "einer-weg": askOne,
+      "mach-gerecht": askShare,
+      partner: askPartner,
+    };
+    for (const { q, p } of Owl.plan(RUNS.teich, rec, at)) {
       voice.newTask();
-      if (step.kind === "count") await askCount(step.pad);
-      else if (step.kind === "total") await askTotal();
-      else if (step.kind === "plus" && at[step.pad] < 10) await askOne(step.pad, true);
-      else if (step.kind === "minus" && at[step.pad] > 0) await askOne(step.pad, false);
-      else if (step.kind === "same") await askSame();
-      else if ((step.kind === "more" || step.kind === "less") && at.rot !== at.gruen) await askPoint(step.kind === "more" ? "mehr" : "weniger");
-      else if (step.kind === "share" && at.rot !== at.gruen && (at.rot + at.gruen) % 2 === 0) await askShare();
-      else if (step.kind === "partner" && Owl.partnerSkill(at.rot + at.gruen)) await askPartner(step.shown);
+      if (!q.fits(at, Owl.context(rec))) continue;
+      if (q.events && q.form !== "action" && !q.events(at, p).every((e) => World.next(at, e))) continue;
+      await ASK[q.id](q, p);
       await wait(300);
     }
 
