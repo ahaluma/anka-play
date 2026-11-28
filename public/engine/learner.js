@@ -82,6 +82,13 @@ export const cell = (rec, idea, p, rungId) => rec.ideas[idea]?.cells[cellKey(p, 
 export const played = (rec, idea, p) =>
   Object.entries(rec.ideas[idea]?.cells ?? {}).some(([k, c]) => k.startsWith(`${p}@`) && c.n > 0);
 
+/** Can the child choose this perspective? The first one is open from the start; each further one opens once
+ *  the one before it has been played. One already played stays open, so a child with progress keeps it. */
+export function wayOpen(rec, def, p) {
+  const i = def.perspectives.indexOf(p);
+  return i === 0 || (i > 0 && (played(rec, def.id, p) || played(rec, def.id, def.perspectives[i - 1])));
+}
+
 /** A star in exactly this group. */
 export function starred(rec, def, p, group) {
   const cells = rec.ideas[def.id]?.cells ?? {};

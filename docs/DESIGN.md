@@ -255,9 +255,13 @@ the other). Seven answer modes: `choose`, `type`, `tapThings`, `build`, `order`,
 
 ### 6.4 Perspectives per idea
 
-An idea lists its perspectives, 1 to 5, usually in the fixed order (`perspectives` in `idea.js`), and has one recipe
-for each. An idea may list them in another order where its concept needs it (the Teich: Machen first, the hands
-before the picture); the station shows them and the owl leads through them in the idea's order. `zahl` has all five. A station that is only a game has the one perspective `spielen` 🎲, which
+An idea lists its perspectives, 1 to 5, in the order the child meets them (`perspectives` in `idea.js`), and has
+one recipe for each. The rule for the order: where the child can make the idea by acting (counting and picking,
+splitting, sharing, sorting, patterns, the order of a story; on the Fluss bundling tens, weighing, laying out an
+area, box buildings), Machen comes first; where the idea lies in looking (shapes, positions, sizes, the number
+line, the clock, money, charts, all calculating), Sehen comes first; the Berg always starts with Verstehen (sehen).
+The station shows them and the owl leads through them in this order. Only the first is open at first; each further
+one opens once the one before it has been played, and a played one stays open (`wayOpen` in engine/learner.js). `zahl` has all five. A station that is only a game has the one perspective `spielen` 🎲, which
 stands alone. A game has no stars to earn: its station is marked `game: true` in `universe.js`, is always
 open and is mastered from the start. `check-ideas` refuses an idea with none, more than five, one twice, `spielen` mixed with
 others, or a recipe for a perspective it does not list.

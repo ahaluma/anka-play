@@ -53,6 +53,27 @@ function play(rec, def, p, right, { age = 4, size = 5 } = {}) {
   check(!play(rec, zahl, "sehen", 5).newStar, "a second good round gives no new star");
 }
 
+// ---------- Ways open one after the other: the first from the start, the next once the one before is played
+{
+  const rec = L.blank();
+  const [a, b, c] = zahl.perspectives;
+  check(L.wayOpen(rec, zahl, a) && !L.wayOpen(rec, zahl, b), "only the first way is open at first");
+  play(rec, zahl, a, 2);
+  check(L.wayOpen(rec, zahl, b) && !L.wayOpen(rec, zahl, c), "a played way opens the next one, without a star");
+  const old = L.blank();
+  play(old, zahl, c, 5);
+  check(L.wayOpen(old, zahl, c) && L.wayOpen(old, zahl, zahl.perspectives[3]) && !L.wayOpen(old, zahl, b), "a way played before stays open");
+  check(L.wayOpen(rec, zahl, L.suggest(rec, zahl, 4)), "the owl suggests an open way");
+  for (const def of Object.values(defs)) {
+    const r = L.blank();
+    for (const p of def.perspectives) {
+      const next = L.suggest(r, def, 6);
+      check(L.wayOpen(r, def, next), `the owl leads only to open ways in ${def.id}`);
+      L.task(r, def.id, next, L.level(r, def, 6), true);
+    }
+  }
+}
+
 // ---------- Up: 3 of 5 perspectives starred in a group -> the next group
 {
   const rec = L.blank();
@@ -290,6 +311,17 @@ function play(rec, def, p, right, { age = 4, size = 5 } = {}) {
       const part = i === 0 ? t : t?.second;
       const levels = new Set((defs[id]?.ladder ?? []).map((r) => r.group)).size;
       if (levels > 1) check(part?.steps, `the info page names the levels of ${id} at station ${s.id}`);
+    }
+  }
+  // a station's ways are written in the order the child plays them, in every language
+  for (const code of ["de", "en", "ne"]) {
+    const texts = (await import(`../public/info/lang/${code}.js`)).default;
+    for (const s of STATIONS) {
+      const t = texts.stations[s.id];
+      for (const [i, id] of s.ideas.entries()) {
+        const ways = (i === 0 ? t : t?.second)?.ways;
+        if (ways && defs[id]) check(Object.keys(ways).join() === defs[id].perspectives.join(), `the info page in ${code} lists the ways of ${id} at station ${s.id} in the order they are played`);
+      }
     }
   }
   // English and Nepali say the same things as German: the same stations, ways, levels, second ideas, maps

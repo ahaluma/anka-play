@@ -15,7 +15,7 @@ export const IDEA = {
     { id: "3", group: "3", age: 5, params: { range: 20 } },
   ],
   start: { at: "1" }, // a concept starts at its smallest numbers, whatever the age (only plain calculation starts by age)
-  perspectives: ["sehen", "machen", "forschen", "anwenden", "pruefen"],
+  perspectives: ["machen", "sehen", "forschen", "anwenden", "pruefen"],
   cards: {"sehen": "wiederholen", "machen": "wiederholen", "forschen": "wiederholen", "anwenden": "rueckwaerts", "pruefen": "vergleichen"},
   tasks: { make: task, check },
 };

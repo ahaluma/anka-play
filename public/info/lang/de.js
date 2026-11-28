@@ -20,7 +20,9 @@ export default {
     ],
     after: [
       "Eine Runde mit 4 von 5 Aufgaben auf Anhieb richtig bringt einen Stern ⭐ für diese Spielart. Hat eine Station genug Sterne, kommen größere Zahlen oder schwerere Aufgaben. Nach zwei schwachen Runden geht es eine Stufe zurück. Nach drei Fehlern hintereinander kommt eine leichtere Aufgabe.",
-      "Die Eule führt Ihr Kind. Sie bleibt an einer Station, bis jede Spielart dort ausprobiert ist und ihren Stern hat. Erst dann zeigt sie den Weg zur nächsten Station, die damit verwandt ist.",
+      "An jeder Station ist zuerst nur die erste Spielart offen. Die anderen haben ein Schloss 🔒. Hat Ihr Kind eine Spielart gespielt, öffnet sich die nächste. Was einmal offen ist, bleibt offen.",
+      "Die Reihenfolge folgt der Idee. Kann Ihr Kind die Idee selbst herstellen, wie beim Zählen, Zerlegen, Teilen oder Sortieren, beginnt es mit Machen. Muss es sie erkennen, wie bei Formen, der Uhr oder beim Rechnen, beginnt es mit Sehen. Am Berg beginnt es immer mit Verstehen.",
+      "Die Eule führt Ihr Kind der Reihe nach. Sie bleibt an einer Station, bis jede Spielart dort ausprobiert ist und ihren Stern hat. Erst dann zeigt sie den Weg zur nächsten Station, die damit verwandt ist.",
       "Es gibt keine Punkte, keine Uhr und keine Tage-in-Folge. Ein Fehler wird erklärt, nicht bestraft.",
     ],
   },
@@ -87,8 +89,8 @@ export default {
     wiese: {
       idea: "Eine Zahl sagt, wie viele es sind. Mehr, weniger, gleich viele.",
       ways: {
-        sehen: "Blumen auf der Wiese: Wie viele sind es? Ab der zweiten Runde sind sie nur kurz zu sehen. So lernt Ihr Kind, kleine Mengen auf einen Blick zu erkennen.",
         machen: "Eine bestimmte Zahl Blumen in den Korb pflücken. Zwei Zähler zeigen, wie viele noch auf der Wiese und wie viele im Korb sind.",
+        sehen: "Blumen auf der Wiese: Wie viele sind es? Ab der zweiten Runde sind sie nur kurz zu sehen. So lernt Ihr Kind, kleine Mengen auf einen Blick zu erkennen.",
         forschen: "Steine im Bach mit Zahlen, einer fehlt. Manchmal hüpft der Frosch rückwärts. Oder die Steine liegen durcheinander und das Kind legt den Weg, die kleinste Zahl zuerst.",
         anwenden: "Wo sind mehr, wo weniger? Eins kommt dazu oder geht weg: Wie viele sind es jetzt? Beide Seiten gleich machen.",
         pruefen: "Die Eule hat gezählt. Stimmt es, oder ist sie um eins daneben?",
@@ -99,8 +101,8 @@ export default {
     bau: {
       idea: "Zahlen bestehen aus Zahlen: 5 sind 3 und 2, oder 4 und 1.",
       ways: {
-        sehen: "Tiere gehen in den Bau. Einige sind draußen zu sehen, wie viele sind drinnen?",
         machen: "Dinge auf zwei Blätter verteilen, auf zwei verschiedene Arten.",
+        sehen: "Tiere gehen in den Bau. Einige sind draußen zu sehen, wie viele sind drinnen?",
         forschen: "Den Apfelbaum schütteln: Einige Äpfel fallen herunter. Wie viele bleiben oben?",
         anwenden: "Eine kleine Szene: Das Ganze und ein Teil sind bekannt, der andere Teil fehlt.",
         pruefen: "Die Eule sagt: „3 und 2 sind 6.“ Stimmt das?",
@@ -131,8 +133,8 @@ export default {
     obstbaum: {
       idea: "Gerecht teilen: Jeder bekommt gleich viele.",
       ways: {
-        sehen: "In jedem Nest liegen gleich viele Eier. Eine Henne setzt sich auf ein Nest: Wie viele Eier liegen darunter?",
         machen: "Futter an die Tiere verteilen, sodass jedes gleich viel bekommt.",
+        sehen: "In jedem Nest liegen gleich viele Eier. Eine Henne setzt sich auf ein Nest: Wie viele Eier liegen darunter?",
         forschen: "Erst überlegen: Geht es gerecht auf, oder bleibt etwas übrig?",
         anwenden: "Kirschen im Gras, jeder Vogel bekommt so viele. Für wie viele Vögel reicht es?",
         pruefen: "Die Eule hat geteilt. Ist das gerecht?",
@@ -143,8 +145,8 @@ export default {
     wald: {
       idea: "Eine Reihe geht immer gleich weiter, weil ein Stück immer wiederkommt.",
       ways: {
-        sehen: "Eine Reihe hört auf. Was kommt jetzt?",
         machen: "Die Reihe selbst weiterlegen.",
+        sehen: "Eine Reihe hört auf. Was kommt jetzt?",
         forschen: "Die Reihe ist ein Rhythmus aus Klatschen, Stampfen und Auf-die-Knie-Klopfen. Zuhören, mitmachen: Was kommt jetzt?",
         anwenden: "In einer Perlenkette fehlt in der Mitte eine Perle. Welche gehört hinein?",
         pruefen: "Die Eule legt eine Reihe. Ein Ding kann falsch sein: Welches?",
@@ -155,8 +157,8 @@ export default {
     himmel: {
       idea: "Zuerst und dann: Bildergeschichten in der richtigen Reihenfolge, Erster, Zweiter, Dritter.",
       ways: {
-        sehen: "Zwei Bilder aus einer Geschichte. Was war zuerst?",
         machen: "Die Bilder einer Geschichte der Reihe nach antippen.",
+        sehen: "Zwei Bilder aus einer Geschichte. Was war zuerst?",
         forschen: "Was passiert als Nächstes? Später auch: Was war davor?",
         anwenden: "Tiere stehen in einer Reihe. Wer ist Erster, Zweiter, Letzter?",
         pruefen: "Die Eule hat eine Geschichte gelegt. Stimmt die Reihenfolge?",
@@ -167,8 +169,8 @@ export default {
     nester: {
       idea: "Was gehört zusammen? Sortieren nach einer Regel.",
       ways: {
-        sehen: "Ein Ding: In welchen Korb gehört es?",
         machen: "Sechs Dinge nacheinander in die Körbe sortieren.",
+        sehen: "Ein Ding: In welchen Korb gehört es?",
         forschen: "Vier Dinge, drei gehören zusammen. Welches passt nicht?",
         anwenden: "Die Körbe haben kein Schild. Das Kind findet die Regel selbst und legt das neue Ding richtig.",
         pruefen: "Die Eule hat sortiert. Ein Ding kann im falschen Korb liegen.",
@@ -253,8 +255,8 @@ export default {
     blumenfeld: {
       idea: "Zehn Einer sind ein Zehner, zehn Zehner sind ein Hunderter. Zehn Blumen werden ein Strauß, zehn Sträuße kommen in einen Korb.",
       ways: {
-        sehen: "Sträuße und einzelne Blumen. Wie viele Blumen sind es?",
         machen: "Eine Zahl mit Sträußen und Blumen legen.",
+        sehen: "Sträuße und einzelne Blumen. Wie viele Blumen sind es?",
         forschen: "Eine Blume mehr, ein Strauß mehr, einer weniger: Was passiert mit der Zahl? Erst sagen, dann sehen.",
         anwenden: "Nur Zahlen in einer Stellenwerttafel: 3 Zehner und 4 Einer. Auch verdreht („4 Einer und 3 Zehner“) und mit mehr als neun Einern („2 Zehner und 13 Einer“).",
         pruefen: "Die Eule hat gezählt. Ihre typischen Fehler: Zehner und Einer vertauscht (43 statt 34), ein Zehner zu viel, die Null vergessen (35 statt 305).",
@@ -301,8 +303,8 @@ export default {
     muehle: {
       idea: "Größen und Einheiten: Man misst mit gleichen Stücken, den Einheiten. Eine große Einheit besteht aus vielen kleinen: 1 m = 100 cm, 1 kg = 1 000 g, 1 l = 1 000 ml. Jedes Ding hat eine Einheit, die am besten passt.",
       ways: {
-        sehen: "Welche Einheit passt? Ein Bleistift ist 15 … cm oder m lang?",
         machen: "Stücke zusammenlegen, bis es genau so viel ist.",
+        sehen: "Welche Einheit passt? Ein Bleistift ist 15 … cm oder m lang?",
         forschen: "Eine Umrechnungstabelle weiterführen: 1 m = 100 cm, 2 m = 200 cm, 3 m 40 cm = ? cm.",
         anwenden: "Schätzen mit Stützpunkten (Wie schwer ist ein Apfel? 15 g, 150 g oder 1 500 g?) und kleine Sachaufgaben mit zwei Einheiten.",
         pruefen: "Die Eule rechnet um. Ihre Fehler: mit der falschen Zahl gerechnet (1 kg = 100 g), Zahlen nur nebeneinander geschrieben (3 m 5 cm = 35 cm), einfach zusammengezählt.",
@@ -313,8 +315,8 @@ export default {
     garten: {
       idea: "Fläche und Umfang: Die Fläche ist, wie viele Platten im Beet liegen. Der Umfang ist, wie lang der Zaun rundherum ist. Gleich viele Platten brauchen nicht gleich viel Zaun.",
       ways: {
-        sehen: "Wie viele Platten hat das Beet? Wie viele Zaunstücke?",
         machen: "Ein Beet legen: so viele Platten (später auch so viel Zaun, oder ein Rechteck).",
+        sehen: "Wie viele Platten hat das Beet? Wie viele Zaunstücke?",
         forschen: "Zwei Beete: Welches hat mehr Platten, welches braucht mehr Zaun? Oder gleich viel?",
         anwenden: "Rechtecke: Länge mal Breite statt Zählen, zuerst noch mit Kästchen, dann nur mit Maßen.",
         pruefen: "Die Eule hat gezählt. Ihre Fehler: Platten und Zaun verwechselt, an der Ecke nur ein Zaunstück gezählt, eine Platte doppelt.",
@@ -337,8 +339,8 @@ export default {
     kisten: {
       idea: "Würfelgebäude: Kisten stehen übereinander. Ein Bauplan von oben sagt in jedem Feld, wie viele Kisten dort stehen. Die Kisten, die man nicht sieht, tragen die oberen. Ein Würfelnetz sind sechs Quadrate, die sich zu einem Würfel falten lassen.",
       ways: {
-        sehen: "Wie viele Kisten sind es?",
         machen: "Den Bauplan schreiben: In jedes Feld tippen, bis die Zahl stimmt. Daneben wächst das Gebäude mit.",
+        sehen: "Wie viele Kisten sind es?",
         forschen: "Sechs Quadrate: Kann man daraus einen Würfel falten? Danach zeigt das Spiel, welche Seiten gegenüberliegen, oder wo es klemmt.",
         anwenden: "Welcher Bauplan von oben passt zu dem Gebäude?",
         pruefen: "Die Eule zählt Kisten. Ihr Fehler: Sie zählt nur, was sie sieht, oder nur die oberen.",

@@ -359,6 +359,8 @@ body[data-look="paper"] {
 .p-state { font-size: 26px; }
 .persp-item.next { background: var(--sun); animation: pulse 1.4s ease-in-out infinite; }
 .persp-item.star { background: #fff4c4; }
+.persp-item.locked { border-style: dashed; box-shadow: none; opacity: 0.45; filter: grayscale(1); cursor: default; }
+.persp-item.locked:active { transform: none; }
 
 /* ====================== A round ====================== */
 .steps { display: flex; align-items: center; justify-content: center; gap: 6px; margin: 0; padding: 0; list-style: none; }

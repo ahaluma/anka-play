@@ -68,7 +68,7 @@ export async function render(root, route) {
   const words = await loadTexts(ideaId);
   const questions = isGate ? gate.questions(s.id, def) : [];
   if (isGate && !gate.due(state.rec, s.id, def)) return redirect(href.station(s.id, many ? ideaId : null));
-  const p = isGate ? questions[0]?.p : def.perspectives.includes(route.p) ? route.p : null;
+  const p = isGate ? questions[0]?.p : def.perspectives.includes(route.p) && L.wayOpen(state.rec, def, route.p) ? route.p : null;
   if (!p) return redirect(href.station(s.id));
   const pol = policyFor(m.policy, def);
   // A sentence of the round in the station's own words where it has them (ideas/<id>/lang: bigger, smaller, grew),
@@ -176,7 +176,7 @@ export async function render(root, route) {
     const d = state.defs[id];
     if (!d || L.isGame(d)) return null;
     const ps = d.perspectives.filter((x) => L.played(state.rec, id, x));
-    return { idea: id, p: pick(ps.length ? ps : d.perspectives, r), rung: L.level(state.rec, d, kidAge), station: sid };
+    return { idea: id, p: ps.length ? pick(ps, r) : d.perspectives[0], rung: L.level(state.rec, d, kidAge), station: sid };
   }
 
   /** The backpack (Berg, policy backpack): tasks from other stations of this map the child has mastered. The one
@@ -453,7 +453,7 @@ export async function render(root, route) {
     for (const x of def.perspectives) {
       const on = L.starred(state.rec, def, x, g);
       const cls = "star-cell" + (on ? " on" : "") + (x === p && res.newStar ? " new" : "");
-      const st = small && x !== p ? link(cls + " to-way", href.play(s.id, ideaId, x, many)) : el("span", cls);
+      const st = small && x !== p && L.wayOpen(state.rec, def, x) ? link(cls + " to-way", href.play(s.id, ideaId, x, many)) : el("span", cls);
       if (st.tagName === "A") {
         st.setAttribute("aria-label", names[x]);
         st.addEventListener("click", () => sound.tap());

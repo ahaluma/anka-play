@@ -123,6 +123,7 @@ export default {
     pickIdea: "What would you like to play?",
     star: "Star",
     played: "played",
+    locked: "not open yet",
     level: (g) => `Numbers up to ${g}`,
     levelPlain: (g) => `Level ${g}`,
     next: "The owl shows you where to go next.",
