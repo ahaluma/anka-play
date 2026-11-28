@@ -99,6 +99,8 @@ export async function render(root) {
       }
       box.classList.toggle("target", (mode === "place" || mode === "share") && selected !== null && selected !== z && (mode !== "share" || z !== "shore"));
       box.classList.toggle("tappable", mode === "pick" && z !== "shore");
+      // The scene shows what to do, no words: frogs that can be moved bob; once one is lifted, the places glow.
+      box.classList.toggle("offer", (mode === "place" || mode === "share") && selected === null && at[z] > 0 && (mode !== "share" || z !== "shore"));
       for (let i = 0; i < at[z]; i++) {
         if (hidden === z) {
           const r = el("span", "offen-frog bubble");
@@ -359,17 +361,19 @@ export async function render(root) {
     zone[full].box.classList.remove("grumble");
   }
 
-  /** The owl explains with both numbers shown. */
+  /** After a miss at comparing: "Falsch.", then both numbers are shown and the right pad lights up (none when
+   *  both hold the same). Seen, not told. */
   async function explain(word) {
+    await oops();
     showSign("rot");
     showSign("gruen");
     const a = at.rot;
     const b = at.gruen;
-    if (a === b) return voice.tell(X.sameMiss(a, w(a)));
+    if (a === b) return wait(1200);
     const big = a > b ? "rot" : "gruen";
     const pad = word === "weniger" ? OTHER[big] : big;
     zone[pad].box.classList.add("asked");
-    await voice.tell(X.diffMiss(pad, at[pad], w(at[pad]), at[OTHER[pad]], w(at[OTHER[pad]]), word ?? "mehr"));
+    await wait(1500);
     zone[pad].box.classList.remove("asked");
   }
 
@@ -389,12 +393,7 @@ export async function render(root) {
       sound.wrong();
       shake(node);
       count(skill, false);
-      if (same) await explain();
-      else {
-        showSign("rot");
-        showSign("gruen");
-        await wait(1200);
-      }
+      await explain();
     }
   }
 
@@ -428,7 +427,6 @@ export async function render(root) {
   async function askShare(q) {
     const skill = skillOf(q, at);
     await voice.ask(X.share, true, true);
-    await voice.tell(X.shareHow);
     mode = "share";
     signs.rot.textContent = signs.gruen.textContent = "?";
     draw();
@@ -559,7 +557,6 @@ export async function render(root) {
    *  other pad afterwards. */
   async function makeAmount({ pad, k }) {
     await voice.ask(X.make(pad, k, w(k)), true, true);
-    if (!rec.stars) voice.tell(X.how);
     const done = signButton("btn ok offen-done", X.done, "ok");
     below.replaceChildren(done);
     await new Promise((resolve) => done.addEventListener("click", resolve));
@@ -610,7 +607,6 @@ export async function render(root) {
   async function shareOut(withRest) {
     const n = at.shore;
     await voice.ask(withRest ? X.shareOutRest : X.shareOut, true, true);
-    if (!rec.stars) voice.tell(X.how);
     const done = signButton("btn ok offen-done", X.done, "ok");
     below.replaceChildren(done);
     await new Promise((resolve) => done.addEventListener("click", resolve));
@@ -651,7 +647,9 @@ export async function render(root) {
     if (withRest) await voice.tell(X.leftIs);
   }
 
-  // ---- One event, then the next.
+  // ---- One event, then the next. The first event after coming here starts with free placing: the first thing
+  // the child does has no wrong answer.
+  let first = true;
   async function event() {
     voice.newTask();
     below.replaceChildren();
@@ -664,7 +662,9 @@ export async function render(root) {
       signs[p].textContent = "?";
       signs[p].classList.remove("known");
     }
-    const plan = Owl.placement(rec);
+    const owlPlan = Owl.placement(rec);
+    const plan = first ? { kind: "free", n: owlPlan.n } : owlPlan;
+    first = false;
     world.send({ type: "kommen", n: plan.n });
     mode = "wait";
     draw();
@@ -676,8 +676,7 @@ export async function render(root) {
     else if (plan.kind === "share" || plan.kind === "rest") await shareOut(plan.kind === "rest");
     else {
       await voice.ask(X.place, true, true);
-      if (!rec.stars) voice.tell(X.how);
-    }
+      }
     if (at.shore && plan.kind !== "rest") await new Promise((resolve) => (onMoved = () => at.shore === 0 && resolve()));
     onMoved = () => {};
     mode = "wait";
