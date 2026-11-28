@@ -44,13 +44,16 @@ export function create(state = { tree: 0, basket: 0, hares: [] }) {
 export const fair = (s) => s.hares.length > 0 && s.hares.every((h) => h === s.hares[0]) && s.basket < s.hares.length;
 
 const DRAN = ["neu", "uebt", "wackelt"];
+/** How often the apples fall by themselves instead of being picked. */
+export const FALL = 0.2;
 const between = (rnd, lo, hi) => lo + Math.floor(rnd() * (hi - lo + 1));
 export const countSkill = (k) => (k <= 5 ? "zaehlen5" : "zaehlen10");
 
 /**
  * One event at the tree:
- *   { n, pick, share: null | { hares, each, rest }, askLeft }
- * n apples grow; "Pflück vier Äpfel." (Menge legen) takes `pick` of them; "Wie viele hängen noch?" (counting)
+ *   { n, pick, share: null | { hares, each, rest }, askLeft, fall }
+ * n apples grow; "Pflück vier Äpfel." (Menge legen) takes `pick` of them, or about every fifth time (fall)
+ * they fall into the basket by themselves; "Wie viele hängen noch?" (counting)
  * when askLeft. Once sharing fairly is open (sicher at the pond first), the owl often brings hares: the picked
  * apples are shared among them, "Gib jedem gleich viele.", and once that is sicher sometimes with a rest:
  * "Wie viele bleiben übrig?". Up to 5 until counting to 10 is open.
@@ -74,6 +77,9 @@ export function plan(rec, rnd = Math.random, now = Date.now()) {
   // Counting what still hangs: almost always while counting is practised, now and then once it is sicher.
   const left = n - pick;
   const skill = countSkill(left);
-  const askLeft = isOpen(rec, skill, now) && rnd() < (DRAN.includes(stand(rec, skill, now)) ? 0.9 : often(rec, skill, now) + 0.15);
-  return { n, pick, share, askLeft };
+  // About every fifth time the apples fall into the basket by themselves (seen, not told): no picking, so the
+  // owl always asks what still hangs.
+  const fall = rnd() < FALL;
+  const askLeft = isOpen(rec, skill, now) && (fall || rnd() < (DRAN.includes(stand(rec, skill, now)) ? 0.9 : often(rec, skill, now) + 0.15));
+  return { n, pick, share, askLeft, fall };
 }

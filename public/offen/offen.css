@@ -136,3 +136,6 @@ button.apfel-apple { cursor: pointer; }
 .bau-meadow { --h: clamp(42px, 12vw, 58px); display: flex; flex-wrap: wrap; justify-content: center; align-content: flex-start; gap: 4px; min-height: 120px; padding: 14px 10px; }
 .bau-hare { display: block; width: var(--h); height: var(--h); }
 .bau-hare.leave { animation: leave 0.45s ease-in forwards; }
+@keyframes apple-fall { from { transform: translateY(-150px) rotate(-30deg); } 80% { transform: translateY(6px); } }
+.apfel-apple.fall { animation: apple-fall 0.45s ease-in; }
+@media (prefers-reduced-motion: reduce) { .apfel-apple.fall { animation: none; } }

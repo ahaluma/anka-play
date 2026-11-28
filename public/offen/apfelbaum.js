@@ -82,18 +82,8 @@ export async function render(root) {
     await wait(550);
   };
 
-  async function event() {
-    voice.newTask();
-    const p = A.plan(rec);
-    treeSign.textContent = "?";
-    treeSign.classList.remove("known");
-    scene.classList.remove("bye");
-    mode = "wait";
-    send({ type: "wachsen", n: p.n });
-    draw();
-    await wait(800);
-
-    // "Pflück vier Äpfel."
+  /** "Pflück vier Äpfel." The child picks, then Fertig; on a miss the owl puts it right. */
+  async function pickApples(p) {
     mode = "pick";
     draw();
     await voice.ask(Y.pick(p.pick, w(p.pick)), true, true);
@@ -111,6 +101,30 @@ export async function render(root) {
         await step();
       }
     }
+  }
+
+  async function event() {
+    voice.newTask();
+    const p = A.plan(rec);
+    treeSign.textContent = "?";
+    treeSign.classList.remove("known");
+    scene.classList.remove("bye");
+    mode = "wait";
+    send({ type: "wachsen", n: p.n });
+    draw();
+    await wait(800);
+
+    if (p.fall) {
+      // The apples fall into the basket by themselves, one after the other.
+      while (world.state.basket < p.pick) {
+        send({ type: "pflueck" });
+        sound.tap();
+        draw();
+        basket.querySelector(".apfel-pile")?.lastChild?.classList.add("fall");
+        await wait(500);
+      }
+      await wait(300);
+    } else await pickApples(p);
 
     // "Wie viele hängen noch?"
     if (p.askLeft) {
