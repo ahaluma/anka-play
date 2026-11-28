@@ -44,7 +44,9 @@ span.offen-frog { cursor: default; }
 .offen-masked { display: block; width: calc(var(--frog) * 1.4); height: calc(var(--frog) * 1.4); animation: mask-float 2.4s ease-in-out infinite alternate; }
 @keyframes mask-on { from { transform: translateY(-60%) scale(1.4); opacity: 0; } }
 @keyframes mask-float { from { transform: translateY(-3px) rotate(-6deg); } to { transform: translateY(3px) rotate(6deg); } }
-@media (prefers-reduced-motion: reduce) { .offen-frog .on-frog, .offen-masked { animation: none; } }
+@keyframes hop-won { 50% { transform: translateY(-10px); } }
+.offen-zone.won .offen-frog { animation: hop-won 0.4s ease-in-out 3; }
+@media (prefers-reduced-motion: reduce) { .offen-frog .on-frog, .offen-masked, .offen-zone.won .offen-frog { animation: none; } }
 .offen-frog.lifted { transform: translateY(-8px) scale(1.15); }
 .offen-frog.lifted .fig { filter: drop-shadow(0 5px 0 rgba(36, 48, 74, 0.25)); }
 .offen-frog.away { opacity: 0.25; }

@@ -455,6 +455,19 @@ export async function render(root) {
     showSign("gruen");
   }
 
+  /** Now and then (about every fifth comparison) the pad with more frogs wins: applause, confetti in the pond's
+   *  colours, "Yeaaah! Rot hat gewonnen!". A joke of the scene, not praise for the child, and no star. */
+  async function cheer() {
+    if (at.rot === at.gruen || Math.random() >= 0.2) return;
+    const pad = at.rot > at.gruen ? "rot" : "gruen";
+    zone[pad].box.classList.add("won");
+    sound.applause();
+    celebrate(36, ["#dca79c", "#86b884", "#f0b232"]);
+    await voice.tell(X.won(pad));
+    await wait(600);
+    zone[pad].box.classList.remove("won");
+  }
+
   /** The frogs on one pad put on their funny masks and are invisible. "Wie viele waren es?" Then masks off. */
   async function askMask(q, pad) {
     const k = answerOf(q, at, pad);
@@ -639,11 +652,13 @@ export async function render(root) {
       "mach-gerecht": askShare,
       partner: askPartner,
     };
-    for (const { q, p } of Owl.plan(RUNS.teich, rec, at)) {
+    const run = Owl.plan(RUNS.teich, rec, at);
+    for (const [i, { q, p }] of run.entries()) {
       voice.newTask();
       if (!q.fits(at, Owl.context(rec))) continue;
       if (q.events && q.form !== "action" && !q.events(at, p).every((e) => World.next(at, e))) continue;
       await ASK[q.id](q, p);
+      if (q.position === "vergleichen" && run[i + 1]?.q.position !== "vergleichen") await cheer();
       await wait(300);
     }
 

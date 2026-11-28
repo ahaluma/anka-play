@@ -48,6 +48,7 @@ export default {
 
   look: (pad) => `Schau auf die ${TO[pad]}!`,
   maskOn: "Masken auf!",
+  won: (pad) => `Yeaaah! ${pad === "rot" ? "Rot" : "Grün"} hat gewonnen!`,
   masked: "Wie viele waren es?",
   dive: (pad) => `Die auf der ${PAD[pad]} tauchen unter.`,
   partner: (n, pad, k, w, other) => `${n === 5 ? "Fünf" : "Zehn"} Frösche. Auf der ${PAD[pad]} ${k === 1 ? "einer" : k === 0 ? "keiner" : w}. Wie viele auf der ${PAD[other]}?`,
